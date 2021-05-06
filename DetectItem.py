@@ -1,23 +1,23 @@
-import asyncio
-import tensorflow as tf
-import numpy as np
-from google.protobuf import text_format
-from protos import string_int_label_map_pb2
-from picamera import PiCamera
-from picamera.array import PiRGBArray
-import concurrent.futures as cf
+from os import environ
+environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-__version__ = '0.5.0'
+import asyncio
+from PIL import Image
+from tensorflow.keras.models import model_from_json
+from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow import expand_dims
+from tensorflow.nn import softmax
+import numpy as np
+from picamera import PiCamera
+import concurrent.futures as cf
+from io import BytesIO
+
+__version__ = '0.6.0'
 
 class Detector:
-    async def init(self, logging, labelsPath='/home/pi/ssd/saved_model/labels.pbtxt'):
-        self.init_success = {
-            'model': None,
-            'labels': None,
-            'camera': None
-        }
+    async def init(self, logging):
+        self.model_loaded = False
         self.logging = logging
-        await self.load_labels(labelsPath)
         await self.initCamera()
         return self
 
@@ -28,65 +28,31 @@ class Detector:
         except Exception as e:
             self.logging.exception(e)
 
-    async def success(self):
-        try:
-            if not self.init_success['model'] or not self.init_success['labels'] or not self.init_success['camera']:
-                return False
-            else:
-                return True
-        except Exception as e:
-            self.logging.exception(e)
-
     async def get_status(self):
-        return self.init_success
+        return self.model_loaded
 
-    async def load_model(self, savedModelDir='/home/pi/ssd/saved_model/saved_model/'):
+    async def load_model(self, model_path='/home/pi/keras1/models/v3.6/model-v3.6'):
         try:
-            self.saved_model = tf.saved_model.load(savedModelDir)
-            self.model = self.saved_model.signatures['serving_default']
+            json_file = open('{}.json'.format(model_path), 'r')
+            loaded_model_json = json_file.read()
+            json_file.close()
+            loaded_model = model_from_json(loaded_model_json)
+            loaded_model.load_weights("{}.h5".format(model_path))
+
+            self.model = loaded_model
             self.logging.info("Model Loaded")
-            self.init_success['model'] = True
+            self.model_loaded = True
         except:
-            self.init_success['model'] = False
-
-    async def load_labels(self, labelsPath):
-        try:
-            labels_path = labelsPath
-            labels_file = open(labels_path, 'r')
-            labels_string = labels_file.read()
-
-            labels_map = string_int_label_map_pb2.StringIntLabelMap()
-            try:
-                text_format.Merge(labels_string, labels_map)
-            except text_format.ParseError:
-                labels_map.ParseFromString(labels_string)
-
-            labels_dict = {}
-            for item in labels_map.item:
-                labels_dict[item.id] = item.name
-
-            self.labels = labels_dict
-            self.logging.info("Labels Loaded")
-            if self.labels:
-                self.init_success['labels'] = True
-            else:
-                self.init_success['labels'] = False
-        except Exception as e:
-            self.init_success['labels'] = False
-            self.logging.exception(e)
+            self.model_loaded = False
 
     async def initCamera(self):
         try:
             self.camera = PiCamera()
             self.camera.resolution = (640, 480)
             self.camera.rotation = 180
-            self.rawCapture = PiRGBArray(self.camera, size=(640, 480))
-
             self.logging.info("Camera Loaded")
 
-            self.init_success['camera'] = True
         except Exception as e:
-            self.init_success['camera'] = False
             self.logging.exception(e)
 
     def restartCamera(self):
@@ -96,67 +62,41 @@ class Detector:
         self.camera = PiCamera()
         self.camera.resolution = (640, 480)
         self.camera.rotation = 180
-        self.rawCapture = PiRGBArray(self.camera, size=(640, 480))
-
-    def detectionHandler(self, image_arg):
-        self.logging.info("DetectionHandler Called")
-        image = np.asarray(image_arg)
-        input_tensor = tf.convert_to_tensor(image)
-        input_tensor = input_tensor[tf.newaxis, ...]
-
-        saved_model = self.saved_model
-        model = self.model
-        output_dict = model(input_tensor)
-
-        num_detections = int(output_dict['num_detections'])
-        output_dict = {
-            key: value[0, :num_detections].numpy()
-            for key, value in output_dict.items()
-            if key != 'num_detections'
-        }
-        output_dict['num_detections'] = num_detections
-        output_dict['detection_classes'] = output_dict['detection_classes'].astype(
-            np.int64)
-
-        return output_dict
 
     async def captureFrames(self, maxFrames=4):
-        await asyncio.sleep(3)
-        images = []
-        for frame in self.camera.capture_continuous(self.rawCapture, format="rgb",
-                                                        use_video_port=True):
+        stream = [BytesIO() for i in range(maxFrames)]
 
-            self.rawCapture.truncate(0)
+        for i in range(maxFrames):
+            self.camera.capture(stream[i], format='jpeg', resize=(250,250))
+            stream[i].seek(0)
             await asyncio.sleep(0.15)
-            images.append(frame.array)
-            if len(images) == maxFrames:
-                break
-        self.logging.info("{} Images captured".format(len(images)))
-        return await self.detectionDispatcher(images)
+            
+        return await self.detectionDispatcher(stream)
 
     def detectionWorker(self,image):
-        detections = self.detectionHandler(image)
-        num_detections = detections['num_detections']
-        if num_detections > 0:
-            for detection_index in range(num_detections):
-                detection_score = detections['detection_scores'][detection_index]
-                detection_class = detections['detection_classes'][detection_index]
-                detection_label = self.labels[detection_class]
-                if detection_score > 0.6:
-                    return {
-                        int(detection_score*100): detection_label
-                    }
+        class_names = ['bread','burger','cake', 'chicken', 'coffee', 'cookie', 'croissant', 'fish', 'fries', 'omelette','pasta', 'pie', 'pizza', 'rice', 'sandwiches', 'toast']
+        tf_image = img_to_array(image)
+        tf_image = expand_dims(tf_image, 0)
+       
+        predictions = self.model.predict(tf_image)
+        score = softmax(predictions[0])
+        detection_score = np.max(score)
+        detection_label = class_names[np.argmax(score)]
+        
+        if detection_label == 'fish' and int(detection_score*10000) < 1550:
+            return {
+                0: "None"
+            }
         return {
-            0: "None"
-        }
+                int(detection_score*10000): detection_label
+            }
 
-    async def detectionDispatcher(self,images):
+    async def detectionDispatcher(self,streams):
         res = {}
         arrayOfFutures = []
         with cf.ThreadPoolExecutor(max_workers=2) as executor:
             loop = asyncio.get_running_loop()
-            arrayOfFutures = [loop.run_in_executor(executor, self.detectionWorker, i) for i in images]
-            # arrayOfFutures.append(loop.run_in_executor(executor, detectionWorker, i))
+            arrayOfFutures = [loop.run_in_executor(executor, self.detectionWorker, Image.open(s)) for s in streams]
 
             await asyncio.gather(*arrayOfFutures)
 
@@ -164,6 +104,7 @@ class Detector:
                 res.update(f.result())
 
             maxRes = res[max(res)]
+            self.logging.info(res)
             self.logging.info(maxRes)
 
             return maxRes

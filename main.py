@@ -13,7 +13,7 @@ import DisplayContent
 # import re
 # from os import path
 
-__version__ = '0.5.0'
+__version__ = '0.6.0'
 
 logger_format = '%(asctime)s:%(funcName)s:%(message)s'
 logging.basicConfig(format=logger_format, level=logging.INFO, datefmt="%H:%M:%S", filename='./logfile.log', filemode='w')
@@ -42,23 +42,23 @@ display = DisplayContent.DisplayContent()
 #                 if g:
 #                     print(g.string)
 
-async def detectorLoadProgress(detector):
-    loopStart = time.process_time()
-    
-    while time.process_time() - loopStart <= 178:
-        await asyncio.sleep(1.78)
-        s = await detector.success()
-        if s == True:
-            return
+# async def detectorLoadProgress(detector):
+#     while time.process_time() - start <= 20:
+#         await asyncio.sleep(0.1)
+#         t = (time.process_time() - start)
+#         s = await detector.get_status()
+#         if s == True:
+#             logging.info(str(t))
+#             return
 
-        percent = int((time.process_time()*100)/178)-1
-        display.circleProgress(percent, "{}%".format(percent))
-        if percent % 10 == 0:
-            logging.info(str(percent))
+#         percent = int((t*100)/20)
+#         display.circleProgress(percent, "{}%".format(percent))
+#         if percent % 10 == 0:
+#             logging.info(str(percent))
 
-        if percent % 20 == 0:
-            stat = await detector.get_status()
-            logging.info(stat)
+#         # if percent % 50 == 0:
+#         #     stat = await detector.get_status()
+#         #     logging.info(stat)
 
 def genericThreadWorker(fn,arg=None):
     if arg:
@@ -66,8 +66,8 @@ def genericThreadWorker(fn,arg=None):
     else: 
         asyncio.run(fn())
 
-def progressWorker(detector):
-    asyncio.run(detectorLoadProgress(detector))
+# def progressWorker(detector):
+#     asyncio.run(detectorLoadProgress(detector))
 
 def detectionWorker(detector):
     # Trigger ultrasound motion
@@ -77,7 +77,6 @@ def detectionWorker(detector):
     while input() == 'd':
         display.loading()
         detectedItem = asyncio.run(detector.captureFrames())
-        print(detectedItem)
         display.text(detectedItem)
 
 async def startLoop():
@@ -85,7 +84,8 @@ async def startLoop():
     logging.info(__version__)
 
     detector = DetectItem.Detector()
-
+    display.loading()
+    
     # wm = pyinotify.WatchManager()
     # mask = pyinotify.IN_MODIFY
     
@@ -100,11 +100,11 @@ async def startLoop():
     with cf.ThreadPoolExecutor(max_workers=2) as executor:
         loop = asyncio.get_running_loop()
         arrayOfFutures.append(loop.run_in_executor(executor, genericThreadWorker, detector.init, logging))
-        arrayOfFutures.append(loop.run_in_executor(executor, progressWorker, detector))
+        # arrayOfFutures.append(loop.run_in_executor(executor, progressWorker, detector))
         arrayOfFutures.append(loop.run_in_executor(executor, genericThreadWorker, detector.load_model))
 
         await asyncio.gather(*arrayOfFutures)
-
+        logging.info(time.process_time() - start)
         # arrayOfFutures.append(loop.run_in_executor(executor, genericThreadWorker, notifier.loop))
         arrayOfFutures.append(loop.run_in_executor(executor, detectionWorker, detector))
         await asyncio.gather(arrayOfFutures[-1])
