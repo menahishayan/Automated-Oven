@@ -5,8 +5,6 @@ import asyncio
 import DetectItem
 import DisplayContent
 import Cook
-import time
-
 
 class EventHandler:
     def __init__(self):
@@ -31,28 +29,16 @@ class EventHandler:
     def dispatchWorker(self, fn, *args):
         return asyncio.run(fn(*args))
 
-    # def detectionWorker(self,detector, cook):
-    #     # Trigger ultrasound motion
-    #     self.display.text("Place The Item")
-
-    #     while input("Proceed? (y/n") == 'y':
-    #         self.display.loading()
-    #         detectedItem = asyncio.run(detector.captureFrames())
-    #         if not detectedItem == 'None':
-    #             cook.start(detectedItem)
-    #         else:
-    #             input('Unrecognized Item. Use default settings? (y/n)')
-
     async def startDetectionLoop(self):
         await self.dispatch([
             [self.display.text, "Place The Item"],
             [self.cook.init]
         ])
 
-        while input("Proceed? (y/n)") == 'y':
+        while input("Proceed? (y/n) ") == 'y':
             res = await self.dispatch([
                 [self.display.loading],
-                [self.detector.captureFrames],
+                [self.detector.detect],
             ])
 
             self.log(res[1])
@@ -72,6 +58,9 @@ class EventHandler:
             return [f.result() for f in arrayOfFutures]
 
     async def init(self):
+        await self.dispatch([
+            [self.display.init]
+        ])
         await self.dispatch([
             [self.display.loading],
             [self.detector.init, self],

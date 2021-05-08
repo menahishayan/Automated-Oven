@@ -1,12 +1,12 @@
-import busio
-import digitalio
-import pwmio
+from busio import SPI
+from digitalio import DigitalInOut
+from pwmio import PWMOut
 from board import SCK, MOSI, MISO, CE0, D24, D25, D22
 
 from adafruit_rgb_display.st7789 import ST7789
 from PIL import Image, ImageDraw, ImageFont
-import PIL.ImageOps  
-import aggdraw
+from PIL.ImageOps import invert
+from aggdraw import Draw, Pen, Brush
 
 class DisplayContent:
     def __init__(self, CS_PIN=CE0, DC_PIN=D24, RESET_PIN=D25):
@@ -14,7 +14,8 @@ class DisplayContent:
         self.DC_PIN = DC_PIN
         self.RESET_PIN = RESET_PIN
 
-        spi = busio.SPI(clock=SCK, MOSI=MOSI, MISO=MISO)
+    async def init(self):
+        spi = SPI(clock=SCK, MOSI=MOSI, MISO=MISO)
 
         self.disp = ST7789(
             spi,
@@ -24,9 +25,9 @@ class DisplayContent:
             x_offset=0,
             y_offset=0,
             baudrate=24000000,
-            cs=digitalio.DigitalInOut(CS_PIN),
-            dc=digitalio.DigitalInOut(DC_PIN),
-            rst=digitalio.DigitalInOut(RESET_PIN))
+            cs=DigitalInOut(self.CS_PIN),
+            dc=DigitalInOut(self.DC_PIN),
+            rst=DigitalInOut(self.RESET_PIN))
 
         if self.disp.rotation % 180 == 90:
             self.height = self.disp.width
@@ -35,7 +36,7 @@ class DisplayContent:
             self.width = self.disp.width 
             self.height = self.disp.height
 
-        self.backlight = pwmio.PWMOut(D22, frequency=1000, duty_cycle=32767)
+        self.backlight = PWMOut(D22, frequency=1000, duty_cycle=32767)
 
         image = Image.new("RGB", (self.width, self.height))
 
@@ -43,7 +44,7 @@ class DisplayContent:
 
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill=(0, 0, 0))
 
-        image = PIL.ImageOps.invert(image)
+        image = invert(image)
         self.disp.image(image)
 
     async def path(self, path):
@@ -63,7 +64,7 @@ class DisplayContent:
         y = scaled_height // 2 - self.height // 2
         image = image.crop((x, y, x + self.width, y + self.height))
 
-        image = PIL.ImageOps.invert(image)
+        image = invert(image)
         self.disp.image(image)
 
     async def image(self, image):
@@ -81,7 +82,7 @@ class DisplayContent:
         w, h = draw.textsize(text, font=font)
         draw.text(((self.width-w)/2,(self.height-h)/2), text, font = font, align ="center", fill="#fff") 
 
-        image = PIL.ImageOps.invert(image)
+        image = invert(image)
         self.disp.image(image)
 
     async def progress(self,percent, text=""):
@@ -98,14 +99,14 @@ class DisplayContent:
             w, h = draw.textsize(text, font=font)
             draw.text(((self.width-w)/2,(self.height-h)/2), text, font = font, align ="center", fill="#fff") 
 
-        image = PIL.ImageOps.invert(image)
+        image = invert(image)
         self.disp.image(image)
 
     async def circleProgress(self,percent, text=""):
         image = Image.new("RGB", (self.width, self.height))
 
-        draw = aggdraw.Draw(image)
-        pen = aggdraw.Pen("white", 7)
+        draw = Draw(image)
+        pen = Pen("white", 7)
 
         radian = percent* 3.6
         draw.arc((50, 34, 110, 94), 450-radian, 90,pen)
@@ -119,15 +120,15 @@ class DisplayContent:
             w, h = imDraw.textsize(text, font=font)
             imDraw.text(((self.width-w)/2,(self.height-h)/2), text, font = font, align ="center", fill="#fff") 
 
-        image = PIL.ImageOps.invert(image)
+        image = invert(image)
         self.disp.image(image)
 
     async def loading(self):
         image = Image.new("RGB", (self.width, self.height))
 
-        draw = aggdraw.Draw(image)
-        pen = aggdraw.Pen("white")
-        brush = aggdraw.Brush("white")
+        draw = Draw(image)
+        pen = Pen("white")
+        brush = Brush("white")
 
         draw.ellipse((50, 59, 60, 69),pen,brush)
         draw.ellipse((75, 59, 85, 69),pen,brush)
@@ -142,7 +143,7 @@ class DisplayContent:
         #     w, h = imDraw.textsize(text, font=font)
         #     imDraw.text(((self.width-w)/2,(self.height-h)/2), text, font = font, align ="center", fill="#fff") 
 
-        image = PIL.ImageOps.invert(image)
+        image = invert(image)
         self.disp.image(image)
 
     async def setBacklight(self, percent):

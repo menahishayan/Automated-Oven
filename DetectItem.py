@@ -12,7 +12,7 @@ from picamera import PiCamera
 import concurrent.futures as cf
 from io import BytesIO
 
-__version__ = '0.6.0'
+__version__ = '0.7.0'
 
 class Detector:
     async def init(self, e):
@@ -63,7 +63,7 @@ class Detector:
         self.camera.resolution = (640, 480)
         self.camera.rotation = 180
 
-    async def captureFrames(self, maxFrames=4):
+    async def detect(self, maxFrames=4):
         stream = [BytesIO() for i in range(maxFrames)]
 
         for i in range(maxFrames):

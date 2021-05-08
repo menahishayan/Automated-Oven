@@ -3,7 +3,7 @@ start = time.process_time()
 import EventHandler
 import asyncio
 
-__version__ = '0.6.0'
+__version__ = '0.7.0'
 
 async def startLoop():
     e = EventHandler.EventHandler()
@@ -11,6 +11,8 @@ async def startLoop():
     await e.init()
     e.log(time.process_time()-start)
     await e.startDetectionLoop()
+
+
     # cook = Cook.Cook(logging)
     # wm = pyinotify.WatchManager()
     # mask = pyinotify.IN_MODIFY
