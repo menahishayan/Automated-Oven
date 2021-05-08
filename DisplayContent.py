@@ -1,3 +1,4 @@
+import asyncio
 from busio import SPI
 from digitalio import DigitalInOut
 from pwmio import PWMOut
@@ -7,6 +8,8 @@ from adafruit_rgb_display.st7789 import ST7789
 from PIL import Image, ImageDraw, ImageFont
 from PIL.ImageOps import invert
 from aggdraw import Draw, Pen, Brush
+from time import process_time
+from math import floor
 
 class DisplayContent:
     def __init__(self, CS_PIN=CE0, DC_PIN=D24, RESET_PIN=D25):
@@ -14,7 +17,9 @@ class DisplayContent:
         self.DC_PIN = DC_PIN
         self.RESET_PIN = RESET_PIN
 
-    async def init(self):
+    async def init(self,e):
+        self.e = e
+
         spi = SPI(clock=SCK, MOSI=MOSI, MISO=MISO)
 
         self.disp = ST7789(
@@ -33,7 +38,7 @@ class DisplayContent:
             self.height = self.disp.width
             self.width = self.disp.height
         else:
-            self.width = self.disp.width 
+            self.width = self.disp.width
             self.height = self.disp.height
 
         self.backlight = PWMOut(D22, frequency=1000, duty_cycle=32767)
@@ -42,7 +47,8 @@ class DisplayContent:
 
         draw = ImageDraw.Draw(image)
 
-        draw.rectangle((0, 0, self.width, self.height), outline=0, fill=(0, 0, 0))
+        draw.rectangle((0, 0, self.width, self.height),
+                       outline=0, fill=(0, 0, 0))
 
         image = invert(image)
         self.disp.image(image)
@@ -77,48 +83,55 @@ class DisplayContent:
 
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill="#000")
 
-        text = text.capitalize() 
-        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18) 
+        text = text.capitalize()
+        font = ImageFont.truetype(
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18)
         w, h = draw.textsize(text, font=font)
-        draw.text(((self.width-w)/2,(self.height-h)/2), text, font = font, align ="center", fill="#fff") 
+        draw.text(((self.width-w)/2, (self.height-h)/2), text,
+                  font=font, align="center", fill="#fff")
 
         image = invert(image)
         self.disp.image(image)
 
-    async def progress(self,percent, text=""):
+    async def progress(self, percent, text=""):
         image = Image.new("RGB", (self.width, self.height))
 
         draw = ImageDraw.Draw(image)
 
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill="#000")
-        draw.rectangle((0, 0, int((percent * self.width)/ 100), 14), outline=0, fill="#fff")
+        draw.rectangle((0, 0, int((percent * self.width) / 100),
+                       14), outline=0, fill="#fff")
 
         if len(text) > 0:
-            text = text.capitalize() 
-            font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18) 
+            text = text.capitalize()
+            font = ImageFont.truetype(
+                '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18)
             w, h = draw.textsize(text, font=font)
-            draw.text(((self.width-w)/2,(self.height-h)/2), text, font = font, align ="center", fill="#fff") 
+            draw.text(((self.width-w)/2, (self.height-h)/2), text,
+                      font=font, align="center", fill="#fff")
 
         image = invert(image)
         self.disp.image(image)
 
-    async def circleProgress(self,percent, text=""):
+    async def circleProgress(self, percent, text=""):
         image = Image.new("RGB", (self.width, self.height))
 
         draw = Draw(image)
         pen = Pen("white", 7)
 
-        radian = percent* 3.6
-        draw.arc((50, 34, 110, 94), 450-radian, 90,pen)
+        radian = percent * 3.6
+        draw.arc((50, 34, 110, 94), 450-radian, 90, pen)
 
         draw.flush()
         imDraw = ImageDraw.Draw(image)
 
         if len(text) > 0:
-            text = text.capitalize() 
-            font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18) 
+            text = text.capitalize()
+            font = ImageFont.truetype(
+                '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18)
             w, h = imDraw.textsize(text, font=font)
-            imDraw.text(((self.width-w)/2,(self.height-h)/2), text, font = font, align ="center", fill="#fff") 
+            imDraw.text(((self.width-w)/2, (self.height-h)/2),
+                        text, font=font, align="center", fill="#fff")
 
         image = invert(image)
         self.disp.image(image)
@@ -130,20 +143,53 @@ class DisplayContent:
         pen = Pen("white")
         brush = Brush("white")
 
-        draw.ellipse((50, 59, 60, 69),pen,brush)
-        draw.ellipse((75, 59, 85, 69),pen,brush)
-        draw.ellipse((100, 59, 110, 69),pen,brush)
+        draw.ellipse((50, 59, 60, 69), pen, brush)
+        draw.ellipse((75, 59, 85, 69), pen, brush)
+        draw.ellipse((100, 59, 110, 69), pen, brush)
 
         draw.flush()
         # imDraw = ImageDraw.Draw(image)
 
         # if len(text) > 0:
-        #     text = text.capitalize() 
-        #     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18) 
+        #     text = text.capitalize()
+        #     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18)
         #     w, h = imDraw.textsize(text, font=font)
-        #     imDraw.text(((self.width-w)/2,(self.height-h)/2), text, font = font, align ="center", fill="#fff") 
+        #     imDraw.text(((self.width-w)/2,(self.height-h)/2), text, font = font, align ="center", fill="#fff")
 
         image = invert(image)
+        self.disp.image(image)
+
+    async def cooking(self, item, top, bottom, start, end, ctype):
+        font = ImageFont.truetype(
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18)
+                       
+        image = Image.new("RGB", (self.width, self.height))
+        imDraw = ImageDraw.Draw(image)
+        text = '{}\n00:00:{:02d}'.format(item, floor(end-process_time()))
+        w, h = imDraw.textsize(text, font=font)
+
+        while floor(end-process_time()) > 0:
+            imDraw.rectangle((0,0,self.width,self.height), fill="#fff")
+
+            if self.e.cook.isPaused == True:
+                text = '{}\nPaused'.format(item)
+                w, h = imDraw.textsize(text, font=font)
+                imDraw.text(((self.width-w)/2, (self.height-h)/2),
+                            text, font=font, align="center", fill="#000")
+                self.disp.image(image)
+                return
+
+            text = '{}\n00:00:{:02d}'.format(item, floor(end-process_time()))
+            imDraw.text(((self.width-w)/2, (self.height-h)/2),
+                            text, font=font, align="center", fill="#000")
+            self.disp.image(image)
+
+        imDraw.rectangle((0,0,self.width,self.height), fill="#fff")
+        text = 'Done'
+        w, h = imDraw.textsize(text, font=font)
+        imDraw.text(((self.width-w)/2, (self.height-h)/2),
+                    text, font=font, align="center", fill="#000")
+
         self.disp.image(image)
 
     async def setBacklight(self, percent):

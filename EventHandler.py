@@ -5,6 +5,8 @@ import asyncio
 import DetectItem
 import DisplayContent
 import Cook
+import WebSocketServer
+from websockets import serve
 
 class EventHandler:
     def __init__(self):
@@ -18,6 +20,7 @@ class EventHandler:
         self.logging = logging
         self.display = DisplayContent.DisplayContent()
         self.detector = DetectItem.Detector()
+        # self.server = WebSocketServer.WebSocketServer()
         self.cook = Cook.Cook(self)
 
     def log(self, msg):
@@ -36,15 +39,20 @@ class EventHandler:
         ])
 
         while input("Proceed? (y/n) ") == 'y':
-            res = await self.dispatch([
+            tasks = await self.dispatch([
                 [self.display.loading],
                 [self.detector.detect],
             ])
 
-            self.log(res[1])
+            res = tasks[1].result()
+
+            self.log(res)
+
             await self.dispatch([
-                [self.display.text, res[1]]
+                [self.cook.start, res]
+                # [self.cook.pause]
             ])
+
 
     async def dispatch(self, arrayOfDispatches):
         arrayOfFutures = []
@@ -55,14 +63,24 @@ class EventHandler:
                     executor, self.dispatchWorker, *d))
             await asyncio.gather(*arrayOfFutures)
 
-            return [f.result() for f in arrayOfFutures]
+            return arrayOfFutures
+
+    # async def dispatchServer(self):
+    #     with cf.ThreadPoolExecutor(max_workers=1) as executor:
+    #         loop = asyncio.get_running_loop()
+    #         await asyncio.gather(loop.run_in_executor(
+    #                 executor, serve,self.server.server,"oven.local", 8069))
+
 
     async def init(self):
         await self.dispatch([
-            [self.display.init]
+            [self.display.init, self]
         ])
         await self.dispatch([
             [self.display.loading],
             [self.detector.init, self],
             [self.detector.load_model]
         ])
+
+        # await self.dispatchServer()
+
