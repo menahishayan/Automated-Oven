@@ -1,0 +1,17 @@
+Item,Top,Bottom,Time,Serving,Type
+Cookies,190,0,10,36,Bake
+Cake,175,0,25,12,Bake
+Bread,175,0,40,24,Bake
+Burger,200,200,3,1,Reheat
+Chicken,220,220,18,4,Cook
+Coffee,200,200,3,1,Reheat
+Croissant,190,0,15,15,Bake
+Fish,200,200,20,4,Cook
+Fries,230,230,15,4,Cook
+Omelette,175,175,30,6,Cook
+Pasta,176,0,20,4,Cook
+Pie,0,180,50,6,Bake
+Pizza,190,0,20,15,Bake
+Rice,200,200,5,2,Reheat
+Sandwiches,200,200,3,1,Reheat
+Toast,200,200,3,1,Reheat

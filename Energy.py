@@ -13,9 +13,14 @@ class Energy:
         with open(self.path, "w") as outfile: 
             json.dump(db, outfile)
 
-    def get(self):
+    def get(self, date=""):
         f = open(self.path).read()
         db = json.loads(f)
+        if len(date) > 0:
+            try:
+                return db[date]
+            except:
+                return db
         return db
 
     def __str__(self):

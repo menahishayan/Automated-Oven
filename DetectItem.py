@@ -15,9 +15,9 @@ from io import BytesIO
 __version__ = '0.6.0'
 
 class Detector:
-    async def init(self, logging):
+    async def init(self, e):
         self.model_loaded = False
-        self.logging = logging
+        self.e = e
         await self.initCamera()
         return self
 
@@ -26,7 +26,7 @@ class Detector:
             self.camera.stop_preview()
             self.camera.close()
         except Exception as e:
-            self.logging.exception(e)
+            self.e.err(e)
 
     async def get_status(self):
         return self.model_loaded
@@ -40,7 +40,7 @@ class Detector:
             loaded_model.load_weights("{}.h5".format(model_path))
 
             self.model = loaded_model
-            self.logging.info("Model Loaded")
+            self.e.log("Model Loaded")
             self.model_loaded = True
         except:
             self.model_loaded = False
@@ -50,10 +50,10 @@ class Detector:
             self.camera = PiCamera()
             self.camera.resolution = (640, 480)
             self.camera.rotation = 180
-            self.logging.info("Camera Loaded")
+            self.e.log("Camera Loaded")
 
         except Exception as e:
-            self.logging.exception(e)
+            self.e.err(e)
 
     def restartCamera(self):
         self.camera.stop_preview()
@@ -74,7 +74,7 @@ class Detector:
         return await self.detectionDispatcher(stream)
 
     def detectionWorker(self,image):
-        class_names = ['bread','burger','cake', 'chicken', 'coffee', 'cookie', 'croissant', 'fish', 'fries', 'omelette','pasta', 'pie', 'pizza', 'rice', 'sandwiches', 'toast']
+        class_names = ['Bread','Burger','Cake', 'Chicken', 'Coffee', 'Cookie', 'Croissant', 'Fish', 'Fries', 'Omelette','Pasta', 'Pie', 'Pizza', 'Rice', 'Sandwiches', 'Toast']
         tf_image = img_to_array(image)
         tf_image = expand_dims(tf_image, 0)
        
@@ -104,7 +104,7 @@ class Detector:
                 res.update(f.result())
 
             maxRes = res[max(res)]
-            self.logging.info(res)
-            self.logging.info(maxRes)
+            # self.e.log(res)
+            # self.e.log(maxRes)
 
             return maxRes

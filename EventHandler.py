@@ -1,0 +1,79 @@
+import logging
+import concurrent.futures as cf
+from sys import stdout
+import asyncio
+import DetectItem
+import DisplayContent
+import Cook
+import time
+
+
+class EventHandler:
+    def __init__(self):
+        logger_format = '%(asctime)s %(message)s'
+        logging.basicConfig(format=logger_format, level=logging.INFO,
+                            datefmt="%H:%M:%S", filename='./logfile.log', filemode='w')
+        logging.getLogger().addHandler(logging.StreamHandler(stdout))
+
+        logging.info('Start')
+
+        self.logging = logging
+        self.display = DisplayContent.DisplayContent()
+        self.detector = DetectItem.Detector()
+        self.cook = Cook.Cook(self)
+
+    def log(self, msg):
+        self.logging.info(msg)
+
+    def err(self, msg):
+        self.logging.error(msg)
+
+    def dispatchWorker(self, fn, *args):
+        return asyncio.run(fn(*args))
+
+    # def detectionWorker(self,detector, cook):
+    #     # Trigger ultrasound motion
+    #     self.display.text("Place The Item")
+
+    #     while input("Proceed? (y/n") == 'y':
+    #         self.display.loading()
+    #         detectedItem = asyncio.run(detector.captureFrames())
+    #         if not detectedItem == 'None':
+    #             cook.start(detectedItem)
+    #         else:
+    #             input('Unrecognized Item. Use default settings? (y/n)')
+
+    async def startDetectionLoop(self):
+        await self.dispatch([
+            [self.display.text, "Place The Item"],
+            [self.cook.init]
+        ])
+
+        while input("Proceed? (y/n)") == 'y':
+            res = await self.dispatch([
+                [self.display.loading],
+                [self.detector.captureFrames],
+            ])
+
+            self.log(res[1])
+            await self.dispatch([
+                [self.display.text, res[1]]
+            ])
+
+    async def dispatch(self, arrayOfDispatches):
+        arrayOfFutures = []
+        with cf.ThreadPoolExecutor(max_workers=4) as executor:
+            loop = asyncio.get_running_loop()
+            for d in arrayOfDispatches:
+                arrayOfFutures.append(loop.run_in_executor(
+                    executor, self.dispatchWorker, *d))
+            await asyncio.gather(*arrayOfFutures)
+
+            return [f.result() for f in arrayOfFutures]
+
+    async def init(self):
+        await self.dispatch([
+            [self.display.loading],
+            [self.detector.init, self],
+            [self.detector.load_model]
+        ])

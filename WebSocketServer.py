@@ -31,10 +31,21 @@ class WebSocketServer:
                 await websocket.send(json.dumps(res))
             if req['method'] == 'getEnergy':
                 e = Energy.Energy('/home/pi/OS/EnergyDB.json')
-                res = {
-                    'msg': 'result',
-                    'result': e.get()
-                }
+                if not req['params']:
+                    res = {
+                        'msg': 'result',
+                        'result': e.get()
+                    }
+                else:
+                    resultArray = []
+                    params = req['params']
+                    if len(params) > 0:
+                        for p in params:
+                            resultArray.append(e.get(p))
+                    res = {
+                        'msg': 'result',
+                        'result': resultArray
+                    }
                 await websocket.send(json.dumps(res))
             else:
                 res = {

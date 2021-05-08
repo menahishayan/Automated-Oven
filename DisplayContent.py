@@ -46,7 +46,7 @@ class DisplayContent:
         image = PIL.ImageOps.invert(image)
         self.disp.image(image)
 
-    def path(self, path):
+    async def path(self, path):
         image = Image.open(path)
 
         image_ratio = image.width / image.height
@@ -66,10 +66,10 @@ class DisplayContent:
         image = PIL.ImageOps.invert(image)
         self.disp.image(image)
 
-    def image(self, image):
+    async def image(self, image):
         self.disp.image(image)
 
-    def text(self, text):
+    async def text(self, text):
         image = Image.new("RGB", (self.width, self.height))
 
         draw = ImageDraw.Draw(image)
@@ -84,7 +84,7 @@ class DisplayContent:
         image = PIL.ImageOps.invert(image)
         self.disp.image(image)
 
-    def progress(self,percent, text=""):
+    async def progress(self,percent, text=""):
         image = Image.new("RGB", (self.width, self.height))
 
         draw = ImageDraw.Draw(image)
@@ -101,7 +101,7 @@ class DisplayContent:
         image = PIL.ImageOps.invert(image)
         self.disp.image(image)
 
-    def circleProgress(self,percent, text=""):
+    async def circleProgress(self,percent, text=""):
         image = Image.new("RGB", (self.width, self.height))
 
         draw = aggdraw.Draw(image)
@@ -122,7 +122,7 @@ class DisplayContent:
         image = PIL.ImageOps.invert(image)
         self.disp.image(image)
 
-    def loading(self):
+    async def loading(self):
         image = Image.new("RGB", (self.width, self.height))
 
         draw = aggdraw.Draw(image)
@@ -145,8 +145,8 @@ class DisplayContent:
         image = PIL.ImageOps.invert(image)
         self.disp.image(image)
 
-    def setBacklight(self, percent):
+    async def setBacklight(self, percent):
         self.backlight.duty_cycle = int(65535 * percent / 100)
 
-    def getBacklight(self):
+    async def getBacklight(self):
         return int((self.backlight.duty_cycle * 100) / 65535)
