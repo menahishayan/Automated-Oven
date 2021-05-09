@@ -1,60 +1,72 @@
-import asyncio
-import websockets
+from SimpleWebSocketServer import WebSocket
 import json
-import pathlib
-import ssl
 import History
 import Energy
 
-class WebSocketServer:
-    def __init__(self, port=8069):
-        self.__version__ = '0.1.2'
-        start_server = websockets.serve(
-            self.server, "oven.local", port
-        )
+class WebSocketServer(WebSocket):
+    def init(self,e):
+        self.e = e
+        # print(self.e)
 
-        asyncio.get_event_loop().run_until_complete(start_server)
-        asyncio.get_event_loop().run_forever()
-
-    async def server(self,websocket, path):
-        req = await websocket.recv()
-
-        req = json.loads(req)
-
+    def handleMessage(self):
+        req = json.loads(self.data)
         if req['msg'] == 'method':
-            if req['method'] == 'getHistory':
-                h = History.History('/home/pi/OS/HistoryDB.json')
-                res = {
-                    'msg': 'result',
-                    'result': h.get()
-                }
-                await websocket.send(json.dumps(res))
-            if req['method'] == 'getEnergy':
-                e = Energy.Energy('/home/pi/OS/EnergyDB.json')
-                if not req['params']:
-                    res = {
-                        'msg': 'result',
-                        'result': e.get()
-                    }
-                else:
-                    resultArray = []
-                    params = req['params']
-                    if len(params) > 0:
-                        for p in params:
-                            resultArray.append(e.get(p))
-                    res = {
-                        'msg': 'result',
-                        'result': resultArray
-                    }
-                await websocket.send(json.dumps(res))
-            else:
+            try:
+                self.sendMessage(getattr(self, req['method'])())
+            except:
                 res = {
                     'msg': 'error',
-                    'error': 'unrecognized request',
+                    'error': 'unrecognized method',
                     'code': 501
                 }
-                await websocket.send(json.dumps(res))
-        print("sent response")
+                self.sendMessage(json.dumps(res))
+        else:
+            res = {
+                'msg': 'error',
+                'error': 'unrecognized request',
+                'code': 501
+            }
+            self.sendMessage(json.dumps(res))
+        
+    def getHistory(self):
+        h = History.History('/home/pi/OS/HistoryDB.json')
+        res = {
+            'msg': 'result',
+            'result': h.get()
+        }
+        return json.dumps(res)
 
-# context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-# context.load_cert_chain(certfile= "cert.pem", keyfile= "key.pem")
+    def getEnergy(self):
+        e = Energy.Energy('/home/pi/OS/EnergyDB.json')
+        # if not req['params']:
+        res = {
+            'msg': 'result',
+            'result': e.get()
+        }
+        # else:
+        #     resultArray = []
+        #     params = req['params']
+        #     if len(params) > 0:
+        #         for p in params:
+        #             resultArray.append(e.get(p))
+        #     res = {
+        #         'msg': 'result',
+        #         'result': resultArray
+        #     }
+        return json.dumps(res)
+
+    def getCooking(self):
+        c = self.e.cook
+        getData = c.get()
+        # self.e.log("getData: " + str(getData))
+        res = {
+            'msg': 'result',
+            'result': str(getData)
+        }
+        return json.dumps(res)
+
+    # def handleConnected(self):
+    #     print(self.address, 'connected')
+
+    # def handleClose(self):
+    #     print(self.address, 'closed')

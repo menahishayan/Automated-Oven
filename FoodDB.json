@@ -1,0 +1,345 @@
+{
+  "Cookies": {
+    "Serving": 36,
+    "steps": [
+      {
+        "type": "Bake",
+        "topTemp": 190,
+        "bottomTemp": 0,
+        "duration": 10
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      },
+      {
+        "type": "cool",
+        "duration": 10
+      }
+    ]
+  },
+  "Cake": {
+    "Serving": 12,
+    "steps": [
+      {
+        "type": "Bake",
+        "topTemp": 175,
+        "bottomTemp": 0,
+        "duration": 25
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      },
+      {
+        "type": "cool",
+        "duration": 10
+      }
+    ]
+  },
+  "Bread": {
+    "Serving": 24,
+    "steps": [
+      {
+        "type": "Bake",
+        "topTemp": 175,
+        "bottomTemp": 0,
+        "duration": 20
+      },
+      {
+        "type": "notify"
+      },
+      {
+        "type": "Bake",
+        "topTemp": 175,
+        "bottomTemp": 0,
+        "duration": 20
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      },
+      {
+        "type": "cool",
+        "duration": 10
+      }
+    ]
+  },
+  "Burger": {
+    "Serving": 1,
+    "steps": [
+      {
+        "type": "Reheat",
+        "topTemp": 200,
+        "bottomTemp": 200,
+        "duration": 3
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      }
+    ]
+  },
+  "Chicken": {
+    "Serving": 4,
+    "steps": [
+      {
+        "type": "cook",
+        "topTemp": 160,
+        "bottomTemp": 0,
+        "duration": 25
+      },
+      {
+        "type": "notify"
+      },
+      {
+        "type": "cook",
+        "topTemp": 0,
+        "bottomTemp": 160,
+        "duration": 20
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      }
+    ]
+  },
+  "Coffee": {
+    "Serving": 1,
+    "steps": [
+      {
+        "type": "Reheat",
+        "topTemp": 190,
+        "bottomTemp": 190,
+        "duration": 3
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      }
+    ]
+  },
+  "Croissant": {
+    "Serving": 15,
+    "steps": [
+      {
+        "type": "Bake",
+        "topTemp": 190,
+        "bottomTemp": 0,
+        "duration": 15
+      },
+      {
+        "type": "notify"
+      },
+      {
+        "type": "Bake",
+        "topTemp": 0,
+        "bottomTemp": 5,
+        "duration": 20
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      },
+      {
+        "type": "cool",
+        "duration": 10
+      }
+    ]
+  },
+  "Fish": {
+    "Serving": 4,
+    "steps": [
+      {
+        "type": "cook",
+        "topTemp": 200,
+        "bottomTemp": 0,
+        "duration": 20
+      },
+      {
+        "type": "notify"
+      },
+      {
+        "type": "cook",
+        "topTemp": 0,
+        "bottomTemp": 200,
+        "duration": 20
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      }
+    ]
+  },
+  "Fries": {
+    "Serving": 4,
+    "steps": [
+      {
+        "type": "cook",
+        "topTemp": 230,
+        "bottomTemp": 0,
+        "duration": 10
+      },
+      {
+        "type": "notify"
+      },
+      {
+        "type": "cook",
+        "topTemp": 0,
+        "bottomTemp": 230,
+        "duration": 10
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      }
+    ]
+  },
+  "Omelette": {
+    "Serving": 6,
+    "steps": [
+      {
+        "type": "cook",
+        "topTemp": 175,
+        "bottomTemp": 0,
+        "duration": 15
+      },
+      {
+        "type": "notify"
+      },
+      {
+        "type": "cook",
+        "topTemp": 0,
+        "bottomTemp": 175,
+        "duration": 15
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      }
+    ]
+  },
+  "Pasta": {
+    "Serving": 4,
+    "steps": [
+      {
+        "type": "cook",
+        "topTemp": 175,
+        "bottomTemp": 0,
+        "duration": 20
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      }
+    ]
+  },
+  "Pie": {
+    "Serving": 6,
+    "steps": [
+      {
+        "type": "Bake",
+        "topTemp": 0,
+        "bottomTemp": 180,
+        "duration": 45
+      },
+      {
+        "type": "notify"
+      },
+      {
+        "type": "Bake",
+        "topTemp": 175,
+        "bottomTemp": 0,
+        "duration": 5
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      },
+      {
+        "type": "cool",
+        "duration": 10
+      }
+    ]
+  },
+  "Pizza": {
+    "Serving": 15,
+    "steps": [
+      {
+        "type": "Bake",
+        "topTemp": 190,
+        "bottomTemp": 0,
+        "duration": 20
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      },
+      {
+        "type": "cool",
+        "duration": 10
+      }
+    ]
+  },
+  "Rice": {
+    "Serving": 2,
+    "steps": [
+      {
+        "type": "Reheat",
+        "topTemp": 200,
+        "bottomTemp": 200,
+        "duration": 5
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      }
+    ]
+  },
+  "Sandwiches": {
+    "Serving": 1,
+    "steps": [
+      {
+        "type": "Reheat",
+        "topTemp": 200,
+        "bottomTemp": 200,
+        "duration": 3
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      }
+    ]
+  },
+  "Toast": {
+    "Serving": 1,
+    "steps": [
+      {
+        "type": "Reheat",
+        "topTemp": 200,
+        "bottomTemp": 200,
+        "duration": 3
+      },
+      {
+        "type": "checkpoint",
+        "maxWaitTime": 5,
+        "confirmationRequired": true
+      }
+    ]
+  }
+}

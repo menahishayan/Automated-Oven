@@ -5,8 +5,8 @@ import asyncio
 import DetectItem
 import DisplayContent
 import Cook
+from SimpleWebSocketServer import SimpleWebSocketServer
 import WebSocketServer
-from websockets import serve
 
 class EventHandler:
     def __init__(self):
@@ -20,7 +20,7 @@ class EventHandler:
         self.logging = logging
         self.display = DisplayContent.DisplayContent()
         self.detector = DetectItem.Detector()
-        # self.server = WebSocketServer.WebSocketServer()
+        self.server = SimpleWebSocketServer('', 8069, WebSocketServer.WebSocketServer,self)
         self.cook = Cook.Cook(self)
 
     def log(self, msg):
@@ -52,6 +52,8 @@ class EventHandler:
                 [self.cook.start, res]
                 # [self.cook.pause]
             ])
+        self.server.close()
+        exit()
 
 
     async def dispatch(self, arrayOfDispatches):
@@ -65,13 +67,6 @@ class EventHandler:
 
             return arrayOfFutures
 
-    # async def dispatchServer(self):
-    #     with cf.ThreadPoolExecutor(max_workers=1) as executor:
-    #         loop = asyncio.get_running_loop()
-    #         await asyncio.gather(loop.run_in_executor(
-    #                 executor, serve,self.server.server,"oven.local", 8069))
-
-
     async def init(self):
         await self.dispatch([
             [self.display.init, self]
@@ -81,6 +76,4 @@ class EventHandler:
             [self.detector.init, self],
             [self.detector.load_model]
         ])
-
-        # await self.dispatchServer()
 

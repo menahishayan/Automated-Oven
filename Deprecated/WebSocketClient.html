@@ -6,13 +6,12 @@
     req = {
       user: 'John',
       msg: 'method',
-      method: 'getCooking'
+      method: 'getEnergy'
     }
-    // document.write('Connected\n')
     ws.send(JSON.stringify(req));
   });
   ws.addEventListener('message', event => {
-    document.write('\nReceived:\n', event.data);
+    document.write('Received:', event.data);
   });
 </script>
 </html>

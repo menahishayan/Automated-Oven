@@ -9,6 +9,7 @@ class Cook:
         self.item,self.top,self.bottom,self.endTime,self.cooktype = '',180,180,20,'Cook'
         self.isPaused = False
         self.isCooking = False
+        self.startTime, self.pauseTime = None,None
 
     async def init(self, method='fixed'):
         if method=='fixed':
@@ -50,17 +51,46 @@ class Cook:
             # self.rods.setTop(top)
             # self.rods.setBottom(bottom)
 
-    async def get(self):
-        return {
-            'top': self.top,
-            'bottom': self.bottom,
-            'startTime': self.startTime or None,
-            'endTime': self.endTime,
-            'cooktype': self.cooktype,
-            'isPaused': self.isPaused,
-            'isCooking': self.isCooking,
-            'pauseTime': self.pauseTime or None
-        }
+    def get(self):
+        try:
+            if self.isCooking == True:
+                if self.isPaused == False:
+                    return {
+                        'top': self.top,
+                        'bottom': self.bottom,
+                        'startTime': time.process_time() - self.startTime,
+                        'endTime': self.endTime - time.process_time(),
+                        'cooktype': self.cooktype,
+                        'isPaused': self.isPaused,
+                        'isCooking': self.isCooking,
+                        'pauseTime': 0,
+                    }
+                else:
+                    return {
+                        'top': self.top,
+                        'bottom': self.bottom,
+                        'startTime': time.process_time() - self.startTime,
+                        'endTime': self.endTime - time.process_time(),
+                        'cooktype': self.cooktype,
+                        'isPaused': self.isPaused,
+                        'isCooking': self.isCooking,
+                        'pauseTime': time.process_time() - self.pauseTime,
+                    }
+            else:
+                return {
+                        'top': self.top,
+                        'bottom': self.bottom,
+                        'startTime': 0,
+                        'endTime': 0,
+                        'cooktype': self.cooktype,
+                        'isPaused': self.isPaused,
+                        'isCooking': self.isCooking,
+                    }
+        except Exception as e:
+            self.e.log(e)
+            return {
+                'error': str(e)
+            }
 
         
         
