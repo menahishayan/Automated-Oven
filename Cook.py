@@ -3,25 +3,26 @@ import time
 import asyncio
 __version__ = '0.6.0'
 
+
 class Cook:
-    def __init__(self,e):
+    def __init__(self, e):
         self.e = e
-        self.item,self.top,self.bottom,self.endTime,self.cooktype = '',180,180,20,'Cook'
+        self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20, 'Cook'
         self.isPaused = False
         self.isCooking = False
-        self.startTime, self.pauseTime = None,None
+        self.startTime, self.pauseTime = None, None
 
     async def init(self, method='fixed'):
-        if method=='fixed':
+        if method == 'fixed':
             self.df = read_csv('Temp.csv', index_col=0)
-        # derived 
+        # derived
 
     async def start(self, item):
         # steps
         try:
             self.top = self.df['Top'][item]
             self.bottom = self.df['Bottom'][item]
-            self.endTime = time.process_time() + self.df['Time'][item] # * 60
+            self.endTime = time.process_time() + self.df['Time'][item]  # * 60
             self.cooktype = self.df['Type'][item]
 
             self.startTime = time.process_time()
@@ -35,21 +36,47 @@ class Cook:
         self.isCooking = True
 
         await self.e.dispatch([
-            [self.e.display.cooking, self.item,self.top,self.bottom,self.startTime,self.endTime,self.cooktype]
+            [self.e.display.cooking, self.item, self.top, self.bottom,
+                self.startTime, self.endTime, self.cooktype]
         ])
 
     async def pause(self):
-        await asyncio.sleep(5)
-        self.pauseTime = time.process_time()
-        self.isPaused = True
+        try:
+            await asyncio.sleep(5)
+            self.pauseTime = time.process_time()
+            self.isPaused = True
 
-        self.e.log("Paused - " + str(int(self.pauseTime - self.startTime)))
-
+            self.e.log("Paused - " + str(int(self.pauseTime - self.startTime)))
+            return True
+        except:
+            return False
         # await self.e.dispatch([
         #     [self.e.display.text, "{}\nPaused".format(self.item)]
         # ])
             # self.rods.setTop(top)
             # self.rods.setBottom(bottom)
+
+    async def resume(self):
+                # steps
+        try:
+            self.startTime = time.process_time() -(self.pauseTime-self.startTime)
+            self.endTime = time.process_time() +(self.endTime-self.pauseTime)
+
+            self.isPaused = False
+
+            await self.e.dispatch([
+                [self.e.display.cooking, self.item, self.top, self.bottom,
+                    self.startTime, self.endTime, self.cooktype]
+            ])
+
+            self.e.log("Resumed")
+
+            return True
+        except:
+            self.e.err(e)
+            return False
+
+        
 
     def get(self):
         try:
@@ -78,19 +105,16 @@ class Cook:
                     }
             else:
                 return {
-                        'top': self.top,
-                        'bottom': self.bottom,
-                        'startTime': 0,
-                        'endTime': 0,
-                        'cooktype': self.cooktype,
-                        'isPaused': self.isPaused,
-                        'isCooking': self.isCooking,
-                    }
+                    'top': self.top,
+                    'bottom': self.bottom,
+                    'startTime': 0,
+                    'endTime': 0,
+                    'cooktype': self.cooktype,
+                    'isPaused': self.isPaused,
+                    'isCooking': self.isCooking,
+                }
         except Exception as e:
             self.e.log(e)
             return {
                 'error': str(e)
             }
-
-        
-        

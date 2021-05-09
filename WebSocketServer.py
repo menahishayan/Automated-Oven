@@ -2,6 +2,7 @@ from SimpleWebSocketServer import WebSocket
 import json
 import History
 import Energy
+from asgiref.sync import async_to_sync
 
 class WebSocketServer(WebSocket):
     def init(self,e):
@@ -65,6 +66,37 @@ class WebSocketServer(WebSocket):
         }
         return json.dumps(res)
 
+    def pauseCooking(self):
+        try:
+            var = async_to_sync(self.e.cook.pause)()
+            self.e.log(var)
+            res = {
+                'msg': 'result',
+                'result': var
+            }
+            return json.dumps(res)
+        except Exception as e:
+            res = {
+                'msg': 'result',
+                'result': str(e)
+            }
+            return json.dumps(res)
+
+    def resumeCooking(self):
+        try:
+            var = async_to_sync(self.e.cook.resume)()
+            self.e.log(var)
+            res = {
+                'msg': 'result',
+                'result': var
+            }
+            return json.dumps(res)
+        except Exception as e:
+            res = {
+                'msg': 'result',
+                'result': str(e)
+            }
+            return json.dumps(res)
     # def handleConnected(self):
     #     print(self.address, 'connected')
 
