@@ -72,11 +72,9 @@ class Cook:
             self.e.log("Resumed")
 
             return True
-        except:
+        except Exception as e:
             self.e.err(e)
             return False
-
-        
 
     def get(self):
         try:
@@ -85,8 +83,8 @@ class Cook:
                     return {
                         'top': self.top,
                         'bottom': self.bottom,
-                        'startTime': time.process_time() - self.startTime,
-                        'endTime': self.endTime - time.process_time(),
+                        'startTime': int(time.process_time() - self.startTime),
+                        'endTime': int(self.endTime - time.process_time()),
                         'cooktype': self.cooktype,
                         'isPaused': self.isPaused,
                         'isCooking': self.isCooking,
@@ -96,12 +94,12 @@ class Cook:
                     return {
                         'top': self.top,
                         'bottom': self.bottom,
-                        'startTime': time.process_time() - self.startTime,
-                        'endTime': self.endTime - time.process_time(),
+                        'startTime': int(time.process_time() - self.startTime),
+                        'endTime': int(self.endTime - time.process_time()),
                         'cooktype': self.cooktype,
                         'isPaused': self.isPaused,
                         'isCooking': self.isCooking,
-                        'pauseTime': time.process_time() - self.pauseTime,
+                        'pauseTime': int(time.process_time() - self.pauseTime),
                     }
             else:
                 return {

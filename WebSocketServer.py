@@ -58,11 +58,11 @@ class WebSocketServer(WebSocket):
 
     def getCooking(self):
         c = self.e.cook
-        getData = c.get()
+        # getData = c.get()
         # self.e.log("getData: " + str(getData))
         res = {
             'msg': 'result',
-            'result': str(getData)
+            'result': c.get()
         }
         return json.dumps(res)
 
@@ -72,6 +72,7 @@ class WebSocketServer(WebSocket):
             self.e.log(var)
             res = {
                 'msg': 'result',
+                # 'result': str(var).replace('\'','\"')
                 'result': var
             }
             return json.dumps(res)
@@ -88,6 +89,7 @@ class WebSocketServer(WebSocket):
             self.e.log(var)
             res = {
                 'msg': 'result',
+                # 'result': str(var).replace('\'','\"')
                 'result': var
             }
             return json.dumps(res)
