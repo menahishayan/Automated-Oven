@@ -86,10 +86,8 @@ class WebSocketServer(WebSocket):
     def resumeCooking(self):
         try:
             var = async_to_sync(self.e.cook.resume)()
-            self.e.log(var)
             res = {
                 'msg': 'result',
-                # 'result': str(var).replace('\'','\"')
                 'result': var
             }
             return json.dumps(res)
@@ -99,6 +97,7 @@ class WebSocketServer(WebSocket):
                 'result': str(e)
             }
             return json.dumps(res)
+            
     # def handleConnected(self):
     #     print(self.address, 'connected')
 

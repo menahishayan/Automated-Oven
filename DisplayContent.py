@@ -159,34 +159,40 @@ class DisplayContent:
         image = invert(image)
         self.disp.image(image)
 
-    async def cooking(self, item, top, bottom, start, end, ctype):
+    async def cookingListener(self):
+        while True:
+            if self.e.cook.isCooking:
+                await self.e.dispatch([[self.cooking]])
+            else:
+                await asyncio.sleep(1)
+
+    async def cooking(self):
         font = ImageFont.truetype(
             '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18)
                        
         image = Image.new("RGB", (self.width, self.height))
         imDraw = ImageDraw.Draw(image)
-        try:
-            text = '{}\n{:02d}:{:02d}'.format(item, floor((end-time())/60),int(end-time())%60)
-            w, h = imDraw.textsize(text, font=font)
 
-            while floor(end-time()) > 0:
-                imDraw.rectangle((0,0,self.width,self.height), fill="#fff")
+        item = self.e.cook.item
+        end = self.e.cook.endTime
 
-                if self.e.cook.isPaused == True:
-                    text = '{}\nPaused'.format(item)
-                    w, h = imDraw.textsize(text, font=font)
-                    imDraw.text(((self.width-w)/2, (self.height-h)/2),
-                                text, font=font, align="center", fill="#000")
-                    self.disp.image(image)
-                    return
+        while floor(end-time()) > 0:
+            imDraw.rectangle((0,0,self.width,self.height), fill="#fff")
 
+            if self.e.cook.isPaused == True:
+                text = '{}\nPaused'.format(item)
+                w, h = imDraw.textsize(text, font=font)
+            else:
                 text = '{}\n{:02d}:{:02d}'.format(item, floor((end-time())/60),int(end-time())%60)
-                imDraw.text(((self.width-w)/2, (self.height-h)/2),
-                                text, font=font, align="center", fill="#000")
-                self.disp.image(image)
-        except Exception as e:
-            self.e.log(e)
+                w, h = imDraw.textsize(text, font=font)
+                end = self.e.cook.endTime
 
+            imDraw.text(((self.width-w)/2, (self.height-h)/2),
+                        text, font=font, align="center", fill="#000")
+
+            self.disp.image(image)
+            await asyncio.sleep(1)
+       
         self.e.cook.isCooking = False
         self.e.cook.cooktype = 'Done'
         imDraw.rectangle((0,0,self.width,self.height), fill="#fff")
