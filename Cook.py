@@ -36,18 +36,12 @@ class Cook:
 
         self.isCooking = True
 
-        await self.e.dispatch([
-            [self.e.display.cooking, self.item, self.top, self.bottom,
-                self.startTime, self.endTime, self.cooktype]
-        ])
-
     async def pause(self):
         try:
-            await asyncio.sleep(5)
             self.pauseTime = time.time()
             self.isPaused = True
 
-            self.e.log("Paused - " + str(int(self.pauseTime - self.startTime)))
+            self.e.log("Paused")
             return True
         except:
             return False
@@ -61,14 +55,9 @@ class Cook:
                 # steps
         try:
             self.startTime = time.time() -(self.pauseTime-self.startTime)
-            self.endTime = time.time() +(self.endTime-self.pauseTime)
+            self.endTime = self.endTime + (time.time()-self.pauseTime)
 
             self.isPaused = False
-
-            await self.e.dispatch([
-                [self.e.display.cooking, self.item, self.top, self.bottom,
-                    self.startTime, self.endTime, self.cooktype]
-            ])
 
             self.e.log("Resumed")
 
