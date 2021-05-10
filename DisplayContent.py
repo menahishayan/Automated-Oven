@@ -185,6 +185,7 @@ class DisplayContent:
             self.disp.image(image)
 
         self.e.cook.isCooking = False
+        self.e.cook.cooktype = 'Done'
         imDraw.rectangle((0,0,self.width,self.height), fill="#fff")
         text = 'Done'
         w, h = imDraw.textsize(text, font=font)
