@@ -14,10 +14,10 @@ class WebSocketServer(WebSocket):
         if req['msg'] == 'method':
             try:
                 self.sendMessage(getattr(self, req['method'])())
-            except:
+            except Exception as e:
                 res = {
                     'msg': 'error',
-                    'error': 'unrecognized method',
+                    'error': str(e),
                     'code': 501
                 }
                 self.sendMessage(json.dumps(res))

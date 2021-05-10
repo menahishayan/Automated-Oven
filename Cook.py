@@ -20,10 +20,10 @@ class Cook:
     async def start(self, item):
         # steps
         try:
-            self.top = self.df['Top'][item]
-            self.bottom = self.df['Bottom'][item]
-            self.endTime = time.process_time() + self.df['Time'][item]  # * 60
-            self.cooktype = self.df['Type'][item]
+            self.top = int(self.df['Top'][item])
+            self.bottom = int(self.df['Bottom'][item])
+            self.endTime = time.process_time() + float(self.df['Time'][item])  # * 60
+            self.cooktype = str(self.df['Type'][item])
 
             self.startTime = time.process_time()
 
@@ -81,10 +81,11 @@ class Cook:
             if self.isCooking == True:
                 if self.isPaused == False:
                     return {
+                        'item': self.item,
                         'top': self.top,
                         'bottom': self.bottom,
-                        'startTime': int(time.process_time() - self.startTime),
-                        'endTime': int(self.endTime - time.process_time()),
+                        'startTime': str(time.process_time() - self.startTime),
+                        'endTime': str(self.endTime - time.process_time()),
                         'cooktype': self.cooktype,
                         'isPaused': self.isPaused,
                         'isCooking': self.isCooking,
@@ -92,14 +93,15 @@ class Cook:
                     }
                 else:
                     return {
+                        'item': self.item,
                         'top': self.top,
                         'bottom': self.bottom,
-                        'startTime': int(time.process_time() - self.startTime),
-                        'endTime': int(self.endTime - time.process_time()),
+                        'startTime': time.process_time() - self.startTime,
+                        'endTime': self.endTime - time.process_time(),
                         'cooktype': self.cooktype,
                         'isPaused': self.isPaused,
                         'isCooking': self.isCooking,
-                        'pauseTime': int(time.process_time() - self.pauseTime),
+                        'pauseTime': time.process_time() - self.pauseTime,
                     }
             else:
                 return {
