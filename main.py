@@ -3,7 +3,7 @@ start = time.process_time()
 import EventHandler
 import asyncio
 
-__version__ = '0.7.0'
+__version__ = '0.7.4'
 
 async def startLoop():
     e = EventHandler.EventHandler()

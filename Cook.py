@@ -7,7 +7,7 @@ __version__ = '0.6.0'
 class Cook:
     def __init__(self, e):
         self.e = e
-        self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20, 'Cook'
+        self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 0, 'Cook'
         self.isPaused = False
         self.isCooking = False
         self.startTime, self.pauseTime = None, None
@@ -22,17 +22,16 @@ class Cook:
         try:
             self.top = int(self.df['Top'][item])
             self.bottom = int(self.df['Bottom'][item])
-            self.endTime = time.process_time() + float(self.df['Time'][item])  # * 60
+            self.endTime = time.time() + (int(self.df['Time'][item])  * 60)
             self.cooktype = str(self.df['Type'][item])
-
-            self.startTime = time.process_time()
+            self.startTime = time.time()
 
             self.item = item
 
         except Exception as e:
             self.e.err("Cook - Unknown Food")
             self.e.err(e)
-            self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20, 'Cook'
+            self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20 + time.time(), 'Cook'
 
 
         self.isCooking = True
@@ -45,7 +44,7 @@ class Cook:
     async def pause(self):
         try:
             await asyncio.sleep(5)
-            self.pauseTime = time.process_time()
+            self.pauseTime = time.time()
             self.isPaused = True
 
             self.e.log("Paused - " + str(int(self.pauseTime - self.startTime)))
@@ -61,8 +60,8 @@ class Cook:
     async def resume(self):
                 # steps
         try:
-            self.startTime = time.process_time() -(self.pauseTime-self.startTime)
-            self.endTime = time.process_time() +(self.endTime-self.pauseTime)
+            self.startTime = time.time() -(self.pauseTime-self.startTime)
+            self.endTime = time.time() +(self.endTime-self.pauseTime)
 
             self.isPaused = False
 
@@ -86,8 +85,8 @@ class Cook:
                         'item': self.item,
                         'top': self.top,
                         'bottom': self.bottom,
-                        'startTime': str(time.process_time() - self.startTime),
-                        'endTime': str(self.endTime - time.process_time()),
+                        'startTime': self.startTime,
+                        'endTime': self.endTime,
                         'cooktype': self.cooktype,
                         'isPaused': self.isPaused,
                         'isCooking': self.isCooking,
@@ -98,12 +97,12 @@ class Cook:
                         'item': self.item,
                         'top': self.top,
                         'bottom': self.bottom,
-                        'startTime': time.process_time() - self.startTime,
-                        'endTime': self.endTime - time.process_time(),
+                        'startTime': self.startTime,
+                        'endTime': self.endTime,
                         'cooktype': self.cooktype,
                         'isPaused': self.isPaused,
                         'isCooking': self.isCooking,
-                        'pauseTime': time.process_time() - self.pauseTime,
+                        'pauseTime': self.pauseTime,
                     }
             else:
                 return {

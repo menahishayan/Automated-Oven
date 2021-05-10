@@ -8,7 +8,7 @@ from adafruit_rgb_display.st7789 import ST7789
 from PIL import Image, ImageDraw, ImageFont
 from PIL.ImageOps import invert
 from aggdraw import Draw, Pen, Brush
-from time import process_time
+from time import time
 from math import floor
 
 class DisplayContent:
@@ -165,24 +165,27 @@ class DisplayContent:
                        
         image = Image.new("RGB", (self.width, self.height))
         imDraw = ImageDraw.Draw(image)
-        text = '{}\n00:00:{:02d}'.format(item, floor(end-process_time()))
-        w, h = imDraw.textsize(text, font=font)
+        try:
+            text = '{}\n{:02d}:{:02d}'.format(item, floor((end-time())/60),int(end-time())%60)
+            w, h = imDraw.textsize(text, font=font)
 
-        while floor(end-process_time()) > 0:
-            imDraw.rectangle((0,0,self.width,self.height), fill="#fff")
+            while floor(end-time()) > 0:
+                imDraw.rectangle((0,0,self.width,self.height), fill="#fff")
 
-            if self.e.cook.isPaused == True:
-                text = '{}\nPaused'.format(item)
-                w, h = imDraw.textsize(text, font=font)
+                if self.e.cook.isPaused == True:
+                    text = '{}\nPaused'.format(item)
+                    w, h = imDraw.textsize(text, font=font)
+                    imDraw.text(((self.width-w)/2, (self.height-h)/2),
+                                text, font=font, align="center", fill="#000")
+                    self.disp.image(image)
+                    return
+
+                text = '{}\n{:02d}:{:02d}'.format(item, floor((end-time())/60),int(end-time())%60)
                 imDraw.text(((self.width-w)/2, (self.height-h)/2),
-                            text, font=font, align="center", fill="#000")
+                                text, font=font, align="center", fill="#000")
                 self.disp.image(image)
-                return
-
-            text = '{}\n00:00:{:02d}'.format(item, floor(end-process_time()))
-            imDraw.text(((self.width-w)/2, (self.height-h)/2),
-                            text, font=font, align="center", fill="#000")
-            self.disp.image(image)
+        except Exception as e:
+            self.e.log(e)
 
         self.e.cook.isCooking = False
         self.e.cook.cooktype = 'Done'
