@@ -33,7 +33,6 @@ class Cook:
             self.e.err(e)
             self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20 + time.time(), 'Cook'
 
-
         self.isCooking = True
 
     async def pause(self):
@@ -45,11 +44,9 @@ class Cook:
             return True
         except:
             return False
-        # await self.e.dispatch([
-        #     [self.e.display.text, "{}\nPaused".format(self.item)]
-        # ])
-            # self.rods.setTop(top)
-            # self.rods.setBottom(bottom)
+    
+        # self.rods.setTop(top)
+        # self.rods.setBottom(bottom)
 
     async def resume(self):
                 # steps
@@ -66,7 +63,52 @@ class Cook:
             self.e.err(e)
             return False
 
-    def get(self):
+    async def stop(self):
+                # steps
+        try:
+            self.startTime = 0
+            self.endTime = 0
+            self.isPaused = False
+            self.isCooking = False
+
+            self.e.log("Stopped")
+
+            return True
+        except Exception as e:
+            self.e.err(e)
+            return False
+
+    async def setTopTemp(self, temp):
+                # steps
+        try:
+            self.top = int(temp)
+            return True
+        except Exception as e:
+            self.e.err(e)
+            return False
+
+    async def setBottomTemp(self, temp):
+                # steps
+        try:
+            self.bottom = int(temp)
+            return True
+        except Exception as e:
+            self.e.err(e)
+            return False
+
+    async def setTime(self, t):
+                # steps
+        try:
+            if self.startTime > 0 and self.isCooking == True:
+                self.endTime = self.startTime + int(t)
+                return True
+            else:
+                raise Exception("Cook.setTime is only supported during cooking")
+        except Exception as e:
+            self.e.err(e)
+            return False
+
+    async def get(self):
         try:
             if self.isCooking == True:
                 if self.isPaused == False:

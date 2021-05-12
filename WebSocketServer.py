@@ -21,6 +21,19 @@ class WebSocketServer(WebSocket):
                     'code': 501
                 }
                 self.sendMessage(json.dumps(res))
+        elif req['msg'] == 'direct':
+            try:
+                if 'params' in req:
+                    self.sendMessage(getattr(self, req['module'])(req['function'],*req['params']))
+                else:
+                    self.sendMessage(getattr(self, req['module'])(req['function']))
+            except Exception as e:
+                res = {
+                    'msg': 'error',
+                    'error': str(e),
+                    'code': 501
+                }
+                self.sendMessage(json.dumps(res))
         else:
             res = {
                 'msg': 'error',
@@ -56,36 +69,10 @@ class WebSocketServer(WebSocket):
         #     }
         return json.dumps(res)
 
-    def getCooking(self):
-        c = self.e.cook
-        # getData = c.get()
-        # self.e.log("getData: " + str(getData))
-        res = {
-            'msg': 'result',
-            'result': c.get()
-        }
-        return json.dumps(res)
-
-    def pauseCooking(self):
+    def cook(self, _fn, *params):
         try:
-            var = async_to_sync(self.e.cook.pause)()
-            self.e.log(var)
-            res = {
-                'msg': 'result',
-                # 'result': str(var).replace('\'','\"')
-                'result': var
-            }
-            return json.dumps(res)
-        except Exception as e:
-            res = {
-                'msg': 'result',
-                'result': str(e)
-            }
-            return json.dumps(res)
-
-    def resumeCooking(self):
-        try:
-            var = async_to_sync(self.e.cook.resume)()
+            fn = getattr(self.e.cook, _fn)
+            var = async_to_sync(fn)(*params)
             res = {
                 'msg': 'result',
                 'result': var
@@ -93,8 +80,8 @@ class WebSocketServer(WebSocket):
             return json.dumps(res)
         except Exception as e:
             res = {
-                'msg': 'result',
-                'result': str(e)
+                'msg': 'error',
+                'error': str(e)
             }
             return json.dumps(res)
             

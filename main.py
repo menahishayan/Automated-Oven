@@ -1,15 +1,17 @@
+#!/usr/bin/python3
+
 import time
-start = time.process_time()
+start = time.time()
 import EventHandler
 import asyncio
 
-__version__ = '0.8.3'
+__version__ = '0.8.7'
 
 async def startLoop():
     e = EventHandler.EventHandler()
     e.log(__version__)
     await e.init()
-    e.log(time.process_time()-start)
+    e.log(time.time()-start)
     await e.dispatch([[e.startDetectionLoop],[e.server.serveforever],[e.display.cookingListener]])
 
 
