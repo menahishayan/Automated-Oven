@@ -11,13 +11,14 @@ from aggdraw import Draw, Pen, Brush
 from time import time
 from math import floor
 
+
 class DisplayContent:
     def __init__(self, CS_PIN=CE0, DC_PIN=D24, RESET_PIN=D25):
         self.CS_PIN = CS_PIN
         self.DC_PIN = DC_PIN
         self.RESET_PIN = RESET_PIN
 
-    async def init(self,e):
+    async def init(self, e):
         self.e = e
 
         spi = SPI(clock=SCK, MOSI=MOSI, MISO=MISO)
@@ -41,17 +42,25 @@ class DisplayContent:
             self.width = self.disp.width
             self.height = self.disp.height
 
-        self.backlight = PWMOut(D22, frequency=1000, duty_cycle=32767)
+        self.backlight = PWMOut(D22, frequency=1000, duty_cycle=0)
 
         image = Image.new("RGB", (self.width, self.height))
 
         draw = ImageDraw.Draw(image)
 
         draw.rectangle((0, 0, self.width, self.height),
-                       outline=0, fill=(0, 0, 0))
+                       outline="#fff", fill="#fff")
 
-        image = invert(image)
         self.disp.image(image)
+        await self.setBacklight(50)
+
+        self.fonts = {
+            'timer': ImageFont.truetype('./fonts/SF-Compact-Display-Medium.ttf', 36),
+            'subtitle': ImageFont.truetype('./fonts/SF-Pro-Display-Regular.ttf', 16),
+            'alert': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 28),
+            'prompt': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 20),
+            'mini': ImageFont.truetype('./fonts/SF-Pro-Display-Regular.ttf', 14),
+        }
 
     async def path(self, path):
         image = Image.open(path)
@@ -81,37 +90,49 @@ class DisplayContent:
 
         draw = ImageDraw.Draw(image)
 
-        draw.rectangle((0, 0, self.width, self.height), outline=0, fill="#000")
+        draw.rectangle((0, 0, self.width, self.height), fill="#fff")
 
         text = text.capitalize()
-        font = ImageFont.truetype(
-            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18)
-        w, h = draw.textsize(text, font=font)
+        w, h = draw.textsize(text, font=self.fonts['prompt'])
         draw.text(((self.width-w)/2, (self.height-h)/2), text,
-                  font=font, align="center", fill="#fff")
+                  font=self.fonts['prompt'], align="center", fill="#000")
 
-        image = invert(image)
+        # image = invert(image)
         self.disp.image(image)
 
-    async def progress(self, percent, text=""):
+    async def alert(self, text):
         image = Image.new("RGB", (self.width, self.height))
 
         draw = ImageDraw.Draw(image)
 
-        draw.rectangle((0, 0, self.width, self.height), outline=0, fill="#000")
-        draw.rectangle((0, 0, int((percent * self.width) / 100),
-                       14), outline=0, fill="#fff")
+        draw.rectangle((0, 0, self.width, self.height), fill="#fff")
 
-        if len(text) > 0:
-            text = text.capitalize()
-            font = ImageFont.truetype(
-                '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18)
-            w, h = draw.textsize(text, font=font)
-            draw.text(((self.width-w)/2, (self.height-h)/2), text,
-                      font=font, align="center", fill="#fff")
+        text = text.capitalize()
+        w, h = draw.textsize(text, font=self.fonts['alert'])
+        draw.text(((self.width-w)/2, (self.height-h)/2), text,
+                  font=self.fonts['alert'], align="center", fill="#000")
+
+        # image = invert(image)
+        self.disp.image(image)
+
+    async def _progress(self, percent):
+        image = Image.new("RGB", (self.width, 12))
+
+        draw = ImageDraw.Draw(image)
+
+        # draw.rectangle((0, 0, self.width, self.height), outline=0, fill="#000")
+        draw.pieslice([(3, 3), (11, 11)], start=90, end=270, fill="#fff", outline="#fff")
+        draw.rectangle((5, 3, int((percent * (self.width-8)) / 100)+5, 11), outline="#fff", fill="#fff")
+
+        # if len(text) > 0:
+        #     text = text.capitalize()
+        #     w, h = draw.textsize(text, font=self.fonts['prompt'])
+        #     draw.text(((self.width-w)/2, (self.height-h)/2), text,
+        #               font=self.fonts['prompt'], align="center", fill="#fff")
 
         image = invert(image)
-        self.disp.image(image)
+        # self.disp.image(image)
+        return image
 
     async def circleProgress(self, percent, text=""):
         image = Image.new("RGB", (self.width, self.height))
@@ -127,11 +148,9 @@ class DisplayContent:
 
         if len(text) > 0:
             text = text.capitalize()
-            font = ImageFont.truetype(
-                '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18)
-            w, h = imDraw.textsize(text, font=font)
+            w, h = imDraw.textsize(text, font=self.fonts['prompt'])
             imDraw.text(((self.width-w)/2, (self.height-h)/2),
-                        text, font=font, align="center", fill="#fff")
+                        text, font=self.fonts['prompt'], align="center", fill="#fff")
 
         image = invert(image)
         self.disp.image(image)
@@ -148,13 +167,6 @@ class DisplayContent:
         draw.ellipse((100, 59, 110, 69), pen, brush)
 
         draw.flush()
-        # imDraw = ImageDraw.Draw(image)
-
-        # if len(text) > 0:
-        #     text = text.capitalize()
-        #     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18)
-        #     w, h = imDraw.textsize(text, font=font)
-        #     imDraw.text(((self.width-w)/2,(self.height-h)/2), text, font = font, align ="center", fill="#fff")
 
         image = invert(image)
         self.disp.image(image)
@@ -167,44 +179,86 @@ class DisplayContent:
                 await asyncio.sleep(1)
 
     async def cooking(self):
-        font = ImageFont.truetype(
-            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 18)
-                       
         image = Image.new("RGB", (self.width, self.height))
+
         imDraw = ImageDraw.Draw(image)
 
         item = self.e.cook.item
         end = self.e.cook.endTime
+        start = self.e.cook.startTime
+        top, bottom = '0','0'
 
         while floor(end-time()) > 0:
-            imDraw.rectangle((0,0,self.width,self.height), fill="#fff")
+            imDraw.rectangle((0, 0, self.width, self.height), fill="#fff")
+
+            if not top == '0' and not bottom == '0':
+                if not top == str(self.e.cook.top):
+                    await self.alert(str(self.e.cook.top))
+                    await asyncio.sleep(1)
+                elif not bottom == str(self.e.cook.bottom):
+                    await self.alert(str(self.e.cook.bottom))
+                    await asyncio.sleep(1)
+
+            top = str(self.e.cook.top)
+            bottom = str(self.e.cook.bottom)
+
+            imDraw.text((2, 16), top, font=self.fonts['subtitle'], align="center", fill="#000")
+            w_mini, h_mini = imDraw.textsize(bottom, font=self.fonts['subtitle'])
+            imDraw.text((self.width-w_mini-2, 16), bottom, font=self.fonts['subtitle'], align="center", fill="#000")
 
             if self.e.cook.isPaused == True:
-                text = '{}\nPaused'.format(item)
-                w, h = imDraw.textsize(text, font=font)
+                # textMain = 'Paused'
+                # textSub = '{}'.format(item)
+                # w_m, h_m = imDraw.textsize(textMain, font=self.fonts['alert'])
+                # w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
+
+                # imDraw.text(((self.width-w_m)/2, (self.height-h_m)/2), textMain, font=self.fonts['alert'], align="center", fill="#000")
+                # imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill="#000")
+                await self.path('./PauseScreen.jpg')
             else:
-                text = '{}\n{:02d}:{:02d}'.format(item, floor((end-time())/60),int(end-time())%60)
-                w, h = imDraw.textsize(text, font=font)
                 end = self.e.cook.endTime
 
-            imDraw.text(((self.width-w)/2, (self.height-h)/2),
-                        text, font=font, align="center", fill="#000")
+                image.paste(await self._progress(((time() - start) / (end - start))*100))
+                textMain = '{:02d}:{:02d}'.format(
+                    floor((end-time())/60), int(end-time()) % 60)
+                textSub = '{}'.format(item)
+                w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
+                w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
 
-            self.disp.image(image)
+                imDraw.text(((self.width-w_m)/2, (self.height-h_m)/2), textMain, font=self.fonts['timer'], align="center", fill="#000")
+                imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill="#000")
+
+
+                self.disp.image(image)
             await asyncio.sleep(1)
-       
+
         self.e.cook.isCooking = False
         self.e.cook.cooktype = 'Done'
-        imDraw.rectangle((0,0,self.width,self.height), fill="#fff")
-        text = 'Done'
-        w, h = imDraw.textsize(text, font=font)
-        imDraw.text(((self.width-w)/2, (self.height-h)/2),
-                    text, font=font, align="center", fill="#000")
+        # imDraw.rectangle((0, 0, self.width, self.height), fill="#fff")
+        # textMain = 'Done'
+        # w_m, h_m = imDraw.textsize(textMain, font=self.fonts['alert'])
+        # imDraw.text(((self.width-w_m)/2, (self.height-h_m)/2), textMain, font=self.fonts['alert'], align="center", fill="#000")
 
-        self.disp.image(image)
+        # self.disp.image(image)
+        await self.path('./DoneScreen.jpg')
+
 
     async def setBacklight(self, percent):
         self.backlight.duty_cycle = int(65535 * percent / 100)
 
     async def getBacklight(self):
         return int((self.backlight.duty_cycle * 100) / 65535)
+
+    # async def pause(self):
+    #     image = Image.open('Pause.jpg')
+
+    #     # draw = Draw(image)
+
+    #     # draw.Symbol("M124.8,0C55.9,0,0,55.9,0,124.8s55.9,124.8,124.8,124.8s124.8-55.9,124.8-124.8S193.8,0,124.8,0z M113.8,184H80.1V65.6h33.7V184z M169.6,184h-33.7V65.6h33.7V184z")
+
+    #     # draw.flush()
+
+    #     # return image
+    #     image = invert(image)
+    #     self.disp.image(image)
+    #     await asyncio.sleep(2)

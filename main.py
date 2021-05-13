@@ -5,7 +5,7 @@ start = time.time()
 import EventHandler
 import asyncio
 
-__version__ = '0.8.7'
+__version__ = '0.9.0'
 
 async def startLoop():
     e = EventHandler.EventHandler()
