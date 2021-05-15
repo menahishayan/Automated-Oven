@@ -31,7 +31,7 @@ class Detector:
     async def get_status(self):
         return self.model_loaded
 
-    async def load_model(self, model_path='/home/pi/keras1/models/v3.6/model-v3.6'):
+    async def load_model(self, model_path='/home/pi/keras/models/v3.6/model-v3.6'):
         try:
             json_file = open('{}.json'.format(model_path), 'r')
             loaded_model_json = json_file.read()

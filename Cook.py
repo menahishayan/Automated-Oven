@@ -7,7 +7,7 @@ __version__ = '0.6.0'
 class Cook:
     def __init__(self, e):
         self.e = e
-        self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 0, 'Cook'
+        self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 0, 0, 0, 'Cook'
         self.isPaused = False
         self.isCooking = False
         self.startTime, self.pauseTime = None, None

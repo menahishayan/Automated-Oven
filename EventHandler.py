@@ -7,6 +7,10 @@ import DisplayContent
 import Cook
 from SimpleWebSocketServer import SimpleWebSocketServer
 import WebSocketServer
+import Energy
+import History
+from os import kill, getpid
+from signal import SIGINT
 
 class EventHandler:
     def __init__(self):
@@ -22,6 +26,8 @@ class EventHandler:
         self.detector = DetectItem.Detector()
         self.server = SimpleWebSocketServer('', 8069, WebSocketServer.WebSocketServer,self)
         self.cook = Cook.Cook(self)
+        self.energy = Energy.Energy()
+        self.history = History.History()
 
     def log(self, msg):
         self.logging.info(msg)
@@ -50,9 +56,9 @@ class EventHandler:
 
             await self.dispatch([
                 [self.cook.start, res]
-                # [self.cook.pause]
             ])
         self.server.close()
+        kill(getpid(), SIGINT)
         exit()
 
 

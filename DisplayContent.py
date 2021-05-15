@@ -245,6 +245,7 @@ class DisplayContent:
 
     async def setBacklight(self, percent):
         self.backlight.duty_cycle = int(65535 * percent / 100)
+        return True
 
     async def getBacklight(self):
         return int((self.backlight.duty_cycle * 100) / 65535)
