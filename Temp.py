@@ -17,4 +17,4 @@ class Temp:
             self.value = 0
 
     def __str__(self):
-        return self.value
+        return str(self.value)
