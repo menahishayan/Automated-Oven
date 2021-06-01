@@ -11,7 +11,7 @@ import WebSocketServer
 import Energy
 import History
 from os import kill, getpid
-from signal import SIGINT
+import signal
 
 class EventHandler:
     def __init__(self):
@@ -20,7 +20,8 @@ class EventHandler:
                             datefmt="%H:%M:%S", filename='./logfile.log', filemode='w')
         logging.getLogger().addHandler(SysLogHandler(facility=SysLogHandler.LOG_DAEMON, address='/dev/log'))
 
-        logging.info('Start')
+        # logging.info('Start')
+        self._SIGKILL = False
 
         self.logging = logging
         self.display = DisplayContent.DisplayContent()
@@ -29,12 +30,17 @@ class EventHandler:
         self.cook = Cook.Cook(self)
         self.energy = Energy.Energy()
         self.history = History.History()
+        signal.signal(signal.SIGKILL, self.sig_handler)
 
     def log(self, msg):
         self.logging.info(msg)
 
     def err(self, msg):
         self.logging.error(msg)
+
+    def sig_handler(self,signum, stack):
+        self._SIGKILL = True
+        self.log("Recieved: "+ str(signum))
 
     def dispatchWorker(self, fn, *args):
         return asyncio.run(fn(*args))
@@ -45,7 +51,7 @@ class EventHandler:
             [self.cook.init]
         ])
 
-        while input("Proceed? (y/n) ") == 'y':
+        while not self._SIGKILL:
             tasks = await self.dispatch([
                 [self.display.loading],
                 [self.detector.detect],
@@ -59,7 +65,7 @@ class EventHandler:
                 [self.cook.start, res]
             ])
         self.server.close()
-        kill(getpid(), SIGINT)
+        # kill(getpid(), SIGINT)
         exit()
 
 

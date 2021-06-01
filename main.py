@@ -5,12 +5,12 @@ import EventHandler
 import time
 start = time.time()
 
-__version__ = '0.11.1'
+__version__ = '0.11.3'
 
 
 async def startLoop():
     e = EventHandler.EventHandler()
-    e.log(__version__)
+    e.log("Version: "+ __version__)
     await e.init()
     e.log(time.time()-start)
     await e.dispatch([
