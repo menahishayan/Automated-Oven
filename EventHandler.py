@@ -30,7 +30,9 @@ class EventHandler:
         self.cook = Cook.Cook(self)
         self.energy = Energy.Energy()
         self.history = History.History()
-        signal.signal(signal.SIGKILL, self.sig_handler)
+        signal.signal(signal.SIGTERM, self.sig_handler)
+        signal.signal(signal.SIGINT, self.sig_handler)
+        signal.signal(signal.SIGSTOP, self.sig_handler)
 
     def log(self, msg):
         self.logging.info(msg)
