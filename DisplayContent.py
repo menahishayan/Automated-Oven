@@ -97,7 +97,6 @@ class DisplayContent:
         draw.text(((self.width-w)/2, (self.height-h)/2), text,
                   font=self.fonts['prompt'], align="center", fill="#000")
 
-        # image = invert(image)
         self.disp.image(image)
 
     async def alert(self, text):
@@ -112,7 +111,6 @@ class DisplayContent:
         draw.text(((self.width-w)/2, (self.height-h)/2), text,
                   font=self.fonts['alert'], align="center", fill="#000")
 
-        # image = invert(image)
         self.disp.image(image)
 
     async def _progress(self, percent):
@@ -120,18 +118,10 @@ class DisplayContent:
 
         draw = ImageDraw.Draw(image)
 
-        # draw.rectangle((0, 0, self.width, self.height), outline=0, fill="#000")
         draw.pieslice([(3, 3), (11, 11)], start=90, end=270, fill="#fff", outline="#fff")
         draw.rectangle((5, 3, int((percent * (self.width-8)) / 100)+5, 11), outline="#fff", fill="#fff")
 
-        # if len(text) > 0:
-        #     text = text.capitalize()
-        #     w, h = draw.textsize(text, font=self.fonts['prompt'])
-        #     draw.text(((self.width-w)/2, (self.height-h)/2), text,
-        #               font=self.fonts['prompt'], align="center", fill="#fff")
-
         image = invert(image)
-        # self.disp.image(image)
         return image
 
     async def circleProgress(self, percent, text=""):
@@ -201,21 +191,22 @@ class DisplayContent:
                     await self.alert(str(self.e.cook.bottom))
                     await asyncio.sleep(1)
 
-            top = str(self.e.cook.top)
-            bottom = str(self.e.cook.bottom)
 
+            # Top
+            top = str(self.e.cook.top)
             imDraw.text((2, 16), top, font=self.fonts['subtitle'], align="center", fill="#000")
+
+            # Bottom
+            bottom = str(self.e.cook.bottom)
             w_mini, h_mini = imDraw.textsize(bottom, font=self.fonts['subtitle'])
             imDraw.text((self.width-w_mini-2, 16), bottom, font=self.fonts['subtitle'], align="center", fill="#000")
 
-            if self.e.cook.isPaused == True:
-                # textMain = 'Paused'
-                # textSub = '{}'.format(item)
-                # w_m, h_m = imDraw.textsize(textMain, font=self.fonts['alert'])
-                # w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
+            # Measured
+            overalltemp = str(await self.e.cook.temp.get())
+            w_mini, h_mini = imDraw.textsize(overalltemp, font=self.fonts['subtitle'])
+            imDraw.text(((self.width-w_mini)/2, 16), overalltemp, font=self.fonts['subtitle'], align="center", fill="#000")
 
-                # imDraw.text(((self.width-w_m)/2, (self.height-h_m)/2), textMain, font=self.fonts['alert'], align="center", fill="#000")
-                # imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill="#000")
+            if self.e.cook.isPaused == True:
                 await self.path('./PauseScreen.jpg')
             else:
                 end = self.e.cook.endTime
@@ -236,12 +227,7 @@ class DisplayContent:
 
         self.e.cook.isCooking = False
         self.e.cook.cooktype = 'Done'
-        # imDraw.rectangle((0, 0, self.width, self.height), fill="#fff")
-        # textMain = 'Done'
-        # w_m, h_m = imDraw.textsize(textMain, font=self.fonts['alert'])
-        # imDraw.text(((self.width-w_m)/2, (self.height-h_m)/2), textMain, font=self.fonts['alert'], align="center", fill="#000")
-
-        # self.disp.image(image)
+     
         if self.e._SIGKILL:
             await self.path('./PowerScreen.jpg')
         else:
@@ -253,17 +239,3 @@ class DisplayContent:
 
     async def getBacklight(self):
         return int((self.backlight.duty_cycle * 100) / 65535)
-
-    # async def pause(self):
-    #     image = Image.open('Pause.jpg')
-
-    #     # draw = Draw(image)
-
-    #     # draw.Symbol("M124.8,0C55.9,0,0,55.9,0,124.8s55.9,124.8,124.8,124.8s124.8-55.9,124.8-124.8S193.8,0,124.8,0z M113.8,184H80.1V65.6h33.7V184z M169.6,184h-33.7V65.6h33.7V184z")
-
-    #     # draw.flush()
-
-    #     # return image
-    #     image = invert(image)
-    #     self.disp.image(image)
-    #     await asyncio.sleep(2)

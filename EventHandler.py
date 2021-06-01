@@ -6,6 +6,7 @@ import asyncio
 import DetectItem
 import DisplayContent
 import Cook
+import Ultrasound
 from SimpleWebSocketServer import SimpleWebSocketServer
 import WebSocketServer
 import Energy
@@ -26,6 +27,7 @@ class EventHandler:
         self.logging = logging
         self.display = DisplayContent.DisplayContent()
         self.detector = DetectItem.Detector()
+        self.ultrasound = Ultrasound.Ultrasound()
         self.server = SimpleWebSocketServer('', 8069, WebSocketServer.WebSocketServer,self)
         self.cook = Cook.Cook(self)
         self.energy = Energy.Energy(self)
@@ -59,23 +61,24 @@ class EventHandler:
         ])
 
         while not self._SIGKILL:
-            tasks = await self.dispatch([
-                [self.display.loading],
-                [self.detector.detect],
-            ])
+            dist = await self.ultrasound.get()
 
-            res = tasks[1].result()
+            if dist < 16 and not self.cook.isCooking:
+                tasks = await self.dispatch([
+                    [self.display.loading],
+                    [self.detector.detect],
+                ])
 
-            self.log("Detection: " + res)
+                res = tasks[1].result()
 
-            await self.dispatch([
-                [self.cook.start, res]
-            ])
+                self.log("Detection: " + res)
 
-            while self.cook.isCooking:
-                await asyncio.sleep(1)
-                if self._SIGKILL:
-                    break
+                await self.dispatch([
+                    [self.cook.start, res]
+                ])
+
+            else:
+                await asyncio.sleep(0.5)
 
 
     async def dispatch(self, arrayOfDispatches):

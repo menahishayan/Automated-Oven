@@ -1,6 +1,6 @@
 from pandas import read_csv
 import time
-import asyncio
+import Temp
 
 class Cook:
     def __init__(self, e):
@@ -9,6 +9,7 @@ class Cook:
         self.isPaused = False
         self.isCooking = False
         self.startTime, self.pauseTime = None, None
+        self.temp = Temp.Temp()
 
     async def init(self, method='fixed'):
         if method == 'fixed':
