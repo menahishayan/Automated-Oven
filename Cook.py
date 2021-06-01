@@ -1,6 +1,6 @@
 from pandas import read_csv
 import time
-
+import RodControl
 class Cook:
     def __init__(self, e):
         self.e = e
@@ -8,6 +8,7 @@ class Cook:
         self.isPaused = False
         self.isCooking = False
         self.startTime, self.pauseTime = None, None
+        self.topRod = RodControl.RodControl(32)
 
     async def init(self, method='fixed'):
         if method == 'fixed':
@@ -24,6 +25,8 @@ class Cook:
             self.startTime = time.time()
 
             self.item = item
+
+            self.topRod.set(self.top)
 
         except Exception as e:
             self.e.err("Cook - Unknown Food")
@@ -42,7 +45,6 @@ class Cook:
         except:
             return False
     
-        # self.rods.setTop(top)
         # self.rods.setBottom(bottom)
 
     async def resume(self):
@@ -79,6 +81,7 @@ class Cook:
                 # steps
         try:
             self.top = int(temp)
+            self.topRod.set(self.top)
             return True
         except Exception as e:
             self.e.err(e)

@@ -1,4 +1,3 @@
-# import digitalio
 import pwmio
 from board import *
 import time
