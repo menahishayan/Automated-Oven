@@ -27,7 +27,7 @@ class Ultrasound:
 
         distance = (TimeElapsed * 34300) / 2
 
-        return distance
+        return int(distance)
 
     def __str__(self):
         return self.get()
