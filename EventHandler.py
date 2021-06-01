@@ -10,7 +10,6 @@ from SimpleWebSocketServer import SimpleWebSocketServer
 import WebSocketServer
 import Energy
 import History
-from os import kill, getpid
 import signal
 
 class EventHandler:

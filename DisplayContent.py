@@ -242,7 +242,8 @@ class DisplayContent:
         # imDraw.text(((self.width-w_m)/2, (self.height-h_m)/2), textMain, font=self.fonts['alert'], align="center", fill="#000")
 
         # self.disp.image(image)
-        await self.path('./DoneScreen.jpg')
+        if not self.e._SIGKILL:
+            await self.path('./DoneScreen.jpg')
 
 
     async def setBacklight(self, percent):
