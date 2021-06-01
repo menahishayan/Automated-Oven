@@ -1,8 +1,6 @@
 from pandas import read_csv
 import time
 import asyncio
-__version__ = '0.6.0'
-
 
 class Cook:
     def __init__(self, e):
