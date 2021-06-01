@@ -44,7 +44,8 @@ class EventHandler:
         self._SIGKILL = True
         self.log("Recieved: "+ str(signum))
         self.server.close()
-        # exit()
+        print("server closed")
+        exit()
 
     def dispatchWorker(self, fn, *args):
         return asyncio.run(fn(*args))
@@ -68,6 +69,13 @@ class EventHandler:
             await self.dispatch([
                 [self.cook.start, res]
             ])
+
+            while self.cook.isCooking:
+                await asyncio.sleep(1)
+                if self._SIGKILL:
+                    break
+
+        print("Sigkill - startDetectionLoop")
 
     async def dispatch(self, arrayOfDispatches):
         arrayOfFutures = []

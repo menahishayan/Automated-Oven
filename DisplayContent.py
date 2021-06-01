@@ -177,6 +177,7 @@ class DisplayContent:
                 await self.e.dispatch([[self.cooking]])
             else:
                 await asyncio.sleep(1)
+        print("Sigkill - cookingListener")
 
     async def cooking(self):
         image = Image.new("RGB", (self.width, self.height))
