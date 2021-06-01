@@ -202,12 +202,12 @@ class DisplayContent:
             imDraw.text((self.width-w_mini-2, 16), bottom, font=self.fonts['subtitle'], align="center", fill="#000")
 
             # Measured
-            try:
-                overalltemp = str(await self.e.cook.temp.get())
-            except:
-                overalltemp = 0
-            w_mini, h_mini = imDraw.textsize(overalltemp, font=self.fonts['subtitle'])
-            imDraw.text(((self.width-w_mini)/2, 16), overalltemp, font=self.fonts['subtitle'], align="center", fill="#000")
+            # try:
+            #     overalltemp = str(await self.e.cook.temp.get())
+            # except:
+            #     overalltemp = 0
+            # w_mini, h_mini = imDraw.textsize(overalltemp, font=self.fonts['subtitle'])
+            # imDraw.text(((self.width-w_mini)/2, 16), overalltemp, font=self.fonts['subtitle'], align="center", fill="#000")
 
             if self.e.cook.isPaused == True:
                 await self.path('./PauseScreen.jpg')
