@@ -14,7 +14,7 @@ class Temp:
         try:
             self.value = self.dhtDevice.temperature
         except: 
-            self.value = 0
+            return
 
     def __str__(self):
         return str(self.value)
