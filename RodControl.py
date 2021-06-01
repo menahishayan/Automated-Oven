@@ -2,7 +2,7 @@ import pwmio
 
 class RodControl:
     def __init__(self, pin, maxTemp):
-        self.pin = pwmio.PWMOut(pin, frequency=1000, duty_cycle=0)
+        self.pin = pwmio.PWMOut(pin, frequency=1, duty_cycle=2 ** 15, variable_frequency=True)
         self.maxTemp = int(maxTemp)
 
     def set(self, temp):
