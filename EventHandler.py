@@ -11,6 +11,7 @@ import WebSocketServer
 import Energy
 import History
 import signal
+from os import kill, getpid
 
 class EventHandler:
     def __init__(self):
@@ -44,6 +45,9 @@ class EventHandler:
         self.log("Event: Recieved " + str(signal.Signals(signum).name))
         self.server.close()
         exit()
+
+    def poweroff(self):
+        kill(getpid(), signal.SIGTERM)
 
     def dispatchWorker(self, fn, *args):
         return asyncio.run(fn(*args))
