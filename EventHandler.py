@@ -7,6 +7,7 @@ import DetectItem
 import DisplayContent
 import Cook
 import Ultrasound
+import Temp
 from SimpleWebSocketServer import SimpleWebSocketServer
 import WebSocketServer
 import Energy
@@ -28,6 +29,7 @@ class EventHandler:
         self.display = DisplayContent.DisplayContent()
         self.detector = DetectItem.Detector()
         self.ultrasound = Ultrasound.Ultrasound()
+        self.temp = Temp.Temp(self)
         self.server = SimpleWebSocketServer('', 8069, WebSocketServer.WebSocketServer,self)
         self.cook = Cook.Cook(self)
         self.energy = Energy.Energy(self)
@@ -61,6 +63,7 @@ class EventHandler:
         ])
 
         while not self._SIGKILL:
+            self.temp.update()
             if not self.cook.isCooking:
                 dist = await self.ultrasound.get()
                 self.log(dist)

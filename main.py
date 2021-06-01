@@ -7,7 +7,6 @@ start = time.process_time()
 
 __version__ = '0.12.0'
 
-
 async def startLoop():
     e = EventHandler.EventHandler()
     e.log("Version: "+ __version__)
@@ -20,6 +19,4 @@ async def startLoop():
         [e.energy.logEnergy]
     ])
 
-
-if __name__ == '__main__':
-    asyncio.run(startLoop())
+asyncio.run(startLoop())
