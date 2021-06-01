@@ -29,7 +29,7 @@ class EventHandler:
         self.display = DisplayContent.DisplayContent()
         self.detector = DetectItem.Detector()
         self.ultrasound = Ultrasound.Ultrasound()
-        self.temp = Temp.Temp(self)
+        self.temp = Temp.Temp()
         self.server = SimpleWebSocketServer('', 8069, WebSocketServer.WebSocketServer,self)
         self.cook = Cook.Cook(self)
         self.energy = Energy.Energy(self)
