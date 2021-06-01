@@ -6,7 +6,7 @@
         {
             "label": "Send to Pi",
             "type": "shell",
-            "command": "scp -r /Users/shayan/Desktop/Projects/Automated-Oven/OS/* pi@oven.local:~/OS/",
+            "command": "ssh pi@oven.local -p ./OS/update.sh",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
