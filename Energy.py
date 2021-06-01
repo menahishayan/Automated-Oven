@@ -6,8 +6,9 @@ from asyncio import sleep
 
 
 class Energy:
-    def __init__(self, dbPath='./EnergyDB.json'):
+    def __init__(self, e, dbPath='./EnergyDB.json'):
         self.path = dbPath
+        self.e = e
 
     async def add(self, entry):
         try:
@@ -36,7 +37,7 @@ class Energy:
         return db
 
     async def logEnergy(self):
-        while True:
+        while not self.e._SIGKILL:
             value = await self.getNow()
             await self.add(value/180) # 3600/20
             await sleep(20)

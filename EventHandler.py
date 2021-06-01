@@ -28,7 +28,7 @@ class EventHandler:
         self.detector = DetectItem.Detector()
         self.server = SimpleWebSocketServer('', 8069, WebSocketServer.WebSocketServer,self)
         self.cook = Cook.Cook(self)
-        self.energy = Energy.Energy()
+        self.energy = Energy.Energy(self)
         self.history = History.History()
         signal.signal(signal.SIGTERM, self.sig_handler)
         signal.signal(signal.SIGINT, self.sig_handler)
@@ -43,6 +43,8 @@ class EventHandler:
     def sig_handler(self,signum, stack):
         self._SIGKILL = True
         self.log("Recieved: "+ str(signum))
+        self.server.close()
+        # exit()
 
     def dispatchWorker(self, fn, *args):
         return asyncio.run(fn(*args))
@@ -66,10 +68,6 @@ class EventHandler:
             await self.dispatch([
                 [self.cook.start, res]
             ])
-        self.server.close()
-        # kill(getpid(), SIGINT)
-        exit()
-
 
     async def dispatch(self, arrayOfDispatches):
         arrayOfFutures = []

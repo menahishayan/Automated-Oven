@@ -172,7 +172,7 @@ class DisplayContent:
         self.disp.image(image)
 
     async def cookingListener(self):
-        while True:
+        while not self.e._SIGKILL:
             if self.e.cook.isCooking:
                 await self.e.dispatch([[self.cooking]])
             else:
