@@ -63,7 +63,8 @@ class EventHandler:
         while not self._SIGKILL:
             if not self.cook.isCooking:
                 dist = await self.ultrasound.get()
-                
+                self.log(dist)
+
                 if dist < 16:
                     tasks = await self.dispatch([
                         [self.display.loading],
