@@ -41,7 +41,6 @@ class Energy:
             value = await self.getNow()
             await self.add(value/180) # 3600/20
             await sleep(20)
-        print("Sigkill - logEnergy")
 
     async def getNow(self):
         return randint(0, 1350)

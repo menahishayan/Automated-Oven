@@ -42,9 +42,8 @@ class EventHandler:
 
     def sig_handler(self,signum, stack):
         self._SIGKILL = True
-        self.log("Recieved: "+ str(signum))
+        self.log("Recieved: "+ str(signal.Signals(signum).name))
         self.server.close()
-        print("server closed")
         exit()
 
     def dispatchWorker(self, fn, *args):
@@ -75,7 +74,6 @@ class EventHandler:
                 if self._SIGKILL:
                     break
 
-        print("Sigkill - startDetectionLoop")
 
     async def dispatch(self, arrayOfDispatches):
         arrayOfFutures = []

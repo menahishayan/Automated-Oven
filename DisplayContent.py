@@ -177,7 +177,6 @@ class DisplayContent:
                 await self.e.dispatch([[self.cooking]])
             else:
                 await asyncio.sleep(1)
-        print("Sigkill - cookingListener")
 
     async def cooking(self):
         image = Image.new("RGB", (self.width, self.height))
@@ -190,6 +189,8 @@ class DisplayContent:
         top, bottom = '0','0'
 
         while floor(end-time()) > 0:
+            if self.e._SIGKILL:
+                break
             imDraw.rectangle((0, 0, self.width, self.height), fill="#fff")
 
             if not top == '0' and not bottom == '0':
