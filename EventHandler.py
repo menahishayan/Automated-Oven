@@ -63,7 +63,7 @@ class EventHandler:
         ])
 
         while not self._SIGKILL:
-            self.temp.update()
+            await self.temp.update()
             if not self.cook.isCooking:
                 dist = await self.ultrasound.get()
                 self.log(dist)
