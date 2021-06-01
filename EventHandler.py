@@ -41,7 +41,7 @@ class EventHandler:
 
     def sig_handler(self,signum, stack):
         self._SIGKILL = True
-        self.log("Recieved: "+ str(signal.Signals(signum).name))
+        self.log("Event: Recieved " + str(signal.Signals(signum).name))
         self.server.close()
         exit()
 
@@ -62,7 +62,7 @@ class EventHandler:
 
             res = tasks[1].result()
 
-            self.log(res)
+            self.log("Detection: " + res)
 
             await self.dispatch([
                 [self.cook.start, res]

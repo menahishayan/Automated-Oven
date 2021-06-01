@@ -3,7 +3,7 @@
 import asyncio
 import EventHandler
 import time
-start = time.time()
+start = time.process_time()
 
 __version__ = '0.11.3'
 
@@ -12,7 +12,7 @@ async def startLoop():
     e = EventHandler.EventHandler()
     e.log("Version: "+ __version__)
     await e.init()
-    e.log(time.time()-start)
+    e.log("Load Time: " + str(time.process_time()-start))
     await e.dispatch([
         [e.startDetectionLoop],
         [e.server.serveforever],
