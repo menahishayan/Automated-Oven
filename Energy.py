@@ -42,7 +42,7 @@ class Energy:
             await sleep(20)
 
     async def getNow(self):
-        return randint(0, 350)
+        return randint(0, 1350)
 
     def __str__(self):
         return self.getAll()
