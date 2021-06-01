@@ -40,7 +40,7 @@ class Detector:
             loaded_model.load_weights("{}.h5".format(model_path))
 
             self.model = loaded_model
-            self.e.log("Model Loaded")
+            self.e.log("DetectionHandler: Model Loaded")
             self.model_loaded = True
         except:
             self.model_loaded = False
@@ -50,7 +50,7 @@ class Detector:
             self.camera = PiCamera()
             self.camera.resolution = (640, 480)
             self.camera.rotation = 180
-            self.e.log("Camera Loaded")
+            self.e.log("DetectionHandler: Camera Loaded")
 
         except Exception as e:
             self.e.err(e)
