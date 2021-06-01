@@ -40,7 +40,7 @@ class Cook:
             self.pauseTime = time.time()
             self.isPaused = True
 
-            self.e.log("Paused")
+            self.e.log("CookingHandler: Paused")
             return True
         except:
             return False
@@ -56,7 +56,7 @@ class Cook:
 
             self.isPaused = False
 
-            self.e.log("Resumed")
+            self.e.log("CookingHandler: Resumed")
 
             return True
         except Exception as e:
@@ -71,7 +71,7 @@ class Cook:
             self.isPaused = False
             self.isCooking = False
 
-            self.e.log("Stopped")
+            self.e.log("CookingHandler: Stopped")
 
             return True
         except Exception as e:
