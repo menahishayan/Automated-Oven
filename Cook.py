@@ -1,6 +1,8 @@
 from pandas import read_csv
 import time
 import RodControl
+from board import D12
+
 class Cook:
     def __init__(self, e):
         self.e = e
@@ -8,7 +10,7 @@ class Cook:
         self.isPaused = False
         self.isCooking = False
         self.startTime, self.pauseTime = None, None
-        self.topRod = RodControl.RodControl(32)
+        self.topRod = RodControl.RodControl(D12)
 
     async def init(self, method='fixed'):
         if method == 'fixed':
