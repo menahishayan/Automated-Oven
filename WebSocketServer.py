@@ -78,6 +78,24 @@ class WebSocketServer(WebSocket):
             }
             return json.dumps(res)
 
+    def automations(self, _fn, *params):
+        try:
+            fn = getattr(self.e.automations, _fn)
+            var = async_to_sync(fn)(*params)
+            res = {
+                'msg': 'result',
+                'req': str(_fn),
+                'result': var
+            }
+            return json.dumps(res)
+        except Exception as e:
+            res = {
+                'msg': 'error',
+                'req': str(_fn),
+                'error': str(e)
+            }
+            return json.dumps(res)
+
     def cook(self, _fn, *params):
         try:
             fn = getattr(self.e.cook, _fn)

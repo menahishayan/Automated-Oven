@@ -12,6 +12,7 @@ from SimpleWebSocketServer import SimpleWebSocketServer
 import WebSocketServer
 import Energy
 import History
+import Automations
 import signal
 from os import kill, getpid
 
@@ -34,6 +35,7 @@ class EventHandler:
         self.cook = Cook.Cook(self)
         self.energy = Energy.Energy(self)
         self.history = History.History()
+        self.automations = Automations.Automations()
         signal.signal(signal.SIGTERM, self.sig_handler)
         signal.signal(signal.SIGINT, self.sig_handler)
         # signal.signal(signal.SIGSTOP, self.sig_handler)
