@@ -1,3 +1,5 @@
-from playsound import playsound
+from pygame import mixer
 
-playsound('./CantinaBand3.wav')
+mixer.init()
+sound = mixer.Sound('CantinaBand3.wav')
+sound.play()
