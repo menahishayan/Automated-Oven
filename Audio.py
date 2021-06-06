@@ -1,3 +1,3 @@
 from playsound import playsound
 
-playsound('test-audio.mp3')
+playsound('./CantinaBand3.wav')
