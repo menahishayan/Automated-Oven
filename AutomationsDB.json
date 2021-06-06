@@ -1,10 +1,9 @@
-[
-  {
+{
+  "8af3d9" : {
     "name": "chicken",
     "createdBy": "Ruby",
     "creationDate": 1620975225,
     "lastUsed": 1620976225,
-    "id": "8af3d9",
     "steps": [
       {
         "type": "Preheat",
@@ -45,12 +44,11 @@
       }
     ]
   },
-  {
-    "name": "cake",
+  "8b52d9": {
+    "name": "Chocolate Cake",
     "createdBy": "Jon",
     "creationDate": 1620976225,
     "lastUsed": 1620977225,
-    "id": "8b52d9",
     "steps": [
       {
         "type": "Preheat",
@@ -90,4 +88,4 @@
       }
     ]
   }
-]
+}
