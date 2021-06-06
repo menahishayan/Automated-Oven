@@ -1,0 +1,91 @@
+{
+  "8af3d9" : {
+    "name": "chicken",
+    "createdBy": "Ruby",
+    "creationDate": 1620975225,
+    "lastUsed": 1620976225,
+    "steps": [
+      {
+        "type": "Preheat",
+        "temp": 100
+      },
+      {
+        "type": "Cook",
+        "topTemp": 170,
+        "bottomTemp": 0,
+        "time": 30
+      },
+      {
+        "type": "Checkpoint",
+        "wait": true,
+        "timeout": 30
+      },
+
+      {
+        "type": "Cook",
+        "topTemp": 0,
+        "bottomTemp": 160,
+        "time": 30
+      },
+      {
+        "type": "Notify",
+        "destination": [
+          "person 1",
+          "person 2",
+          "person 3",
+          "google home",
+          "192.168.0.6"
+        ],
+        "title": "title",
+        "message": "test msg1"
+      },
+      {
+        "type": "Power Off"
+      }
+    ]
+  },
+  "8b52d9": {
+    "name": "Chocolate Cake",
+    "createdBy": "Jon",
+    "creationDate": 1620976225,
+    "lastUsed": 1620977225,
+    "steps": [
+      {
+        "type": "Preheat",
+        "temp": 90
+      },
+      {
+        "type": "Cook",
+        "topTemp": 170,
+        "bottomTemp": 0,
+        "time": 30
+      },
+
+      {
+        "type": "Checkpoint",
+        "wait": true,
+        "timeout": 30
+      },
+      {
+        "type": "Cook",
+        "topTemp": 0,
+        "bottomTemp": 160,
+        "time": 10
+      },
+      {
+        "type": "Notify",
+        "destination": ["John", "Bob", "Tom", "Alexa"],
+        "title": "Cooking Complete",
+        "message": "Pizza is done Cooking"
+      },
+      {
+        "type": "Cooling",
+        "duration": 10
+      },
+
+      {
+        "type": "PowerOff"
+      }
+    ]
+  }
+}
