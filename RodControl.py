@@ -8,7 +8,7 @@ class RodControl:
         self.pin = PWMOut(pin, duty_cycle=0, frequency=10)
         self.maxTemp = int(maxTemp)
         self.e = e
-        self.currentTemp = e.temp
+        self.currentTemp = int(e.temp)
         self.e.log("RodControl: Init {}".format(self.currentTemp))
 
     async def sleep(self,duration,cool=False):
@@ -55,9 +55,8 @@ class RodControl:
             self.e.log("ThermodynamicsDebugging: Cooling {} to {} in {0:.1f} s".format(self.currentTemp,temp,coolingTime))
             await sleep(coolingTime)
 
-
     def getTemp(self):
         return round(self.currentTemp)
 
     def __str__(self):
-        return str(self.get())
+        return str(self.getTemp())
