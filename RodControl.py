@@ -27,7 +27,7 @@ class RodControl:
                 if self.currentTemp == self.e.cook.top:
                     await self.sleep((self.currentTemp * 0.137)-8.93)
                     self.pin.duty_cycle = 2 ** 15
-                    await self.sleep((self.currentTemp * -0.07)+19.42,True)
+                    await self.sleep((self.currentTemp * -0.07)+19.42,cool=True)
                     self.pin.duty_cycle = 0
             else:
                 await sleep(1)
@@ -48,7 +48,7 @@ class RodControl:
                 self.pin.duty_cycle = 2 ** 15
                 heatTime = (diff*0.36) - 8.13
                 self.e.log("ThermodynamicsDebugger: Heating {} to {} in {} s".format(self.currentTemp,temp,heatTime))
-                await sleep(heatTime)
+                await self.sleep(heatTime)
                 self.pin.duty_cycle = 0
                 # self.currentTemp = temp
                 # await self.e.dispatch([[self.cooking]])
@@ -56,7 +56,7 @@ class RodControl:
                 self.pin.duty_cycle = 0
                 coolingTime = (log(self.currentTemp - 28) - log(temp - 28))/0.008
                 self.e.log("ThermodynamicsDebugger: Cooling {} to {} in {} s".format(self.currentTemp,temp,coolingTime))
-                await sleep(coolingTime)
+                await self.sleep(coolingTime, cool=True)
         except Exception as e:
             self.e.err("error: setTemp: " + e)
 
