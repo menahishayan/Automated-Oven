@@ -27,6 +27,8 @@ class Cook:
             self.startTime = time.time()
 
             self.item = item
+            
+            self.isCooking = True
 
             await self.e.dispatch([[self.topRod.setTemp,self.top]])
 
@@ -35,7 +37,6 @@ class Cook:
             self.e.err(e)
             self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20 + time.time(), 'Cook'
 
-        self.isCooking = True
 
     async def pause(self):
         try:

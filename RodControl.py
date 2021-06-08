@@ -33,29 +33,32 @@ class RodControl:
                 await sleep(1)
 
     async def setTemp(self, temp):
-        if temp == 0:
-            self.pin.duty_cycle = 0
-            return
-        elif temp > self.maxTemp:
-            temp = self.maxTemp
+        try:
+            if temp == 0:
+                self.pin.duty_cycle = 0
+                return
+            elif temp > self.maxTemp:
+                temp = self.maxTemp
 
-        diff = temp - self.currentTemp
+            diff = temp - self.currentTemp
 
-        if diff == 0:
-            return
-        elif diff > 0:
-            self.pin.duty_cycle = 2 ** 15
-            heatTime = (diff*0.36) - 8.13
-            self.e.log("ThermodynamicsDebugger: Heating {} to {} in {} s".format(self.currentTemp,temp,heatTime))
-            await sleep(heatTime)
-            self.pin.duty_cycle = 0
-            # self.currentTemp = temp
-            # await self.e.dispatch([[self.cooking]])
-        else:
-            self.pin.duty_cycle = 0
-            coolingTime = (log(self.currentTemp - 28) - log(temp - 28))/0.008
-            self.e.log("ThermodynamicsDebugger: Cooling {} to {} in {} s".format(self.currentTemp,temp,coolingTime))
-            await sleep(coolingTime)
+            if diff == 0:
+                return
+            elif diff > 0:
+                self.pin.duty_cycle = 2 ** 15
+                heatTime = (diff*0.36) - 8.13
+                self.e.log("ThermodynamicsDebugger: Heating {} to {} in {} s".format(self.currentTemp,temp,heatTime))
+                await sleep(heatTime)
+                self.pin.duty_cycle = 0
+                # self.currentTemp = temp
+                # await self.e.dispatch([[self.cooking]])
+            else:
+                self.pin.duty_cycle = 0
+                coolingTime = (log(self.currentTemp - 28) - log(temp - 28))/0.008
+                self.e.log("ThermodynamicsDebugger: Cooling {} to {} in {} s".format(self.currentTemp,temp,coolingTime))
+                await sleep(coolingTime)
+        except Exception as e:
+            self.e.err("error: setTemp: " + e)
 
     def getTemp(self):
         return round(self.currentTemp)
