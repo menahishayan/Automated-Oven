@@ -28,7 +28,7 @@ class Cook:
 
             self.item = item
 
-            self.e.dispatch[[self.topRod.set,self.top]]
+            self.e.dispatch([[self.topRod.set,self.top]])
 
         except Exception as e:
             self.e.err("Cook - Unknown Food")
