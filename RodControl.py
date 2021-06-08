@@ -14,7 +14,7 @@ class RodControl:
     async def sleep(self,duration,cool=False):
         start = time()
         while(time() <= start+duration):
-            self.e.log("ThermodynamicsDebugging: Current temp {0:.1f} at {0:.1f} s elapsed".format(self.currentTemp,time()-start))
+            self.e.log("ThermodynamicsDebugging: Current temp {} at {} s elapsed".format(self.currentTemp,time()-start))
             await sleep(0.5)
             if not cool:
                 self.currentTemp = ((time()-start)+8.93)/0.137
@@ -37,14 +37,14 @@ class RodControl:
 
         diff = temp - self.currentTemp
 
-        self.e.log("ThermodynamicsDebugging: Required {} from {}".format(self.currentTemp,temp))
+        self.e.log("ThermodynamicsDebugging: Required {} from {}".format(temp,self.currentTemp))
 
         if diff == 0:
             return
         elif diff > 0:
             self.pin.duty_cycle = 2 ** 15
             heatTime = (diff*0.36) - 8.13
-            self.e.log("ThermodynamicsDebugging: Heating {} to {} in {0:.1f} s".format(self.currentTemp,temp,heatTime))
+            self.e.log("ThermodynamicsDebugging: Heating {} to {} in {} s".format(self.currentTemp,temp,heatTime))
             await sleep(heatTime)
             self.pin.duty_cycle = 0
             # self.currentTemp = temp
@@ -52,7 +52,7 @@ class RodControl:
         else:
             self.pin.duty_cycle = 0
             coolingTime = (log(self.currentTemp - 28) - log(temp - 28))/0.008
-            self.e.log("ThermodynamicsDebugging: Cooling {} to {} in {0:.1f} s".format(self.currentTemp,temp,coolingTime))
+            self.e.log("ThermodynamicsDebugging: Cooling {} to {} in {} s".format(self.currentTemp,temp,coolingTime))
             await sleep(coolingTime)
 
     def getTemp(self):

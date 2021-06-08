@@ -7,8 +7,8 @@ from asyncio import sleep
 class Temp:
     def __init__(self):
         self.PIN = D2
-        self.value = 0
         self.dhtDevice = adafruit_dht.DHT11(self.PIN, use_pulseio=False)
+        self.value = self.dhtDevice.temperature
 
     async def update(self):
         try:
