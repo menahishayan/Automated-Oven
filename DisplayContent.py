@@ -210,7 +210,7 @@ class DisplayContent:
                 self.e.err("error: " + e)
 
             if self.e.cook.isPaused == True:
-                await self.path('./PauseScreen.jpg')
+                await self.path('./images/PauseScreen.jpg')
             else:
                 end = self.e.cook.endTime
 
@@ -232,9 +232,9 @@ class DisplayContent:
         self.e.cook.cooktype = 'Done'
      
         if self.e._SIGKILL:
-            await self.path('./PowerScreen.jpg')
+            await self.path('./images/PowerScreen.jpg')
         else:
-            await self.path('./DoneScreen.jpg')
+            await self.path('./images/DoneScreen.jpg')
 
     async def setBacklight(self, percent):
         self.backlight.duty_cycle = int(65535 * percent / 100)

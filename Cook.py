@@ -10,7 +10,7 @@ class Cook:
         self.isPaused = False
         self.isCooking = False
         self.startTime, self.pauseTime = None, None
-        self.topRod = RodControl.RodControl(D12)
+        self.topRod = RodControl.RodControl(D12,e)
 
     async def init(self, method='fixed'):
         if method == 'fixed':
@@ -28,7 +28,7 @@ class Cook:
 
             self.item = item
 
-            self.topRod.set(self.top)
+            self.e.dispatch[[self.topRod.set,self.top]]
 
         except Exception as e:
             self.e.err("Cook - Unknown Food")

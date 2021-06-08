@@ -13,6 +13,7 @@ import WebSocketServer
 import Energy
 import History
 import Automations
+import Audio
 import signal
 from os import kill, getpid
 
@@ -35,6 +36,7 @@ class EventHandler:
         self.cook = Cook.Cook(self)
         self.energy = Energy.Energy(self)
         self.history = History.History()
+        self.audio = Audio.Audio()
         self.automations = Automations.Automations()
         signal.signal(signal.SIGTERM, self.sig_handler)
         signal.signal(signal.SIGINT, self.sig_handler)

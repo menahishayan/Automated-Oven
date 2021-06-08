@@ -7,7 +7,6 @@ from asgiref.sync import async_to_sync
 class WebSocketServer(WebSocket):
     def init(self,e):
         self.e = e
-        # print(self.e)
 
     def handleMessage(self):
         req = json.loads(self.data)
@@ -117,6 +116,24 @@ class WebSocketServer(WebSocket):
     def display(self, _fn, *params):
         try:
             fn = getattr(self.e.display, _fn)
+            var = async_to_sync(fn)(*params)
+            res = {
+                'msg': 'result',
+                'req': str(_fn),
+                'result': var
+            }
+            return json.dumps(res)
+        except Exception as e:
+            res = {
+                'msg': 'error',
+                'req': str(_fn),
+                'error': str(e)
+            }
+            return json.dumps(res)
+
+    def audio(self, _fn, *params):
+        try:
+            fn = getattr(self.e.audio, _fn)
             var = async_to_sync(fn)(*params)
             res = {
                 'msg': 'result',
