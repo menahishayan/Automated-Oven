@@ -28,7 +28,7 @@ class RodControl:
             await self.sleep((self.currentTemp * -0.07)+19.42,True)
             self.pin.duty_cycle = 0
 
-    async def set(self, temp):
+    async def setTemp(self, temp):
         if temp == 0:
             self.pin.duty_cycle = 0
             return
@@ -56,7 +56,7 @@ class RodControl:
             await sleep(coolingTime)
 
 
-    def get(self):
+    def getTemp(self):
         return round(self.currentTemp)
 
     def __str__(self):
