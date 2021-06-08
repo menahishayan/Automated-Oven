@@ -14,8 +14,8 @@ class RodControl:
     async def sleep(self,duration,cool=False):
         start = time()
         while(time() <= start+duration):
-            self.e.log("ThermodynamicsDebugger: Current temp {} at {} s elapsed".format(self.currentTemp,time()-start))
-            await sleep(0.5)
+            await sleep(1)
+            self.e.log("ThermodynamicsDebugger: Current temp {} at {} s elapsed".format(int(self.currentTemp),int(time()-start)))
             if not cool:
                 self.currentTemp = ((time()-start)+8.93)/0.137
             else:
@@ -55,7 +55,7 @@ class RodControl:
             else:
                 self.pin.duty_cycle = 0
                 coolingTime = (log(self.currentTemp - 28) - log(temp - 28))/0.008
-                self.e.log("ThermodynamicsDebugger: Cooling {} to {} in {} s".format(self.currentTemp,temp,coolingTime))
+                self.e.log("ThermodynamicsDebugger: Cooling {} to {} in {} s".format(self.currentTemp,temp,int(coolingTime)))
                 await self.sleep(coolingTime, cool=True)
         except Exception as e:
             self.e.err("error: setTemp: " + e)
