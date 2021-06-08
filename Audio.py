@@ -3,11 +3,11 @@ from subprocess import PIPE, run
 
 class Audio:
     def __init__(self):
-        self.volume = self.readVolume()
+        self.volume = int(self.readVolume())
 
     def readVolume(self):
         result = run("awk -F\"[][]\" '/dB/ { print $2 }' <(amixer -M sget Headphone)", stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
-        return int(result.stdout.split(-1))
+        return result.stdout.split(-1)
 
     def getVolume(self):
         return self.volume
