@@ -14,7 +14,7 @@ class RodControl:
     async def sleep(self,duration,cool=False):
         start = time()
         while(time() <= start+duration):
-            self.e.log("ThermodynamicsDebugging: Current temp {} at {} s elapsed".format(self.currentTemp,time()-start))
+            self.e.log("ThermodynamicsDebugger: Current temp {} at {} s elapsed".format(self.currentTemp,time()-start))
             await sleep(0.5)
             if not cool:
                 self.currentTemp = ((time()-start)+8.93)/0.137
@@ -22,11 +22,15 @@ class RodControl:
                 self.currentTemp = ((time()-start)-19.42)/-0.07
 
     async def cooking(self):
-        while self.e.cook.isCooking and not self.e.cook.isPaused:
-            await self.sleep((self.currentTemp * 0.137)-8.93)
-            self.pin.duty_cycle = 2 ** 15
-            await self.sleep((self.currentTemp * -0.07)+19.42,True)
-            self.pin.duty_cycle = 0
+        while not self.e._SIGKILL:
+            if self.e.cook.isCooking and not self.e.cook.isPaused:
+                if self.currentTemp == self.e.cook.top:
+                    await self.sleep((self.currentTemp * 0.137)-8.93)
+                    self.pin.duty_cycle = 2 ** 15
+                    await self.sleep((self.currentTemp * -0.07)+19.42,True)
+                    self.pin.duty_cycle = 0
+            else:
+                await sleep(1)
 
     async def setTemp(self, temp):
         if temp == 0:
@@ -42,15 +46,15 @@ class RodControl:
         elif diff > 0:
             self.pin.duty_cycle = 2 ** 15
             heatTime = (diff*0.36) - 8.13
-            self.e.log("ThermodynamicsDebugging: Heating {} to {} in {} s".format(self.currentTemp,temp,heatTime))
+            self.e.log("ThermodynamicsDebugger: Heating {} to {} in {} s".format(self.currentTemp,temp,heatTime))
             await sleep(heatTime)
             self.pin.duty_cycle = 0
             # self.currentTemp = temp
-            self.e.dispatch([[self.cooking]])
+            # await self.e.dispatch([[self.cooking]])
         else:
             self.pin.duty_cycle = 0
             coolingTime = (log(self.currentTemp - 28) - log(temp - 28))/0.008
-            self.e.log("ThermodynamicsDebugging: Cooling {} to {} in {} s".format(self.currentTemp,temp,coolingTime))
+            self.e.log("ThermodynamicsDebugger: Cooling {} to {} in {} s".format(self.currentTemp,temp,coolingTime))
             await sleep(coolingTime)
 
     def getTemp(self):

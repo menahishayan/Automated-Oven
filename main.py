@@ -16,7 +16,8 @@ async def startLoop():
         [e.startDetectionLoop],
         [e.server.serveforever],
         [e.display.cookingListener],
-        [e.energy.logEnergy]
+        [e.cook.topRod.cooking]
     ])
+        # [e.energy.logEnergy]
 
 asyncio.run(startLoop())
