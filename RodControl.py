@@ -37,8 +37,6 @@ class RodControl:
 
         diff = temp - self.currentTemp
 
-        self.e.log("ThermodynamicsDebugging: Required {} from {}".format(temp,self.currentTemp))
-
         if diff == 0:
             return
         elif diff > 0:

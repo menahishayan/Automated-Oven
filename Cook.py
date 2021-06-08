@@ -83,7 +83,7 @@ class Cook:
                 # steps
         try:
             self.top = int(temp)
-            self.topRod.set(self.top)
+            await self.e.dispatch([[self.topRod.setTemp,self.top]])
             return True
         except Exception as e:
             self.e.err(e)
