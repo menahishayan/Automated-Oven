@@ -9,6 +9,7 @@ class RodControl:
         self.maxTemp = int(maxTemp)
         self.e = e
         self.currentTemp = e.temp
+        self.e.log("RodControl: Init {}".format(self.currentTemp))
 
     async def sleep(self,duration,cool=False):
         start = time()
