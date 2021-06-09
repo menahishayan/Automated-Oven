@@ -48,7 +48,7 @@ class RodControl:
 
             await sleep(1)
             if not cool:
-                self.currentTemp = self.heatingTemp(time()-start)
+                self.currentTemp = self.heatingTemp(1)
             else:
                 self.currentTemp = self.coolingTemp(1)
 
