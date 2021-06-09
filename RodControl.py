@@ -1,67 +1,104 @@
-from pwmio import PWMOut
+from digitalio import DigitalInOut, Direction
 from asyncio import sleep
 from time import time
-from math import log
+from math import log, exp
 
 class RodControl:
     def __init__(self, pin, e, maxTemp=250):
-        self.pin = PWMOut(pin, duty_cycle=0, frequency=10)
+        self.pin = DigitalInOut(pin)
+        self.pin.direction = Direction.OUTPUT 
+
         self.maxTemp = int(maxTemp)
         self.e = e
         self.currentTemp = int(e.temp)
-        self.e.log("RodControl: Init {}".format(self.currentTemp))
+        self.surroundingTemp = int(e.temp)
 
-    async def sleep(self,duration,cool=False):
+        self.isPreheating = False
+        self.isSustaining = False
+
+        self.SIGKILLPREHEAT = False
+        self.SIGKILLSUSTAIN = False
+
+    def round10(self,num):
+        return round(num/10)*10
+
+    def heatingTime(self,temp):
+        return self.round10((0.36*(temp-self.currentTemp)) - 0.626)
+
+    def coolingTime(self,temp):
+        return self.round10(log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008)
+
+    def heatingTemp(self,time):
+        return self.round10((time +0.626)/0.36)
+
+    def coolingTemp(self,time):
+        return self.round10(self.surroundingTemp + (self.currentTemp - self.surroundingTemp)*exp(-0.008*time))
+
+    async def sleep(self,time,preheat, cool=False):
         start = time()
-        while(time() <= start+duration):
+        while time()-start < time:
+            if self.SIGKILLPREHEAT or self.SIGKILLSUSTAIN or self.e._SIGKILL:
+                if preheat:
+                    self.isPreheating = False
+                else:
+                    self.isSustaining = False
+                self.SIGKILLPREHEAT = self.SIGKILLSUSTAIN = False
+                break
             await sleep(1)
-            self.e.log("ThermodynamicsDebugger: Current temp {} at {} s elapsed".format(int(self.currentTemp),int(time()-start)))
             if not cool:
-                self.currentTemp = ((time()-start)+8.93)/0.137
+                self.currentTemp += self.heatingTemp(time()-start)
             else:
-                self.currentTemp = ((time()-start)-19.42)/-0.07
+                self.currentTemp += self.coolingTemp(time()-start)
 
-    async def cooking(self):
-        while not self.e._SIGKILL:
-            if self.e.cook.isCooking and not self.e.cook.isPaused:
-                if self.currentTemp == self.e.cook.top:
-                    await self.sleep((self.currentTemp * 0.137)-8.93)
-                    self.pin.duty_cycle = 2 ** 15
-                    await self.sleep((self.currentTemp * -0.07)+19.42,cool=True)
-                    self.pin.duty_cycle = 0
-            else:
-                await sleep(1)
+    async def heat(self,temp,preheat=False):
+        self.pin.value = True
+        await self.sleep(self.heatingTime(temp),preheat=preheat)
+        self.pin.value = False
 
-    async def setTemp(self, temp):
-        try:
-            if temp == 0:
-                self.pin.duty_cycle = 0
-                return
-            elif temp > self.maxTemp:
-                temp = self.maxTemp
+    async def cool(self,temp,preheat=False):
+        self.pin.value = False
+        await self.sleep(self.coolingTime(temp),cool=True,preheat=preheat)
 
-            diff = temp - self.currentTemp
+    async def reachTemp(self,temp):
+        if self.isSustaining:
+            self.SIGKILLSUSTAIN = True
+            await sleep(1)
+        elif self.isPreheating:
+            self.SIGKILLPREHEAT = True
+            await sleep(1)
 
-            if diff == 0:
-                return
-            elif diff > 0:
-                self.pin.duty_cycle = 2 ** 15
-                heatTime = (diff*0.36) - 8.13
-                self.e.log("ThermodynamicsDebugger: Heating {} to {} in {} s".format(self.currentTemp,temp,heatTime))
-                await self.sleep(heatTime)
-                self.pin.duty_cycle = 0
-                # self.currentTemp = temp
-                # await self.e.dispatch([[self.cooking]])
-            else:
-                self.pin.duty_cycle = 0
-                coolingTime = (log(self.currentTemp - 28) - log(temp - 28))/0.008
-                self.e.log("ThermodynamicsDebugger: Cooling {} to {} in {} s".format(self.currentTemp,temp,int(coolingTime)))
-                await self.sleep(coolingTime, cool=True)
-        except Exception as e:
-            self.e.err("error: setTemp: " + e)
+        self.isPreheating = True
 
-    def getTemp(self):
-        return round(self.currentTemp)
+        if temp > self.currentTemp:
+            await self.heat(temp,preheat=True)
+
+        elif temp < self.currentTemp:
+            await self.cool(temp,preheat=True)
+
+        self.isPreheating = False
+        await self.e.dispatch([[self.sustainTemp,temp]])
+
+    async def sustainTemp(self,temp):
+        if self.isSustaining:
+            self.SIGKILLSUSTAIN = True
+            await sleep(1)
+        elif self.isPreheating:
+            self.SIGKILLPREHEAT = True
+            await sleep(1)
+
+        self.isSustaining = True
+
+        while not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
+            if self.currentTemp >= temp:
+                await self.cool(temp-8)
+            elif self.currentTemp < temp:
+                await self.heat(temp)
+
+        self.isSustaining = False
+        self.SIGKILLSUSTAIN = False
+
+    def get(self):
+        return self.round10(self.currentTemp)
 
     def __str__(self):
-        return str(self.getTemp())
+        return str(self.get())

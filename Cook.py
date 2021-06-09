@@ -27,10 +27,10 @@ class Cook:
             self.startTime = time.time()
 
             self.item = item
-            
+
             self.isCooking = True
 
-            await self.e.dispatch([[self.topRod.setTemp,self.top]])
+            await self.e.dispatch([[self.topRod.reachTemp,self.top]])
 
         except Exception as e:
             # self.e.err("Cook - Unknown Food")
@@ -84,7 +84,7 @@ class Cook:
                 # steps
         try:
             self.top = int(temp)
-            await self.e.dispatch([[self.topRod.setTemp,self.top]])
+            await self.e.dispatch([[self.topRod.reachTemp,self.top]])
             return True
         except Exception as e:
             self.e.err(e)
