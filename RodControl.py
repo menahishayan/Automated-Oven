@@ -23,10 +23,10 @@ class RodControl:
         return round(num/10)*10
 
     def heatingTime(self,temp):
-        return self.round10((0.36*(temp-self.currentTemp)) - 0.626)
+        return round((0.36*(temp-self.currentTemp)) - 0.626)
 
     def coolingTime(self,temp):
-        return self.round10(log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008)
+        return round(log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008)
 
     def heatingTemp(self,_time):
         return round((_time +0.626)/0.36)
