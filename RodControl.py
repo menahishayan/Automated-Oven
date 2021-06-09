@@ -53,6 +53,8 @@ class RodControl:
             else:
                 self.currentTemp = self.coolingTemp(time()-start)
 
+        self.e.log("ThermodynamicsDebugger: Sleep Done: {}".format(round(time()-start)))
+
     async def heat(self,temp,preheat=False):
         self.pin.value = True
         await self.sleep(self.heatingTime(temp),preheat=preheat)
@@ -76,12 +78,14 @@ class RodControl:
 
         if temp > self.currentTemp:
             await self.heat(temp,preheat=True)
+            self.e.log("ThermodynamicsDebugger: Heat Done")
 
         elif temp < self.currentTemp:
             await self.cool(temp,preheat=True)
 
         self.isPreheating = False
         await self.e.dispatch([[self.sustainTemp,temp]])
+        self.e.log("ThermodynamicsDebugger: isPreheat: {}, isSustain: {}".format(self.isPreheating,self.isSustaining))
 
     async def sustainTemp(self,temp):
         if self.isSustaining:
@@ -94,6 +98,7 @@ class RodControl:
         self.isSustaining = True
 
         while not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
+            self.e.log("ThermodynamicsDebugger: sustain loop")
             if self.currentTemp >= temp:
                 await self.cool(temp-8)
             elif self.currentTemp < temp:
