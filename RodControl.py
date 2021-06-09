@@ -29,10 +29,10 @@ class RodControl:
         return self.round10(log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008)
 
     def heatingTemp(self,_time):
-        return self.round10((_time +0.626)/0.36)
+        return round((_time +0.626)/0.36)
 
     def coolingTemp(self,_time):
-        return self.round10(self.surroundingTemp + (self.currentTemp - self.surroundingTemp)*exp(-0.008*_time))
+        return round(self.surroundingTemp + (self.currentTemp - self.surroundingTemp)*exp(-0.008*_time))
 
     async def sleep(self,_time,preheat, cool=False):
         start = time()
