@@ -44,6 +44,9 @@ class RodControl:
                     self.isSustaining = False
                 self.SIGKILLPREHEAT = self.SIGKILLSUSTAIN = False
                 break
+
+            self.e.log("ThermodynamicsDebugger: {} @ {} ({},{})".format(self.currentTemp,round(time()-start),"Preheat" if preheat else "Sustain","Cool" if cool else "Heat"))
+
             await sleep(1)
             if not cool:
                 self.currentTemp += self.heatingTemp(time()-start)
