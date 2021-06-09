@@ -24,16 +24,16 @@ class RodControl:
         return round(num/10)*10
 
     def heatingTime(self,temp):
-        return round((0.36*(temp-self.currentTemp)) - 0.626)
+        return (0.36*(temp-self.currentTemp)) - 0.626
 
     def coolingTime(self,temp):
-        return round(log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008)
+        return log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008
 
     def heatingTemp(self,_time):
-        return round((_time +0.626)/0.36)
+        return (_time +0.626)/0.36
 
     def coolingTemp(self,_time):
-        return round(self.surroundingTemp + (self.currentTemp - self.surroundingTemp)*exp(-0.008*_time))
+        return self.surroundingTemp + (self.currentTemp - self.surroundingTemp)*exp(-0.008*_time)
 
     async def sleep(self,_time,preheat, cool=False):
         start = time()
@@ -46,7 +46,7 @@ class RodControl:
                 self.SIGKILLPREHEAT = self.SIGKILLSUSTAIN = False
                 break
 
-            self.e.log("Thermals: {} @ {} ({},{})".format(self.currentTemp,round(time()-start),"Preheat" if preheat else "Sustain","Cool" if cool else "Heat"))
+            self.e.log("Thermals: {} @ {} ({},{})".format(round(self.currentTemp),round(time()-start),"Preheat" if preheat else "Sustain","Cool" if cool else "Heat"))
 
             await sleep(1)
             if not cool:
@@ -67,7 +67,7 @@ class RodControl:
         if temp == 0:
             self.pin.value = False
 
-        self.e.log("Thermals: To Reach {} from {} in {} s".format(temp,self.currentTemp,self.heatingTime(temp)))
+        self.e.log("Thermals: To Reach {} from {} in {} s".format(temp,round(self.currentTemp),self.heatingTime(temp)))
 
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
@@ -78,10 +78,10 @@ class RodControl:
 
         self.isPreheating = True
 
-        if temp > self.currentTemp:
+        if temp > round(self.currentTemp):
             await self.heat(temp,preheat=True)
 
-        elif temp < self.currentTemp:
+        elif temp < round(self.currentTemp):
             await self.cool(temp,preheat=True)
 
         self.isPreheating = False
@@ -99,9 +99,9 @@ class RodControl:
 
         # while not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
         for i in range(4):
-            if self.currentTemp >= temp:
+            if round(self.currentTemp) >= temp:
                 await self.cool(temp-8)
-            elif self.currentTemp < temp:
+            elif round(self.currentTemp) < temp:
                 await self.heat(temp)
 
         self.isSustaining = False
@@ -112,7 +112,7 @@ class RodControl:
         self.SIGKILLSUSTAIN = True
 
     def get(self):
-        return self.round10(self.currentTemp)
+        return round(self.currentTemp)
 
     def __str__(self):
         return str(self.get())
