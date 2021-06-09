@@ -5,7 +5,7 @@ import EventHandler
 import time
 start = time.process_time()
 
-__version__ = '0.15.0'
+__version__ = '0.15.1'
 
 async def startLoop():
     e = EventHandler.EventHandler()
@@ -16,8 +16,7 @@ async def startLoop():
         [e.startDetectionLoop],
         [e.server.serveforever],
         [e.display.cookingListener],
-        [e.cook.topRod.cooking]
+        [e.energy.logEnergy]
     ])
-        # [e.energy.logEnergy]
 
 asyncio.run(startLoop())
