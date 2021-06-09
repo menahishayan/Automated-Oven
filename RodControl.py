@@ -20,17 +20,14 @@ class RodControl:
         self.SIGKILLPREHEAT = False
         self.SIGKILLSUSTAIN = False
 
-    def round10(self,num):
-        return round(num/10)*10
-
     def heatingTime(self,temp):
         return (0.36*(temp-self.currentTemp)) - 0.626
 
-    def coolingTime(self,temp):
-        return log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008
-
     def heatingTemp(self,_time):
         return (_time +0.626)/0.36
+
+    def coolingTime(self,temp):
+        return log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008
 
     def coolingTemp(self,_time):
         return self.surroundingTemp + (self.currentTemp - self.surroundingTemp)*exp(-0.008*_time)
@@ -52,7 +49,7 @@ class RodControl:
             if not cool:
                 self.currentTemp = self.heatingTemp(time()-start) + self.surroundingTemp
             else:
-                self.currentTemp = self.coolingTemp(time()-start)
+                self.currentTemp = self.coolingTemp(1)
 
     async def heat(self,temp,preheat=False):
         self.pin.value = True
@@ -67,7 +64,7 @@ class RodControl:
         if temp == 0:
             self.pin.value = False
 
-        self.e.log("Thermals: To Reach {} from {} in {} s".format(temp,round(self.currentTemp),self.heatingTime(temp)))
+        self.e.log("Thermals: To Reach {} from {} in {} s".format(temp,round(self.currentTemp),round(self.heatingTime(temp))))
 
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
