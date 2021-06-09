@@ -36,7 +36,7 @@ class RodControl:
 
     async def sleep(self,_time,preheat, cool=False):
         start = time()
-        while time()-start < _time:
+        while time()-start <= _time:
             if self.SIGKILLPREHEAT or self.SIGKILLSUSTAIN or self.e._SIGKILL:
                 if preheat:
                     self.isPreheating = False
