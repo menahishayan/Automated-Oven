@@ -28,15 +28,15 @@ class RodControl:
     def coolingTime(self,temp):
         return self.round10(log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008)
 
-    def heatingTemp(self,time):
-        return self.round10((time +0.626)/0.36)
+    def heatingTemp(self,_time):
+        return self.round10((_time +0.626)/0.36)
 
-    def coolingTemp(self,time):
-        return self.round10(self.surroundingTemp + (self.currentTemp - self.surroundingTemp)*exp(-0.008*time))
+    def coolingTemp(self,_time):
+        return self.round10(self.surroundingTemp + (self.currentTemp - self.surroundingTemp)*exp(-0.008*_time))
 
-    async def sleep(self,time,preheat, cool=False):
+    async def sleep(self,_time,preheat, cool=False):
         start = time()
-        while time()-start < time:
+        while time()-start < _time:
             if self.SIGKILLPREHEAT or self.SIGKILLSUSTAIN or self.e._SIGKILL:
                 if preheat:
                     self.isPreheating = False
