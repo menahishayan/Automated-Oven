@@ -22,7 +22,7 @@ class Cook:
         try:
             self.top = int(self.df['Top'][item])
             self.bottom = int(self.df['Bottom'][item])
-            self.endTime = time.time() + (int(self.df['Time'][item])  * 10)
+            self.endTime = time.time() + (int(self.df['Time'][item])  * 15)
             self.cooktype = str(self.df['Type'][item])
             self.startTime = time.time()
 

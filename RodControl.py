@@ -24,7 +24,7 @@ class RodControl:
         return (0.36*(temp-self.currentTemp)) - 0.626
 
     def heatingTemp(self,_time):
-        return (_time +0.626)/0.36
+        return ((_time +0.626)/0.36) + self.currentTemp
 
     def coolingTime(self,temp):
         return log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008
@@ -48,7 +48,7 @@ class RodControl:
 
             await sleep(1)
             if not cool:
-                self.currentTemp = self.heatingTemp(time()-start) + self.surroundingTemp
+                self.currentTemp = self.heatingTemp(time()-start)
             else:
                 self.currentTemp = self.coolingTemp(1)
 
