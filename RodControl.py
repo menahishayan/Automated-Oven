@@ -63,6 +63,8 @@ class RodControl:
         await self.sleep(self.coolingTime(temp),cool=True,preheat=preheat)
 
     async def reachTemp(self,temp):
+        self.e.log("ThermodynamicsDebugger: To Reach {} from {}".format(temp,self.currentTemp))
+
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
             await sleep(1)
