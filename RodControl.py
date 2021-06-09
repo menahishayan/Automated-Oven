@@ -49,9 +49,9 @@ class RodControl:
 
             await sleep(1)
             if not cool:
-                self.currentTemp += self.heatingTemp(time()-start)
+                self.currentTemp = self.heatingTemp(time()-start) + self.surroundingTemp
             else:
-                self.currentTemp -= self.coolingTemp(time()-start)
+                self.currentTemp = self.coolingTemp(time()-start)
 
     async def heat(self,temp,preheat=False):
         self.pin.value = True
