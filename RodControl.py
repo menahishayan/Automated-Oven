@@ -97,7 +97,8 @@ class RodControl:
 
         self.isSustaining = True
 
-        while not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
+        # while not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
+        for i in range(4):
             self.e.log("ThermodynamicsDebugger: sustain loop {} {}".format(self.currentTemp,temp))
             if self.currentTemp >= temp:
                 await self.cool(temp-10)
