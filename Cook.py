@@ -46,7 +46,6 @@ class Cook:
             for s in range(self.totalSteps):
                 self.currentStep = s
                 step = self.steps[s]
-                self.e.log(step)
                 await getattr(self,step['type'])(step if len(step) > 1 else None)
             self.done()
 
@@ -62,11 +61,15 @@ class Cook:
     async def preheat(self,args):
         self.e.log("Cooking: Preheating")
 
-        await self.topRod.set(args['temp'])
+        # await self.topRod.set(args['temp'])
+        await self.e.dispatch([[self.topRod.reachTemp,args['temp']]])
 
+        self.e.log("next")
         start = time()
         heatTime = self.topRod.heatingTime(args['temp'])
         end = start + heatTime if heatTime >=0 else self.topRod.coolingTime(args['temp'])
+
+        self.e.log("{} {} {}".format(start,heatTime,end))
 
         await self.sleepTill(end)
         return
