@@ -50,7 +50,7 @@ class Cook:
 
                 while not step['isDone']:
                     await getattr(self,step['type'])(step if len(step) > 1 else None)
-                    if self.SIGPAUSE and not self.e._SIGKILL:
+                    while self.SIGPAUSE and not self.e._SIGKILL:
                         await sleep(1)
 
             self.done()
