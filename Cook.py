@@ -82,7 +82,7 @@ class Cook:
     async def cook(self,s):
         duration = s['duration']*10 # *60
         self.e.log("Cooking: Cooking {}".format(duration))
-        
+
         s['startTime'] = time()
 
         end = s['startTime'] + duration 
@@ -92,9 +92,7 @@ class Cook:
         else:
             end = s['endTime']
 
-        self.e.log(s['startTime'])
-        self.e.log(duration)
-        self.e.log(end)
+        self.e.log(end -s['startTime'])
 
         await self.topRod.sustainTemp(s['topTemp'],end)
 
