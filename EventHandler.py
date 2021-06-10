@@ -1,19 +1,20 @@
 import logging
 from logging.handlers import SysLogHandler
 import concurrent.futures as cf
-from sys import stdout
 import asyncio
-import DetectItem
-import DisplayContent
-import Cook
-import Ultrasound
-import Temp
+
+from DetectItem import Detector
+from DisplayContent import DisplayContent
+from Cook import Cook
+from Ultrasound import Ultrasound
+from Temp import Temp
 from SimpleWebSocketServer import SimpleWebSocketServer
 import WebSocketServer
-import Energy
-import DB
-import Automations
-import Audio
+from Energy import Energy
+from DB import DB
+from Automations import Automations
+from Audio import Audio
+
 import signal
 from os import kill, getpid
 
@@ -28,16 +29,19 @@ class EventHandler:
         self._SIGKILL = False
 
         self.logging = logging
-        self.display = DisplayContent.DisplayContent()
-        self.detector = DetectItem.Detector()
-        self.ultrasound = Ultrasound.Ultrasound()
-        self.temp = Temp.Temp()
+
+        self.config = DB('./config.json')
+        self.display = DisplayContent()
+        self.detector = Detector()
+        self.ultrasound = Ultrasound()
+        self.temp = Temp()
         self.server = SimpleWebSocketServer('', 8069, WebSocketServer.WebSocketServer,self)
-        self.cook = Cook.Cook(self)
-        self.energy = Energy.Energy(self)
-        self.history = DB.DB('./HistoryDB.json')
-        self.audio = Audio.Audio()
-        self.automations = Automations.Automations()
+        self.cook = Cook(self)
+        self.energy = Energy(self)
+        self.history = DB('./HistoryDB.json')
+        self.audio = Audio()
+        self.automations = Automations()
+
         signal.signal(signal.SIGTERM, self.sig_handler)
         signal.signal(signal.SIGINT, self.sig_handler)
         # signal.signal(signal.SIGSTOP, self.sig_handler)
@@ -50,7 +54,6 @@ class EventHandler:
 
     def sig_handler(self,signum, stack):
         self._SIGKILL = True
-        # self.log("Event: Recieved " + str(signal.Signals(signum).name))
         self.server.close()
         exit()
 

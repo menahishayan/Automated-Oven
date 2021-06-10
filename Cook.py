@@ -91,6 +91,7 @@ class Cook:
             self.e.log("pauseTime not in s")
             s['endTime'] = end
         else:
+            self.e.log(self.steps)
             end = s['endTime']
 
         self.e.log(end -time())

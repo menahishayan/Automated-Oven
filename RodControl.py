@@ -11,8 +11,14 @@ class RodControl:
 
         self.maxTemp = int(maxTemp)
         self.e = e
-        self.currentTemp = int(e.temp)
         self.surroundingTemp = int(e.temp)
+
+        if self.e.config.has('lastHeatTemp'):
+            self.currentTemp = self.e.config._get('lastHeatTemp')
+            self.lastHeatTime = self.e.config._get('lastHeatTime')
+        else:
+            self.currentTemp = int(e.temp)
+            self.lastHeatTime = 0
 
         self.isAdjusting = False
         self.isSustaining = False
@@ -20,7 +26,6 @@ class RodControl:
         self.SIGKILLADJUST = False
         self.SIGKILLSUSTAIN = False
 
-        self.lastHeatTime = 0
 
     def heatingTime(self,temp):
         return (0.36*(temp-self.currentTemp)) - 0.626 +1
@@ -58,6 +63,8 @@ class RodControl:
         self.pin.value = True
         await self.sleep(self.heatingTime(temp),adjust=adjust)
         self.lastHeatTime = time()
+        self.e.config.set('lastHeatTemp',self.currentTemp)
+        self.e.config.set('lastHeatTime',time())
         self.pin.value = False
 
     async def cool(self,temp,adjust=False):
