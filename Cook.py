@@ -90,6 +90,10 @@ class Cook:
         else:
             end = s['endTime']
 
+        self.e.log(s['startTime'])
+        self.e.log(duration)
+        self.e.log(end)
+
         await self.topRod.sustainTemp(s['topTemp'],end)
 
         if time() >= end:
