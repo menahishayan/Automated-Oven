@@ -3,47 +3,48 @@ import time
 from random import randint
 from datetime import datetime
 from asyncio import sleep
+from DB import DB
 
-
-class Energy:
+class Energy(DB):
     def __init__(self, e, dbPath='./EnergyDB.json'):
-        self.path = dbPath
+        super().__init__(dbPath)
         self.e = e
+        self.lastUpdatedValueNow = 0
 
     async def add(self, entry):
         try:
-            f = open(self.path)
-            db = json.loads(f.read())
-            f.close()
             date = datetime.now().strftime("%Y-%m-%d")
-            if date not in db:
-                db[date] = {}
-            db[date][str(time.time()).split('.')[0]] = int(entry)
-            f = open(self.path, "w")
-            json.dump(db, f)
-            f.close()
+            if date not in self.db:
+                self.db[date] = {}
+            self.db[date][str(time.time()).split('.')[0]] = int(entry)
         except Exception as e:
             print(e)
 
     async def getAll(self, date=""):
-        f = open(self.path)
-        db = json.loads(f.read())
-        f.close()
         if len(date) > 0:
             try:
-                return db[date]
+                return self.db[date]
             except:
-                return db
-        return db
+                return self.db
+        return self.db
 
     async def logEnergy(self):
+        interval = 3
         while not self.e._SIGKILL:
-            value = await self.getNow()
-            await self.add(value/180) # 3600/20
-            await sleep(20)
+            aggregate = []
+            for _ in range(interval):
+                aggregate.append(await self.detect())
+                await sleep(interval)
+
+            self.lastUpdatedValueNow = round(sum(aggregate)/interval)
+
+            await self.add(self.lastUpdatedValueNow/(3600/interval))
+
+    async def detect(self):
+        if self.e.cook.topRod.pin.value:
+            return 325
+        else:
+            return 0
 
     async def getNow(self):
-        return randint(0, 650)
-
-    def __str__(self):
-        return self.getAll()
+        return self.lastUpdatedValueNow

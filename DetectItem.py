@@ -12,8 +12,6 @@ from picamera import PiCamera
 import concurrent.futures as cf
 from io import BytesIO
 
-__version__ = '0.7.0'
-
 class Detector:
     async def init(self, e):
         self.model_loaded = False
@@ -40,7 +38,7 @@ class Detector:
             loaded_model.load_weights("{}.h5".format(model_path))
 
             self.model = loaded_model
-            self.e.log("Initialize: Model")
+            self.e.log("Boot: Model Loaded")
             self.model_loaded = True
         except:
             self.model_loaded = False
@@ -50,7 +48,7 @@ class Detector:
             self.camera = PiCamera()
             self.camera.resolution = (640, 480)
             self.camera.rotation = 180
-            self.e.log("Initialize: Camera")
+            self.e.log("Boot: Camera Loaded")
 
         except Exception as e:
             self.e.err(e)
