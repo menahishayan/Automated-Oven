@@ -43,11 +43,11 @@ class Cook:
             self.steps = (await self.db.get(item))['steps']
             self.totalSteps = len(self.steps)
 
-            for s in len(self.steps):
+            for s in self.totalSteps:
                 self.currentStep = s
                 step = self.steps[s]
-                fn = getattr(self,step['type'])
-                await fn(step if len(step) > 1 else None)
+                self.e.log(step)
+                await getattr(self,step['type'])(step if len(step) > 1 else None)
             self.done()
 
         except Exception as e:
