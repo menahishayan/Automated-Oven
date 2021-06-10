@@ -1,5 +1,7 @@
+import asyncio
+from asyncio.tasks import sleep
 from pandas import read_csv
-import time
+from time import time
 import RodControl
 from board import D12
 from DB import DB
@@ -13,6 +15,10 @@ class Cook:
         self.startTime, self.pauseTime = None, None
         self.topRod = RodControl.RodControl(D12,e)
 
+        self.steps = None
+        self.currentStep = -1
+        self.totalSteps = 0
+
     async def init(self, method='fixed'):
         # if method == 'fixed':
         self.df = read_csv('Temp.csv', index_col=0)
@@ -22,50 +28,104 @@ class Cook:
     async def start(self, item):
         # steps
         try:
-            self.steps = (await self.db.get(item))['steps']
-            self.e.log(self.steps)
-
             self.top = int(self.df['Top'][item])
             self.bottom = int(self.df['Bottom'][item])
-            self.endTime = time.time() + (int(self.df['Time'][item])  * 20)
+            self.endTime = time() + (int(self.df['Time'][item])  * 20)
             self.cooktype = str(self.df['Type'][item])
-            self.startTime = time.time()
+            self.startTime = time()
 
             self.item = item
 
             self.isCooking = True
 
-            await self.topRod.set(self.top)
+            # await self.topRod.set(self.top)
+
+            self.steps = (await self.db.get(item))['steps']
+            self.totalSteps = len(self.steps)
+
+            for s in self.steps:
+                self.currentStep = s
+                step = self.steps[s]
+                fn = getattr(self,step['type'])
+                await fn(step if len(step) > 1 else None)
+            self.done()
 
         except Exception as e:
-            # self.e.err("Cook - Unknown Food")
             self.e.err(e)
-            self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20 + time.time(), 'Cook'
+            self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20 + time(), 'Cook'
 
+    async def preheat(self,args):
+        self.e.log("Cooking: Preheating")
+
+        await self.topRod.set(args['temp'])
+
+        start = time()
+        heatTime = self.topRod.heatingTime(args['temp'])
+        end = start + heatTime if heatTime >=0 else self.topRod.coolingTime(args['temp'])
+
+        while time() <= end:
+            await sleep(1)
+        return
+
+    async def cook(self,args):
+        self.e.log("Cooking: Cooking")
+
+        await self.topRod.set(args['topTemp'])
+
+        start = time()
+        end = start + args['duration']*10 # *60
+
+        while time() <= end:
+            await sleep(1)
+        return
+
+    async def checkpoint(self,args):
+        self.e.log("Cooking: Checkpoint")
+
+        start = time()
+        end = start + args['maxWaitTime']
+
+        while time() <= end:
+            await sleep(1)
+        return
+
+    async def notify(self,args):
+        self.e.log("Cooking: Notify")
+        return
+
+    async def cool(self,args):
+        self.e.log("Cooking: Cool")
+
+        self.topRod.off()
+
+        start = time()
+        end = start + args['duration'] # *10
+
+        while time() <= end:
+            await sleep(1)
+        return
 
     async def pause(self):
         try:
-            self.pauseTime = time.time()
+            self.pauseTime = time()
             self.isPaused = True
 
             self.topRod.off()
 
-            self.e.log("CookingHandler: Paused")
+            self.e.log("Cooking: Paused")
             return True
         except:
             return False
     
-        # self.rods.setBottom(bottom)
-
     async def resume(self):
                 # steps
         try:
-            self.startTime = time.time() -(self.pauseTime-self.startTime)
-            self.endTime = self.endTime + (time.time()-self.pauseTime)
+            self.startTime = time() -(self.pauseTime-self.startTime)
+            self.endTime = self.endTime + (time()-self.pauseTime)
 
             self.isPaused = False
 
-            self.e.log("CookingHandler: Resumed")
+            self.e.log("Cooking: Resumed")
 
             return True
         except Exception as e:
@@ -86,7 +146,7 @@ class Cook:
             self.isPaused = False
             self.isCooking = False
 
-            self.e.log("CookingHandler: Stopped")
+            self.e.log("Cooking: Stopped")
 
             return True
         except Exception as e:

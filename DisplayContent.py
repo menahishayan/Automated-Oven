@@ -228,7 +228,7 @@ class DisplayContent:
                 self.disp.image(image)
             await asyncio.sleep(1)
 
-        self.e.cook.done()
+        # self.e.cook.done()
      
         if self.e._SIGKILL:
             await self.path('./images/PowerScreen.jpg')
