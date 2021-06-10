@@ -61,6 +61,9 @@ class RodControl:
         self.pin.value = False
         await self.sleep(self.coolingTime(temp),cool=True,adjust=adjust)
 
+    def set(self,temp):
+        self.e.dispatch([[self.reachTemp,temp]])
+
     async def reachTemp(self,temp):
         if temp == 0:
             self.pin.value = False
@@ -106,7 +109,7 @@ class RodControl:
         self.isSustaining = False
         self.SIGKILLSUSTAIN = False
 
-    def stop(self):
+    def off(self):
         self.SIGKILLADJUST = True
         self.SIGKILLSUSTAIN = True
 

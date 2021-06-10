@@ -30,7 +30,7 @@ class Cook:
 
             self.isCooking = True
 
-            await self.e.dispatch([[self.topRod.reachTemp,self.top]])
+            self.topRod.set(self.top)
 
         except Exception as e:
             # self.e.err("Cook - Unknown Food")
@@ -42,6 +42,8 @@ class Cook:
         try:
             self.pauseTime = time.time()
             self.isPaused = True
+
+            self.topRod.off()
 
             self.e.log("CookingHandler: Paused")
             return True
@@ -65,11 +67,17 @@ class Cook:
             self.e.err(e)
             return False
 
+    def done(self):
+        self.isCooking = False
+        self.cooktype = 'Done'
+        self.topRod.off()
+
     async def stop(self):
                 # steps
         try:
             self.startTime = 0
             self.endTime = 0
+            self.topRod.off()
             self.isPaused = False
             self.isCooking = False
 
