@@ -54,6 +54,10 @@ class Cook:
             self.e.err(e)
             self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20 + time(), 'Cook'
 
+    async def sleepTill(self,end):
+        while time() <= end and not self.e._SIGKILL:
+            await sleep(1)
+
     async def preheat(self,args):
         self.e.log("Cooking: Preheating")
 
@@ -63,8 +67,7 @@ class Cook:
         heatTime = self.topRod.heatingTime(args['temp'])
         end = start + heatTime if heatTime >=0 else self.topRod.coolingTime(args['temp'])
 
-        while time() <= end:
-            await sleep(1)
+        await self.sleepTill(end)
         return
 
     async def cook(self,args):
@@ -75,8 +78,8 @@ class Cook:
         start = time()
         end = start + args['duration']*10 # *60
 
-        while time() <= end:
-            await sleep(1)
+        await self.sleepTill(end)
+
         return
 
     async def checkpoint(self,args):
@@ -85,8 +88,7 @@ class Cook:
         start = time()
         end = start + args['maxWaitTime']
 
-        while time() <= end:
-            await sleep(1)
+        await self.sleepTill(end)
         return
 
     async def notify(self,args):
@@ -101,8 +103,7 @@ class Cook:
         start = time()
         end = start + args['duration'] # *10
 
-        while time() <= end:
-            await sleep(1)
+        await self.sleepTill(end)
         return
 
     async def pause(self):
