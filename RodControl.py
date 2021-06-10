@@ -43,7 +43,7 @@ class RodControl:
                 self.SIGKILLADJUST = self.SIGKILLSUSTAIN = False
                 break
 
-            if round(time()-start)%5 == 0:
+            if round(time()-start)%10 == 0:
                 self.e.log("Thermals: {} @ {} ({},{})".format(round(self.currentTemp),round(time()-start),"Adjust" if adjust else "Sustain","Cool" if cool else "Heat"))
 
             await sleep(1)

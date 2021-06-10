@@ -50,7 +50,7 @@ class EventHandler:
 
     def sig_handler(self,signum, stack):
         self._SIGKILL = True
-        self.log("Event: Recieved " + str(signal.Signals(signum).name))
+        # self.log("Event: Recieved " + str(signal.Signals(signum).name))
         self.server.close()
         exit()
 
