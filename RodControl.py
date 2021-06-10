@@ -14,14 +14,14 @@ class RodControl:
         self.currentTemp = int(e.temp)
         self.surroundingTemp = int(e.temp)
 
-        self.isPreheating = False
+        self.isAdjusting = False
         self.isSustaining = False
 
-        self.SIGKILLPREHEAT = False
+        self.SIGKILLADJUST = False
         self.SIGKILLSUSTAIN = False
 
     def heatingTime(self,temp):
-        return (0.36*(temp-self.currentTemp)) - 0.626 +2
+        return (0.36*(temp-self.currentTemp)) - 0.626 +1
 
     def heatingTemp(self,_time):
         return self.currentTemp + (_time * 2.778)
@@ -32,19 +32,19 @@ class RodControl:
     def coolingTemp(self,_time):
         return self.surroundingTemp + (self.currentTemp - self.surroundingTemp)*exp(-0.008*_time)
 
-    async def sleep(self,_time,preheat, cool=False):
+    async def sleep(self,_time,adjust, cool=False):
         start = time()
         while time()-start <= _time:
-            if self.SIGKILLPREHEAT or self.SIGKILLSUSTAIN or self.e._SIGKILL:
-                if preheat:
-                    self.isPreheating = False
+            if self.SIGKILLADJUST or self.SIGKILLSUSTAIN or self.e._SIGKILL:
+                if adjust:
+                    self.isAdjusting = False
                 else:
                     self.isSustaining = False
-                self.SIGKILLPREHEAT = self.SIGKILLSUSTAIN = False
+                self.SIGKILLADJUST = self.SIGKILLSUSTAIN = False
                 break
 
             if round(time()-start)%5 == 0:
-                self.e.log("Thermals: {} @ {} ({},{})".format(round(self.currentTemp),round(time()-start),"Preheat" if preheat else "Sustain","Cool" if cool else "Heat"))
+                self.e.log("Thermals: {} @ {} ({},{})".format(round(self.currentTemp),round(time()-start),"Adjust" if adjust else "Sustain","Cool" if cool else "Heat"))
 
             await sleep(1)
             if not cool:
@@ -52,14 +52,14 @@ class RodControl:
             else:
                 self.currentTemp = self.coolingTemp(1)
 
-    async def heat(self,temp,preheat=False):
+    async def heat(self,temp,adjust=False):
         self.pin.value = True
-        await self.sleep(self.heatingTime(temp),preheat=preheat)
+        await self.sleep(self.heatingTime(temp),adjust=adjust)
         self.pin.value = False
 
-    async def cool(self,temp,preheat=False):
+    async def cool(self,temp,adjust=False):
         self.pin.value = False
-        await self.sleep(self.coolingTime(temp),cool=True,preheat=preheat)
+        await self.sleep(self.coolingTime(temp),cool=True,adjust=adjust)
 
     async def reachTemp(self,temp):
         if temp == 0:
@@ -69,29 +69,29 @@ class RodControl:
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
             await sleep(1)
-        elif self.isPreheating:
-            self.SIGKILLPREHEAT = True
+        elif self.isAdjusting:
+            self.SIGKILLADJUST = True
             await sleep(1)
 
-        self.isPreheating = True
+        self.isAdjusting = True
 
         if temp > round(self.currentTemp):
             self.e.log("Thermals: To Heat {} from {} in {} s".format(temp,round(self.currentTemp),round(self.heatingTime(temp))))
-            await self.heat(temp,preheat=True)
+            await self.heat(temp,adjust=True)
 
         elif temp < round(self.currentTemp):
             self.e.log("Thermals: To Cool {} from {} in {} s".format(temp,round(self.currentTemp),round(self.coolingTime(temp))))
-            await self.cool(temp,preheat=True)
+            await self.cool(temp,adjust=True)
 
-        self.isPreheating = False
+        self.isAdjusting = False
         await self.e.dispatch([[self.sustainTemp,temp]])
 
     async def sustainTemp(self,temp):
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
             await sleep(1)
-        elif self.isPreheating:
-            self.SIGKILLPREHEAT = True
+        elif self.isAdjusting:
+            self.SIGKILLADJUST = True
             await sleep(1)
 
         self.isSustaining = True
@@ -107,7 +107,7 @@ class RodControl:
         self.SIGKILLSUSTAIN = False
 
     def stop(self):
-        self.SIGKILLPREHEAT = True
+        self.SIGKILLADJUST = True
         self.SIGKILLSUSTAIN = True
 
     def get(self):
