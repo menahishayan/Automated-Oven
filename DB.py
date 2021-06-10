@@ -16,6 +16,6 @@ class DB:
     def push(self,item):
         self.db.append(item)
 
-    def get(self):
+    async def get(self):
         return self.db
         
