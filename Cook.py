@@ -93,7 +93,7 @@ class Cook:
         else:
             end = s['endTime']
 
-        self.e.log(end -s['startTime'])
+        self.e.log(end -time())
 
         await self.topRod.sustainTemp(s['topTemp'],end)
 
