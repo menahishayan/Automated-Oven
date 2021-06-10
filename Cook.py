@@ -54,7 +54,6 @@ class Cook:
             self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20 + time(), 'Cook'
 
     async def sleepTill(self,end):
-        self.e.log(end)
         while time() <= end and not self.e._SIGKILL:
             await sleep(1)
 
@@ -62,27 +61,26 @@ class Cook:
         self.e.log("Cooking: Preheating")
 
         # await self.topRod.set(args['temp'])
-        await self.e.dispatch([[self.topRod.reachTemp,args['temp']]])
+        # await self.e.dispatch([[self.topRod.reachTemp,args['temp']/2]])
 
         self.e.log("next")
         start = time()
         heatTime = self.topRod.heatingTime(args['temp'])
         end = start + heatTime if heatTime >=0 else self.topRod.coolingTime(args['temp'])
 
-        self.e.log("{} {} {}".format(start,heatTime,end))
+        await self.topRod.reachTemp(args['temp']/2)
 
-        await self.sleepTill(end)
         return
 
     async def cook(self,args):
         self.e.log("Cooking: Cooking")
 
-        await self.topRod.set(args['topTemp'])
+        # await self.topRod.set(args['topTemp'])
 
         start = time()
         end = start + args['duration']*10 # *60
 
-        await self.sleepTill(end)
+        await self.topRod.sustainTemp(args['topTemp']/2,args['duration']*10)
 
         return
 

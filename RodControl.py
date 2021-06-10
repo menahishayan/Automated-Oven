@@ -68,7 +68,6 @@ class RodControl:
         if temp == 0:
             self.pin.value = False
 
-
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
             await sleep(1)
@@ -87,9 +86,9 @@ class RodControl:
             await self.cool(temp,adjust=True)
 
         self.isAdjusting = False
-        await self.e.dispatch([[self.sustainTemp,temp]])
+        # await self.e.dispatch([[self.sustainTemp,temp]])
 
-    async def sustainTemp(self,temp):
+    async def sustainTemp(self,temp,_time):
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
             await sleep(1)
@@ -99,7 +98,9 @@ class RodControl:
 
         self.isSustaining = True
 
-        while not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
+        end = time() + _time
+        
+        while time() <= end and not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
             if round(self.currentTemp) >= temp:
                 await self.cool(temp-8)
             elif round(self.currentTemp) < temp:
