@@ -49,6 +49,7 @@ class Cook:
 
                 while not step['isDone'] and not self.e._SIGKILL:
                     step['startTime'] = time()
+                    self.e.log(self.steps)
                     await getattr(self,step['type'])(step)
                     while self.SIGPAUSE and not self.e._SIGKILL:
                         await sleep(1)
