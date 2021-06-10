@@ -22,7 +22,7 @@ class Cook:
         try:
             self.top = int(self.df['Top'][item])
             self.bottom = int(self.df['Bottom'][item])
-            self.endTime = time.time() + (int(self.df['Time'][item])  * 15)
+            self.endTime = time.time() + (int(self.df['Time'][item])  * 20)
             self.cooktype = str(self.df['Type'][item])
             self.startTime = time.time()
 
@@ -30,7 +30,7 @@ class Cook:
 
             self.isCooking = True
 
-            await self.e.dispatch([[self.topRod.reachTemp,self.top/2]])
+            await self.e.dispatch([[self.topRod.reachTemp,self.top]])
 
         except Exception as e:
             # self.e.err("Cook - Unknown Food")
@@ -84,7 +84,7 @@ class Cook:
                 # steps
         try:
             self.top = int(temp)
-            await self.e.dispatch([[self.topRod.reachTemp,self.top/2]])
+            await self.e.dispatch([[self.topRod.reachTemp,self.top]])
             return True
         except Exception as e:
             self.e.err(e)
