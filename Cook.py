@@ -155,7 +155,7 @@ class Cook:
         if not self.SIGPAUSE:
             return True
         try:
-            
+            s = self.steps[self.currentStep]
             s['startTime'] = time() -(s['pauseTime']-s['startTime'])
             s['endTime'] = s['endTime'] + (time()-s['pauseTime'])
 
