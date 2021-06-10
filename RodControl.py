@@ -44,7 +44,7 @@ class RodControl:
                 break
 
             if round(time()-start)%10 == 0:
-                self.e.log("Thermals: {} @ {} ({},{})".format(round(self.currentTemp),round(time()-start),"Adjust" if adjust else "Sustain","Cool" if cool else "Heat"))
+                # self.e.log("Thermals: {} @ {} ({},{})".format(round(self.currentTemp),round(time()-start),"Adjust" if adjust else "Sustain","Cool" if cool else "Heat"))
 
             await sleep(1)
             if not cool:
@@ -78,11 +78,11 @@ class RodControl:
         self.isAdjusting = True
 
         if temp > round(self.currentTemp):
-            self.e.log("Thermals: To Heat {} from {} in {} s".format(temp,round(self.currentTemp),round(self.heatingTime(temp))))
+            # self.e.log("Thermals: To Heat {} from {} in {} s".format(temp,round(self.currentTemp),round(self.heatingTime(temp))))
             await self.heat(temp,adjust=True)
 
         elif temp < round(self.currentTemp):
-            self.e.log("Thermals: To Cool {} from {} in {} s".format(temp,round(self.currentTemp),round(self.coolingTime(temp))))
+            # self.e.log("Thermals: To Cool {} from {} in {} s".format(temp,round(self.currentTemp),round(self.coolingTime(temp))))
             await self.cool(temp,adjust=True)
 
         self.isAdjusting = False
@@ -99,7 +99,7 @@ class RodControl:
         self.isSustaining = True
 
         end = time() + _time
-        
+
         while time() <= end and not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
             if round(self.currentTemp) >= temp:
                 await self.cool(temp-8)
