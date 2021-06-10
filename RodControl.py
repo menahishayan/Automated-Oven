@@ -94,7 +94,7 @@ class RodControl:
         self.isAdjusting = False
         # await self.e.dispatch([[self.sustainTemp,temp]])
 
-    async def sustainTemp(self,temp,_time):
+    async def sustainTemp(self,temp,end):
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
             await sleep(1)
@@ -108,8 +108,6 @@ class RodControl:
             self.currentTemp = self.coolingTemp(time() - self.lastHeatTime)
 
         self.e.log("Thermals: Sustain {}".format(temp))
-
-        end = time() + _time
 
         while time() <= end and not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
             if round(self.currentTemp) >= temp:

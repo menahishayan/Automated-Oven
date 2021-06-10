@@ -80,16 +80,16 @@ class Cook:
         return
 
     async def cook(self,s):
-        
-        self.e.log("Cooking: Cooking")
+        duration = s['duration']*10
+        self.e.log("Cooking: Cooking {}".format(duration))
 
         if 'pauseTime' not in s:
-            end = s['startTime'] + s['duration']*10 # *60
+            end = s['startTime'] + duration # *60
             s['endTime'] = end
         else:
             end = s['endTime']
 
-        await self.topRod.sustainTemp(s['topTemp'],s['duration']*10)
+        await self.topRod.sustainTemp(s['topTemp'],end)
 
         if time() >= end:
             s['isDone'] = True
