@@ -88,6 +88,7 @@ class Cook:
         end = s['startTime'] + duration 
 
         if 'pauseTime' not in s:
+            self.e.log("pauseTime not in s")
             s['endTime'] = end
         else:
             end = s['endTime']
