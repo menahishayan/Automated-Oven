@@ -5,7 +5,7 @@ import EventHandler
 import time
 start = time.process_time()
 
-__version__ = '0.17.1'
+__version__ = '0.17.2'
 
 async def startLoop():
     e = EventHandler.EventHandler()

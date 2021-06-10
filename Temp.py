@@ -8,7 +8,10 @@ class Temp:
     def __init__(self):
         self.PIN = D2
         self.dhtDevice = adafruit_dht.DHT11(self.PIN, use_pulseio=False)
-        self.value = self.dhtDevice.temperature
+        try:
+            self.value = self.dhtDevice.temperature
+        except: 
+            self.value = 0
 
     async def update(self):
         try:
