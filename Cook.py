@@ -43,7 +43,7 @@ class Cook:
             self.steps = (await self.db.get(item))['steps']
             self.totalSteps = len(self.steps)
 
-            for s in self.steps:
+            for s in len(self.steps):
                 self.currentStep = s
                 step = self.steps[s]
                 fn = getattr(self,step['type'])
