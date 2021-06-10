@@ -7,9 +7,8 @@ class DB:
         self.db = json.loads(f)
 
     def __del__(self):
-        if not self.readOnly:
-            with open(self.path, "w") as outfile: 
-                json.dump(self.db, outfile)
+        with open(self.path, "w") as outfile: 
+            json.dump(self.db, outfile)
 
     def set(self,k,v):
         self.db[k] = v

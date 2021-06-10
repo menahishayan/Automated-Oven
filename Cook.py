@@ -48,7 +48,6 @@ class Cook:
                 step['isDone'] = False
 
                 while not step['isDone'] and not self.e._SIGKILL:
-                    step['startTime'] = time()
                     self.e.log(self.steps)
                     await getattr(self,step['type'])(step)
                     while self.SIGPAUSE and not self.e._SIGKILL:
@@ -65,11 +64,11 @@ class Cook:
             await sleep(1)
 
     async def preheat(self,s):
-        
+        s['startTime'] = time()
         self.e.log("Cooking: Preheating")
 
         heatTime = self.topRod.heatingTime(s['temp'])
-        end = s['startTime'] + heatTime if heatTime >=0 else self.topRod.coolingTime(s['temp'])
+        end = s['startTime'] + (heatTime if heatTime >=0 else self.topRod.coolingTime(s['temp']))
 
         s['endTime'] = end
 
@@ -106,6 +105,7 @@ class Cook:
 
     async def checkpoint(self,s):
         
+        s['startTime'] = time()
         self.e.log("Cooking: Checkpoint")
 
         end = s['startTime'] + s['maxWaitTime']
@@ -129,6 +129,7 @@ class Cook:
 
     async def cool(self,s):
         
+        s['startTime'] = time()
         self.e.log("Cooking: Cool")
 
         self.topRod.off()
