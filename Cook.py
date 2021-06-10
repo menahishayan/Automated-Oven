@@ -106,8 +106,8 @@ class Cook:
 
         await self.sleepTill(end)
 
-        if time() >= end:
-            s['isDone'] = True
+        # if time() >= end:
+        s['isDone'] = True
             
         return
 
