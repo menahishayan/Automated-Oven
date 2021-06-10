@@ -22,7 +22,7 @@ class Cook:
     async def init(self, method='fixed'):
         # if method == 'fixed':
         self.df = read_csv('Temp.csv', index_col=0)
-        self.db = DB('./FoodDB.json',readOnly=True)
+        self.db = DB('./FoodDB.json')
         # derived
 
     async def start(self, item):
