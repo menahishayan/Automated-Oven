@@ -1,6 +1,6 @@
 {
   "Cookies": {
-    "Serving": 36,
+    "serving": 36,
     "steps": [
       {
         "type": "Bake",
@@ -20,7 +20,7 @@
     ]
   },
   "Cake": {
-    "Serving": 12,
+    "serving": 12,
     "steps": [
       {
         "type": "Bake",
@@ -40,7 +40,7 @@
     ]
   },
   "Bread": {
-    "Serving": 24,
+    "serving": 24,
     "steps": [
       {
         "type": "Bake",
@@ -69,7 +69,7 @@
     ]
   },
   "Burger": {
-    "Serving": 1,
+    "serving": 1,
     "steps": [
       {
         "type": "Reheat",
@@ -85,7 +85,7 @@
     ]
   },
   "Chicken": {
-    "Serving": 4,
+    "serving": 4,
     "steps": [
       {
         "type": "cook",
@@ -110,7 +110,7 @@
     ]
   },
   "Coffee": {
-    "Serving": 1,
+    "serving": 1,
     "steps": [
       {
         "type": "Reheat",
@@ -126,7 +126,7 @@
     ]
   },
   "Croissant": {
-    "Serving": 15,
+    "serving": 15,
     "steps": [
       {
         "type": "Bake",
@@ -155,7 +155,7 @@
     ]
   },
   "Fish": {
-    "Serving": 4,
+    "serving": 4,
     "steps": [
       {
         "type": "cook",
@@ -180,7 +180,7 @@
     ]
   },
   "Fries": {
-    "Serving": 4,
+    "serving": 4,
     "steps": [
       {
         "type": "cook",
@@ -205,7 +205,7 @@
     ]
   },
   "Omelette": {
-    "Serving": 6,
+    "serving": 6,
     "steps": [
       {
         "type": "cook",
@@ -230,7 +230,7 @@
     ]
   },
   "Pasta": {
-    "Serving": 4,
+    "serving": 4,
     "steps": [
       {
         "type": "cook",
@@ -246,7 +246,7 @@
     ]
   },
   "Pie": {
-    "Serving": 6,
+    "serving": 6,
     "steps": [
       {
         "type": "Bake",
@@ -275,7 +275,7 @@
     ]
   },
   "Pizza": {
-    "Serving": 15,
+    "serving": 15,
     "steps": [
       {
         "type": "Bake",
@@ -295,7 +295,7 @@
     ]
   },
   "Rice": {
-    "Serving": 2,
+    "serving": 2,
     "steps": [
       {
         "type": "Reheat",
@@ -311,7 +311,7 @@
     ]
   },
   "Sandwiches": {
-    "Serving": 1,
+    "serving": 1,
     "steps": [
       {
         "type": "Reheat",
@@ -327,7 +327,7 @@
     ]
   },
   "Toast": {
-    "Serving": 1,
+    "serving": 1,
     "steps": [
       {
         "type": "Reheat",
