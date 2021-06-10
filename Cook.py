@@ -22,7 +22,7 @@ class Cook:
     async def init(self, method='fixed'):
         # if method == 'fixed':
         self.df = read_csv('Temp.csv', index_col=0)
-        self.db = DB('./FoodDB.json')
+        self.db = DB('./FoodDB.json',readOnly=True)
         # derived
 
     async def start(self, item):
@@ -38,7 +38,7 @@ class Cook:
 
             self.isCooking = True
 
-            self.steps = (await self.db.get(item)).copy()['steps']
+            self.steps = self.db._get(item).copy()['steps']
             self.totalSteps = len(self.steps)
 
             for s in range(self.totalSteps):
