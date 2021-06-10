@@ -9,7 +9,6 @@ import Cook
 import Ultrasound
 import Temp
 from SimpleWebSocketServer import SimpleWebSocketServer
-import WebSocketServer
 import Energy
 import DB
 import Automations
