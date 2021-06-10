@@ -10,147 +10,27 @@ class WebSocketServer(WebSocket):
 
     def handleMessage(self):
         req = json.loads(self.data)
-        if req['msg'] == 'method':
-            try:
-                self.sendMessage(getattr(self, req['method'])())
-            except Exception as e:
-                res = {
-                    'msg': 'error',
-                    'error': str(e),
-                    'code': 501
-                }
-                self.sendMessage(json.dumps(res))
-        elif req['msg'] == 'direct':
-            try:
-                if 'params' in req:
-                    self.sendMessage(getattr(self, req['module'])(req['function'],*req['params']))
-                else:
-                    self.sendMessage(getattr(self, req['module'])(req['function']))
-            except Exception as e:
-                res = {
-                    'msg': 'error',
-                    'error': str(e),
-                    'code': 501
-                }
-                self.sendMessage(json.dumps(res))
-        else:
-            res = {
-                'msg': 'error',
-                'error': 'unrecognized request',
-                'code': 501
-            }
-            self.sendMessage(json.dumps(res))
-        
-    def energy(self, _fn, *params):
+        res = {
+            'type': 'none'
+        }
         try:
-            fn = getattr(self.e.energy, _fn)
-            var = async_to_sync(fn)(*params)
+            fn = getattr(getattr(self.e,req['module']), req['function'])
+            var = async_to_sync(fn)(*req['params'])
             res = {
-                'msg': 'result',
-                'req': str(_fn),
+                'type': 'result',
+                'req': req['function'],
                 'result': var
             }
-            return json.dumps(res)
         except Exception as e:
             res = {
-                'msg': 'error',
-                'req': str(_fn),
+                'type': 'error',
+                'req': req['function'],
                 'error': str(e)
             }
-            return json.dumps(res)
+        self.sendMessage(json.dumps(res))
 
-    def history(self, _fn, *params):
-        try:
-            fn = getattr(self.e.history, _fn)
-            var = async_to_sync(fn)(*params)
-            res = {
-                'msg': 'result',
-                'req': str(_fn),
-                'result': var
-            }
-            return json.dumps(res)
-        except Exception as e:
-            res = {
-                'msg': 'error',
-                'req': str(_fn),
-                'error': str(e)
-            }
-            return json.dumps(res)
-
-    def automations(self, _fn, *params):
-        try:
-            fn = getattr(self.e.automations, _fn)
-            var = async_to_sync(fn)(*params)
-            res = {
-                'msg': 'result',
-                'req': str(_fn),
-                'result': var
-            }
-            return json.dumps(res)
-        except Exception as e:
-            res = {
-                'msg': 'error',
-                'req': str(_fn),
-                'error': str(e)
-            }
-            return json.dumps(res)
-
-    def cook(self, _fn, *params):
-        try:
-            fn = getattr(self.e.cook, _fn)
-            var = async_to_sync(fn)(*params)
-            res = {
-                'msg': 'result',
-                'req': str(_fn),
-                'result': var
-            }
-            return json.dumps(res)
-        except Exception as e:
-            res = {
-                'msg': 'error',
-                'req': str(_fn),
-                'error': str(e)
-            }
-            return json.dumps(res)
-
-    def display(self, _fn, *params):
-        try:
-            fn = getattr(self.e.display, _fn)
-            var = async_to_sync(fn)(*params)
-            res = {
-                'msg': 'result',
-                'req': str(_fn),
-                'result': var
-            }
-            return json.dumps(res)
-        except Exception as e:
-            res = {
-                'msg': 'error',
-                'req': str(_fn),
-                'error': str(e)
-            }
-            return json.dumps(res)
-
-    def audio(self, _fn, *params):
-        try:
-            fn = getattr(self.e.audio, _fn)
-            var = async_to_sync(fn)(*params)
-            res = {
-                'msg': 'result',
-                'req': str(_fn),
-                'result': var
-            }
-            return json.dumps(res)
-        except Exception as e:
-            res = {
-                'msg': 'error',
-                'req': str(_fn),
-                'error': str(e)
-            }
-            return json.dumps(res)
-            
-    # def handleConnected(self):
-    #     print(self.address, 'connected')
+    def handleConnected(self):
+        self.e.log("Socket: {} Connected".format(self.address))
 
     # def handleClose(self):
     #     print(self.address, 'closed')

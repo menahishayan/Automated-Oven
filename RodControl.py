@@ -99,8 +99,7 @@ class RodControl:
 
         self.isSustaining = True
 
-        # while not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
-        for i in range(4):
+        while not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
             if round(self.currentTemp) >= temp:
                 await self.cool(temp-8)
             elif round(self.currentTemp) < temp:
