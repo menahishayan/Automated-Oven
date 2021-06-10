@@ -45,10 +45,10 @@ class Cook:
                 self.currentStep = s
                 step = self.steps[s]
 
-                step['startTime'] = time()
                 step['isDone'] = False
 
                 while not step['isDone']:
+                    step['startTime'] = time()
                     await getattr(self,step['type'])(step)
                     while self.SIGPAUSE and not self.e._SIGKILL:
                         await sleep(1)
