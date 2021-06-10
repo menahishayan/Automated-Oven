@@ -82,6 +82,8 @@ class Cook:
     async def cook(self,s):
         duration = s['duration']*10 # *60
         self.e.log("Cooking: Cooking {}".format(duration))
+        
+        s['startTime'] = time()
 
         end = s['startTime'] + duration 
 
