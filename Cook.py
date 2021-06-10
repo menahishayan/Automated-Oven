@@ -147,13 +147,13 @@ class Cook:
         if self.SIGPAUSE:
             return True
         try:
+            self.e.log("Cooking: Paused")
             self.steps[self.currentStep]['pauseTime'] = time()
             self.pauseTime = time() # legacy
             self.SIGPAUSE = True
 
             self.topRod.off()
 
-            self.e.log("Cooking: Paused")
             return True
         except:
             return False
