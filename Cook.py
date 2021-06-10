@@ -22,7 +22,7 @@ class Cook:
     async def start(self, item):
         # steps
         try:
-            self.steps = await self.db.get(item)['steps']
+            self.steps = (await self.db.get(item))['steps']
             self.e.log(self.steps)
 
             self.top = int(self.df['Top'][item])
