@@ -43,7 +43,7 @@ class Cook:
             self.steps = (await self.db.get(item))['steps']
             self.totalSteps = len(self.steps)
 
-            for s in self.totalSteps:
+            for s in len(self.totalSteps):
                 self.currentStep = s
                 step = self.steps[s]
                 self.e.log(step)
