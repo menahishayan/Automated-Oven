@@ -66,28 +66,31 @@ class EventHandler:
             [self.cook.init]
         ])
 
-        while not self._SIGKILL:
-            await self.temp.update()
-            if not self.cook.isCooking:
-                dist = await self.ultrasound.get()
+        try:
+            while not self._SIGKILL:
+                await self.temp.update()
+                if not self.cook.isCooking:
+                    dist = await self.ultrasound.get()
 
-                if dist < 16:
-                    tasks = await self.dispatch([
-                        [self.display.loading],
-                        [self.detector.detect],
-                    ])
+                    if dist < 16:
+                        tasks = await self.dispatch([
+                            [self.display.loading],
+                            [self.detector.detect],
+                        ])
 
-                    res = tasks[1].result()
+                        res = tasks[1].result()
 
-                    self.log("Detection: " + res)
+                        self.log("Detection: " + res)
 
-                    await self.dispatch([
-                        [self.cook.start, res]
-                    ])
+                        await self.dispatch([
+                            [self.cook.start, res]
+                        ])
+                    else:
+                        await asyncio.sleep(0.3)
                 else:
-                    await asyncio.sleep(0.3)
-            else:
-                await asyncio.sleep(1)
+                    await asyncio.sleep(1)
+        except Exception as e:
+            self.err(e)
 
 
     async def dispatch(self, arrayOfDispatches):
