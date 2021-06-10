@@ -38,7 +38,7 @@ class Cook:
 
             self.isCooking = True
 
-            self.steps = (await self.db.get(item))['steps']
+            self.steps = (await self.db.get(item)).copy()['steps']
             self.totalSteps = len(self.steps)
 
             for s in range(self.totalSteps):
