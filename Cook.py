@@ -55,6 +55,7 @@ class Cook:
             self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20 + time(), 'Cook'
 
     async def sleepTill(self,end):
+        self.e.log(end)
         while time() <= end and not self.e._SIGKILL:
             await sleep(1)
 
