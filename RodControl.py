@@ -80,8 +80,6 @@ class RodControl:
 
         self.isAdjusting = True
 
-        self.e.log(self.lastHeatTime)
-        self.e.log(self.coolingTemp(time() - self.lastHeatTime))
         if self.lastHeatTime > 0:
             self.currentTemp = self.coolingTemp(time() - self.lastHeatTime)
 

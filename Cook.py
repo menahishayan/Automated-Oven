@@ -49,7 +49,7 @@ class Cook:
                 step['isDone'] = False
 
                 while not step['isDone']:
-                    await getattr(self,step['type'])(step if len(step) > 1 else None)
+                    await getattr(self,step['type'])(step)
                     while self.SIGPAUSE and not self.e._SIGKILL:
                         await sleep(1)
 
@@ -63,44 +63,44 @@ class Cook:
         while time() <= end and not self.e._SIGKILL:
             await sleep(1)
 
-    async def preheat(self,args):
-        s = self.steps[self.currentStep]
+    async def preheat(self,s):
+        
         self.e.log("Cooking: Preheating")
 
-        heatTime = self.topRod.heatingTime(args['temp'])
-        end = s['startTime'] + heatTime if heatTime >=0 else self.topRod.coolingTime(args['temp'])
+        heatTime = self.topRod.heatingTime(s['temp'])
+        end = s['startTime'] + heatTime if heatTime >=0 else self.topRod.coolingTime(s['temp'])
 
         s['endTime'] = end
 
-        await self.topRod.reachTemp(args['temp'])
+        await self.topRod.reachTemp(s['temp'])
 
         if time() >= end:
             s['isDone'] = True
             
         return
 
-    async def cook(self,args):
-        s = self.steps[self.currentStep]
+    async def cook(self,s):
+        
         self.e.log("Cooking: Cooking")
 
         if 'pauseTime' not in s:
-            end = s['startTime'] + args['duration']*10 # *60
+            end = s['startTime'] + s['duration']*10 # *60
             s['endTime'] = end
         else:
             end = s['endTime']
 
-        await self.topRod.sustainTemp(args['topTemp'],args['duration']*10)
+        await self.topRod.sustainTemp(s['topTemp'],s['duration']*10)
 
         if time() >= end:
             s['isDone'] = True
             
         return
 
-    async def checkpoint(self,args):
-        s = self.steps[self.currentStep]
+    async def checkpoint(self,s):
+        
         self.e.log("Cooking: Checkpoint")
 
-        end = s['startTime'] + args['maxWaitTime']
+        end = s['startTime'] + s['maxWaitTime']
 
         s['endTime'] = end
 
@@ -111,21 +111,21 @@ class Cook:
             
         return
 
-    async def notify(self,args):
-        s = self.steps[self.currentStep]
+    async def notify(self,s):
+        
         self.e.log("Cooking: Notify")
 
         s['isDone'] = True
             
         return
 
-    async def cool(self,args):
-        s = self.steps[self.currentStep]
+    async def cool(self,s):
+        
         self.e.log("Cooking: Cool")
 
         self.topRod.off()
 
-        end = s['startTime'] + args['duration'] # *10
+        end = s['startTime'] + s['duration'] # *10
 
         s['endTime'] = end
 
@@ -136,7 +136,7 @@ class Cook:
             
         return
 
-    async def pause(self):
+    async def pause(self,s=None):
         if self.SIGPAUSE:
             return True
         try:
@@ -155,7 +155,7 @@ class Cook:
         if not self.SIGPAUSE:
             return True
         try:
-            s = self.steps[self.currentStep]
+            
             s['startTime'] = time() -(s['pauseTime']-s['startTime'])
             s['endTime'] = s['endTime'] + (time()-s['pauseTime'])
 
