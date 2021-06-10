@@ -15,7 +15,7 @@ class WebSocketServer(WebSocket):
         }
         try:
             fn = getattr(getattr(self.e,req['module']), req['function'])
-            var = async_to_sync(fn)(*req['params'])
+            var = async_to_sync(fn)(*req['params']) if 'params' in req else async_to_sync(fn)()
             res = {
                 'type': 'result',
                 'req': req['function'],

@@ -4,9 +4,9 @@
   const ws = new WebSocket('ws://oven.local:8069/');
   ws.addEventListener('open', () => {
     req = {
-      user: 'John',
-      msg: 'method',
-      method: 'getCooking'
+      "module": 'cook',
+      "function": 'get',
+      'params': []
     }
     // document.write('Connected\n')
     ws.send(JSON.stringify(req));
