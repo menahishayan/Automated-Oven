@@ -21,7 +21,7 @@ class RodControl:
         self.SIGKILLSUSTAIN = False
 
     def heatingTime(self,temp):
-        return (0.36*(temp-self.currentTemp)) - 0.626
+        return (0.36*(temp-self.currentTemp)) - 0.626 +4.186
 
     def heatingTemp(self,_time):
         return self.currentTemp + (_time * 2.778)
