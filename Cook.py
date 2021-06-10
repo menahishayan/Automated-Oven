@@ -30,7 +30,7 @@ class Cook:
 
             self.isCooking = True
 
-            self.topRod.set(self.top)
+            await self.topRod.set(self.top)
 
         except Exception as e:
             # self.e.err("Cook - Unknown Food")
