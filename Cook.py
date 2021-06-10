@@ -86,6 +86,8 @@ class Cook:
         if 'pauseTime' not in s:
             end = s['startTime'] + args['duration']*10 # *60
             s['endTime'] = end
+        else:
+            end = s['endTime']
 
         await self.topRod.sustainTemp(args['topTemp'],args['duration']*10)
 
@@ -149,6 +151,8 @@ class Cook:
     
     async def resume(self):
                 # steps
+        if not self.SIGPAUSE:
+            return True
         try:
             s = self.steps[self.currentStep]
             s['startTime'] = time() -(s['pauseTime']-s['startTime'])
