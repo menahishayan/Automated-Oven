@@ -137,6 +137,8 @@ class Cook:
         return
 
     async def pause(self):
+        if self.SIGPAUSE:
+            return True
         try:
             self.steps[self.currentStep]['pauseTime'] = time()
             self.pauseTime = time() # legacy
@@ -150,7 +152,6 @@ class Cook:
             return False
     
     async def resume(self):
-                # steps
         if not self.SIGPAUSE:
             return True
         try:
