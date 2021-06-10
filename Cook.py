@@ -63,12 +63,14 @@ class Cook:
         # await self.topRod.set(args['temp'])
         # await self.e.dispatch([[self.topRod.reachTemp,args['temp']/2]])
 
-        self.e.log("next")
         start = time()
         heatTime = self.topRod.heatingTime(args['temp'])
         end = start + heatTime if heatTime >=0 else self.topRod.coolingTime(args['temp'])
 
-        await self.topRod.reachTemp(args['temp']/2)
+        self.steps[self.currentStep]['startTime'] = start
+        self.steps[self.currentStep]['endTime'] = end
+
+        await self.topRod.reachTemp(args['temp'])
 
         return
 
@@ -80,7 +82,10 @@ class Cook:
         start = time()
         end = start + args['duration']*10 # *60
 
-        await self.topRod.sustainTemp(args['topTemp']/2,args['duration']*10)
+        self.steps[self.currentStep]['startTime'] = start
+        self.steps[self.currentStep]['endTime'] = end
+
+        await self.topRod.sustainTemp(args['topTemp'],args['duration']*10)
 
         return
 
@@ -89,6 +94,9 @@ class Cook:
 
         start = time()
         end = start + args['maxWaitTime']
+
+        self.steps[self.currentStep]['startTime'] = start
+        self.steps[self.currentStep]['endTime'] = end
 
         await self.sleepTill(end)
         return
@@ -104,6 +112,9 @@ class Cook:
 
         start = time()
         end = start + args['duration'] # *10
+
+        self.steps[self.currentStep]['startTime'] = start
+        self.steps[self.currentStep]['endTime'] = end
 
         await self.sleepTill(end)
         return
@@ -193,10 +204,10 @@ class Cook:
                 if self.isPaused == False:
                     return {
                         'item': self.item,
-                        'top': self.top,
-                        'bottom': self.bottom,
-                        'startTime': self.startTime,
-                        'endTime': self.endTime,
+                        
+                        'steps': self.steps,
+                        'currentStep': self.currentStep,
+
                         'cooktype': self.cooktype,
                         'isPaused': self.isPaused,
                         'isCooking': self.isCooking,
@@ -205,10 +216,10 @@ class Cook:
                 else:
                     return {
                         'item': self.item,
-                        'top': self.top,
-                        'bottom': self.bottom,
-                        'startTime': self.startTime,
-                        'endTime': self.endTime,
+
+                        'steps': self.steps,
+                        'currentStep': self.currentStep,
+
                         'cooktype': self.cooktype,
                         'isPaused': self.isPaused,
                         'isCooking': self.isCooking,
@@ -216,10 +227,9 @@ class Cook:
                     }
             else:
                 return {
-                    'top': self.top,
-                    'bottom': self.bottom,
-                    'startTime': 0,
-                    'endTime': 0,
+                    'steps': self.steps,
+                    'currentStep': self.currentStep,
+
                     'cooktype': self.cooktype,
                     'isPaused': self.isPaused,
                     'isCooking': self.isCooking,
