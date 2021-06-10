@@ -1,9 +1,12 @@
 {
   "Cookies": {
-    "serving": 36,
     "steps": [
       {
-        "type": "Bake",
+        "type": "preheat",
+        "temp": 190
+      },
+      {
+        "type": "cook",
         "topTemp": 190,
         "bottomTemp": 0,
         "duration": 10
@@ -20,10 +23,13 @@
     ]
   },
   "Cake": {
-    "serving": 12,
     "steps": [
       {
-        "type": "Bake",
+        "type": "preheat",
+        "temp": 175
+      },
+      {
+        "type": "cook",
         "topTemp": 175,
         "bottomTemp": 0,
         "duration": 25
@@ -40,10 +46,13 @@
     ]
   },
   "Bread": {
-    "serving": 24,
     "steps": [
       {
-        "type": "Bake",
+        "type": "preheat",
+        "temp": 175
+      },
+      {
+        "type": "cook",
         "topTemp": 175,
         "bottomTemp": 0,
         "duration": 20
@@ -52,7 +61,7 @@
         "type": "notify"
       },
       {
-        "type": "Bake",
+        "type": "cook",
         "topTemp": 175,
         "bottomTemp": 0,
         "duration": 20
@@ -69,10 +78,13 @@
     ]
   },
   "Burger": {
-    "serving": 1,
     "steps": [
       {
-        "type": "Reheat",
+        "type": "preheat",
+        "temp": 200
+      },
+      {
+        "type": "cook",
         "topTemp": 200,
         "bottomTemp": 200,
         "duration": 3
@@ -85,8 +97,11 @@
     ]
   },
   "Chicken": {
-    "serving": 4,
     "steps": [
+      {
+        "type": "preheat",
+        "temp": 160
+      },
       {
         "type": "cook",
         "topTemp": 160,
@@ -110,10 +125,13 @@
     ]
   },
   "Coffee": {
-    "serving": 1,
     "steps": [
       {
-        "type": "Reheat",
+        "type": "preheat",
+        "temp": 190
+      },
+      {
+        "type": "cook",
         "topTemp": 190,
         "bottomTemp": 190,
         "duration": 3
@@ -126,10 +144,13 @@
     ]
   },
   "Croissant": {
-    "serving": 15,
     "steps": [
       {
-        "type": "Bake",
+        "type": "preheat",
+        "temp": 190
+      },
+      {
+        "type": "cook",
         "topTemp": 190,
         "bottomTemp": 0,
         "duration": 15
@@ -138,7 +159,7 @@
         "type": "notify"
       },
       {
-        "type": "Bake",
+        "type": "cook",
         "topTemp": 0,
         "bottomTemp": 5,
         "duration": 20
@@ -155,8 +176,11 @@
     ]
   },
   "Fish": {
-    "serving": 4,
     "steps": [
+      {
+        "type": "preheat",
+        "temp": 200
+      },
       {
         "type": "cook",
         "topTemp": 200,
@@ -180,8 +204,11 @@
     ]
   },
   "Fries": {
-    "serving": 4,
     "steps": [
+      {
+        "type": "preheat",
+        "temp": 230
+      },
       {
         "type": "cook",
         "topTemp": 230,
@@ -205,8 +232,11 @@
     ]
   },
   "Omelette": {
-    "serving": 6,
     "steps": [
+      {
+        "type": "preheat",
+        "temp": 175
+      },
       {
         "type": "cook",
         "topTemp": 175,
@@ -230,8 +260,11 @@
     ]
   },
   "Pasta": {
-    "serving": 4,
     "steps": [
+      {
+        "type": "preheat",
+        "temp": 175
+      },
       {
         "type": "cook",
         "topTemp": 175,
@@ -246,10 +279,13 @@
     ]
   },
   "Pie": {
-    "serving": 6,
     "steps": [
       {
-        "type": "Bake",
+        "type": "preheat",
+        "temp": 180
+      },
+      {
+        "type": "cook",
         "topTemp": 0,
         "bottomTemp": 180,
         "duration": 45
@@ -258,7 +294,7 @@
         "type": "notify"
       },
       {
-        "type": "Bake",
+        "type": "cook",
         "topTemp": 175,
         "bottomTemp": 0,
         "duration": 5
@@ -275,10 +311,13 @@
     ]
   },
   "Pizza": {
-    "serving": 15,
     "steps": [
       {
-        "type": "Bake",
+        "type": "preheat",
+        "temp": 190
+      },
+      {
+        "type": "cook",
         "topTemp": 190,
         "bottomTemp": 0,
         "duration": 20
@@ -295,10 +334,13 @@
     ]
   },
   "Rice": {
-    "serving": 2,
     "steps": [
       {
-        "type": "Reheat",
+        "type": "preheat",
+        "temp": 200
+      },
+      {
+        "type": "cook",
         "topTemp": 200,
         "bottomTemp": 200,
         "duration": 5
@@ -311,10 +353,13 @@
     ]
   },
   "Sandwiches": {
-    "serving": 1,
     "steps": [
       {
-        "type": "Reheat",
+        "type": "preheat",
+        "temp": 200
+      },
+      {
+        "type": "cook",
         "topTemp": 200,
         "bottomTemp": 200,
         "duration": 3
@@ -327,10 +372,13 @@
     ]
   },
   "Toast": {
-    "serving": 1,
     "steps": [
       {
-        "type": "Reheat",
+        "type": "preheat",
+        "temp": 200
+      },
+      {
+        "type": "cook",
         "topTemp": 200,
         "bottomTemp": 200,
         "duration": 3

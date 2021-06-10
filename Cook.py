@@ -2,6 +2,7 @@ from pandas import read_csv
 import time
 import RodControl
 from board import D12
+from DB import DB
 
 class Cook:
     def __init__(self, e):
@@ -13,13 +14,17 @@ class Cook:
         self.topRod = RodControl.RodControl(D12,e)
 
     async def init(self, method='fixed'):
-        if method == 'fixed':
-            self.df = read_csv('Temp.csv', index_col=0)
+        # if method == 'fixed':
+        self.df = read_csv('Temp.csv', index_col=0)
+        self.db = DB('./FoodDB.json')
         # derived
 
     async def start(self, item):
         # steps
         try:
+            self.steps = await self.db.get(item)['steps']
+            self.e.log(self.steps)
+
             self.top = int(self.df['Top'][item])
             self.bottom = int(self.df['Bottom'][item])
             self.endTime = time.time() + (int(self.df['Time'][item])  * 20)
