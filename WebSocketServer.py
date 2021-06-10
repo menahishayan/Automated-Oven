@@ -29,8 +29,8 @@ class WebSocketServer(WebSocket):
             }
         self.sendMessage(json.dumps(res))
 
-    def handleConnected(self):
-        self.e.log("Socket: {} Connected".format(self.address))
+    # def handleConnected(self):
+    #     self.e.log("Socket: {} Connected".format(list(self.address)[0]))
 
     # def handleClose(self):
     #     print(self.address, 'closed')

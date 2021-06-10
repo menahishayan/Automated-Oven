@@ -5,8 +5,7 @@
   ws.addEventListener('open', () => {
     req = {
       "module": 'cook',
-      "function": 'get',
-      'params': []
+      "function": 'get'
     }
     // document.write('Connected\n')
     ws.send(JSON.stringify(req));

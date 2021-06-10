@@ -11,7 +11,7 @@ import Temp
 from SimpleWebSocketServer import SimpleWebSocketServer
 import WebSocketServer
 import Energy
-import History
+import DB
 import Automations
 import Audio
 import signal
@@ -35,7 +35,7 @@ class EventHandler:
         self.server = SimpleWebSocketServer('', 8069, WebSocketServer.WebSocketServer,self)
         self.cook = Cook.Cook(self)
         self.energy = Energy.Energy(self)
-        self.history = History.History()
+        self.history = DB.DB('./HistoryDB.json')
         self.audio = Audio.Audio()
         self.automations = Automations.Automations()
         signal.signal(signal.SIGTERM, self.sig_handler)
