@@ -168,7 +168,7 @@ class Cook:
             s['startTime'] = time() -(s['pauseTime']-s['startTime'])
             s['endTime'] = s['endTime'] + (time()-s['pauseTime'])
 
-            self.e.log("Start_R: {}".format(time() - s['startTime']))
+            self.e.log("Start_R: {}".format(time() - self.steps[self.currentStep]['startTime']))
             self.e.log("End_R: {}".format(s['endTime'] - time()))
 
             self.SIGPAUSE = False
