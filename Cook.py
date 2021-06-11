@@ -81,20 +81,24 @@ class Cook:
     async def cook(self,s):
         duration = s['duration']*10 # *60
         self.e.log("Cooking: Cooking {}".format(duration))
-
-        s['startTime'] = time()
-
-        end = s['startTime'] + duration 
+        
 
         if 'pauseTime' not in s:
-            s['endTime'] = end
+            s['startTime'] = time()
+            s['endTime'] = s['startTime'] + duration 
         else:
-            end = s['endTime']
+            s['startTime'] = time() -(s['pauseTime']-s['startTime'])
+            s['endTime'] = s['endTime'] + (time()-s['pauseTime'])
+
+            self.e.log("Start: {}".format(time() - s['startTime']))
+            self.e.log("End: {}".format(s['endTime'] - time()))
+            # end = s['endTime']
+
             del(s['pauseTime'])
 
-        self.e.log(end -time())
+        self.e.log(s['endTime'] -time())
 
-        await self.topRod.sustainTemp(s['topTemp'],end)
+        await self.topRod.sustainTemp(s['topTemp'],s['endTime'])
 
         if time() > end:
             s['isDone'] = True
@@ -149,7 +153,7 @@ class Cook:
         try:
             self.e.log("Cooking: Paused")
             self.steps[self.currentStep]['pauseTime'] = time()
-            self.pauseTime = time() # legacy
+            # self.pauseTime = time() # legacy
             self.SIGPAUSE = True
 
             self.topRod.off()
