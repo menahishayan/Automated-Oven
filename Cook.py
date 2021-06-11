@@ -52,6 +52,9 @@ class Cook:
                     while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
                         await sleep(1)
 
+                if self.e._SIGKILL or self.SIGTERM:
+                    break
+
             self.done()
 
         except Exception as e:
