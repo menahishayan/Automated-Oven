@@ -22,34 +22,35 @@ class Cook:
         self.db = DB('./FoodDB.json')
 
     async def cookingHandler(self):
-        if self.isCooking:
-            return False
-        elif len(self.steps) > 0 and self.currentStep == -1:
-            try:
-                self.isCooking = True
-                self.SIGTERM = False
-                self.isDone = False
+        while not self.e._SIGKILL:
+            if self.isCooking:
+                return False
+            elif len(self.steps) > 0 and self.currentStep == -1:
+                try:
+                    self.isCooking = True
+                    self.SIGTERM = False
+                    self.isDone = False
 
-                for s in range(len(self.steps)):
-                    self.currentStep = s
-                    step = self.steps[s]
+                    for s in range(len(self.steps)):
+                        self.currentStep = s
+                        step = self.steps[s]
 
-                    step['isDone'] = False
+                        step['isDone'] = False
 
-                    while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
-                        await getattr(self, step['type'])(step)
-                        while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
-                            await sleep(0.5)
+                        while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
+                            await getattr(self, step['type'])(step)
+                            while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
+                                await sleep(0.5)
 
-                    if self.e._SIGKILL or self.SIGTERM:
-                        break
+                        if self.e._SIGKILL or self.SIGTERM:
+                            break
 
-                self.done()
+                    self.done()
 
-            except Exception as e:
-                self.e.err(e)
-        else:
-            sleep(0.7)
+                except Exception as e:
+                    self.e.err(e)
+            else:
+                sleep(0.7)
 
     async def startFromDB(self, item):
         if not self.isCooking:
