@@ -43,11 +43,11 @@ class RodControl:
         start = time()
         while time()-start <= _time:
             if self.SIGKILLADJUST or self.SIGKILLSUSTAIN or self.e._SIGKILL:
-                if adjust:
-                    self.isAdjusting = False
-                else:
-                    self.isSustaining = False
-                self.SIGKILLADJUST = self.SIGKILLSUSTAIN = False
+                # if adjust:
+                #     self.isAdjusting = False
+                # else:
+                #     self.isSustaining = False
+                # self.SIGKILLADJUST = self.SIGKILLSUSTAIN = False
                 break
 
             # if round(time()-start)%10 == 0:
