@@ -20,7 +20,7 @@ from os import kill, getpid
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '1.0.6'
+        self.__version__ = '1.1.0'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
