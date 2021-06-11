@@ -1,1 +1,6 @@
-{"name": "Oven", "lastHeatTemp": 177.7300964174535, "lastHeatTime": 1623406342.0738792}
+{
+    "name": "Oven",
+    "lastHeatTemp": 177.7300964174535,
+    "lastHeatTime": 1623406342.0738792,
+    "demoMode": true
+}
