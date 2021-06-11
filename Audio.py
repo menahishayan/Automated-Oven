@@ -19,3 +19,4 @@ class Audio:
 
     def play(self):
         system('aplay ./CantinaBand3.wav')
+
