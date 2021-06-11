@@ -3,12 +3,12 @@ from subprocess import PIPE, run
 
 class Audio:
     def __init__(self):
-        self.volume = int(self.readVolume())
-        # self.volume = 50
+        # self.volume = int(self.readVolume())
+        self.volume = 50
 
     def readVolume(self):
         result = run('amixer -M sget Headphone', stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
-        print(result)
+        print(result.stdout.split(-1)[0])
         return result.stdout.split(-1)[0]
 
     def getVolume(self):
