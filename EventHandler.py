@@ -41,7 +41,7 @@ class EventHandler:
         self.cook = Cook(self)
         self.energy = Energy(self)
         self.history = DB('./HistoryDB.json')
-        # self.audio = Audio()
+        self.audio = Audio()
         self.automations = Automations()
 
         signal.signal(signal.SIGTERM, self.sig_handler)

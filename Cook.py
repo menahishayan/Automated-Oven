@@ -182,6 +182,10 @@ class Cook:
 
         self.steps = None
         self.currentStep = -1
+        try:
+            self.e.audio.play()
+        except Exception as e:
+            self.e.err(e)
 
     async def stop(self):
         try:

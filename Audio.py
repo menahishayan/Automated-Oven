@@ -1,27 +1,27 @@
-from os import name, system  
+from os import system  
 from subprocess import PIPE, run
 
 class Audio:
     def __init__(self):
-        # self.volume = int(self.readVolume())
-        self.volume = 50
+        try:
+            self.volume = int(self.readVolume())
+        except:
+            self.volume = 50
 
     def readVolume(self):
         result = run('amixer -M sget Headphone', stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
-        res = str(result.stdout).split('[')[1]
-        # return result.stdout
-        print(res)
+        res = int(str(result.stdout).split('[')[1].split('%')[0])
+        return res
 
     def getVolume(self):
         return self.volume
 
     def setVolume(self,vol):
-        system("amixer -q -M sset Headphone {}%".format(vol))
+        run("amixer -q -M sset Headphone {}%".format(vol))
         self.volume = vol
 
     def play(self):
-        system('aplay ./CantinaBand3.wav')
+        run('aplay ./audio/Chime.wav')
 
 if __name__ == '__main__':
     a = Audio()
-    a.readVolume()
