@@ -23,10 +23,8 @@ class Cook:
 
     async def cookingHandler(self):
         while not self.e._SIGKILL:
-            self.e.log(self.isCooking)
-            if self.isCooking:
-                return False
-            elif len(self.steps) > 0 and self.currentStep == -1:
+            # self.e.log(self.isCooking)
+            if not self.isCooking and len(self.steps) > 0 and self.currentStep == -1:
                 try:
                     self.isCooking = True
                     self.SIGTERM = False
