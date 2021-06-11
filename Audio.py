@@ -9,7 +9,7 @@ class Audio:
     def readVolume(self):
         result = run('amixer -M sget Headphone', stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
         print(result)
-        return result.stdout.split(-1)
+        return result.stdout.split(-1)[0]
 
     def getVolume(self):
         return self.volume
