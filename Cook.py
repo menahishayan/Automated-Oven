@@ -57,7 +57,8 @@ class Cook:
         if not self.isCooking:
             self.item = item
             self.steps = self.db._get(item).copy()['steps']
-            # self.e.log(self.steps)
+            await sleep(1)
+
             return True
         return False
 
@@ -77,6 +78,8 @@ class Cook:
                 'bottomTemp': args['temp'],
                 'duration': args['time'],
             })
+            await sleep(1)
+
             return True
         return False
 
