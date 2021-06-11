@@ -6,15 +6,17 @@ class DB:
         f = open(self.path).read()
         self.db = json.loads(f)
 
-    def __del__(self):
+    def flush(self):
         with open(self.path, "w") as outfile: 
             json.dump(self.db, outfile)
 
     def set(self,k,v):
         self.db[k] = v
+        self.flush()
 
     def push(self,item):
         self.db.append(item)
+        self.flush()
 
     async def get(self,item=None):
         if item and item in self.db:
