@@ -96,8 +96,6 @@ class Cook:
 
             del(s['pauseTime'])
 
-        self.e.log(s['endTime'] -time())
-
         await self.topRod.sustainTemp(s['topTemp'],s['endTime'])
 
         if time() > s['endTime']:
@@ -170,8 +168,8 @@ class Cook:
             s['startTime'] = time() -(s['pauseTime']-s['startTime'])
             s['endTime'] = s['endTime'] + (time()-s['pauseTime'])
 
-            self.e.log("Start: {}".format(time() - s['startTime']))
-            self.e.log("End: {}".format(s['endTime'] - time()))
+            self.e.log("Start_R: {}".format(time() - s['startTime']))
+            self.e.log("End_R: {}".format(s['endTime'] - time()))
 
             self.SIGPAUSE = False
 
