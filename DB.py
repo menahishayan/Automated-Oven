@@ -24,9 +24,13 @@ class DB:
         return self.db
 
     def _get(self,item=None):
-        if item and item in self.db:
-            return self.db[item]
-        return self.db
+        if item:
+            if item in self.db:
+                return self.db[item]
+            else:
+                return None
+        else:
+            return self.db
         
     def has(self,item):
         return item in self.db

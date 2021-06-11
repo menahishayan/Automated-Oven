@@ -19,7 +19,7 @@ import signal
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '1.2.0'
+        self.__version__ = '1.3.0'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -41,7 +41,7 @@ class EventHandler:
         self.cook = Cook(self)
         self.energy = Energy(self)
         self.history = DB('./HistoryDB.json')
-        self.audio = Audio()
+        self.audio = Audio(self)
         self.automations = Automations()
 
         signal.signal(signal.SIGTERM, self.sig_handler)
