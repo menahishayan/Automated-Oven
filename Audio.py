@@ -17,11 +17,12 @@ class Audio:
         return self.volume
 
     def setVolume(self,vol):
-        run("amixer -q -M sset Headphone {}%".format(vol))
+        system("amixer -q -M sset Headphone {}%".format(vol))
         self.volume = vol
 
     def play(self):
-        run('aplay ./audio/Chime.wav')
+        system('aplay audio/Chime.wav')
 
 if __name__ == '__main__':
     a = Audio()
+    a.play()
