@@ -100,6 +100,7 @@ class Cook:
 
         if time() > s['endTime']:
             s['isDone'] = True
+        self.e.log("{} Done: {}".format(s['type'],s['isDone']))
             
         return
 
