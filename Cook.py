@@ -24,9 +24,9 @@ class Cook:
     async def cookingHandler(self):
         while not self.e._SIGKILL:
             self.e.log(self.isCooking)
-            self.e.log(len(self.steps))
+            self.e.log(self.steps)
             self.e.log(self.currentStep)
-            if not self.isCooking and len(self.steps) > 0 and self.currentStep == -1:
+            if not self.isCooking and self.steps and self.currentStep == -1:
                 try:
                     self.isCooking = True
                     self.SIGTERM = False
@@ -57,6 +57,7 @@ class Cook:
         if not self.isCooking:
             self.item = item
             self.steps = self.db._get(item).copy()['steps']
+            self.e.log(self.steps)
             return True
         return False
 
