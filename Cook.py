@@ -87,11 +87,10 @@ class Cook:
         end = s['startTime'] + duration 
 
         if 'pauseTime' not in s:
-            self.e.log("pauseTime not in s")
             s['endTime'] = end
         else:
-            self.e.log(self.steps)
             end = s['endTime']
+            del(s['pauseTime'])
 
         self.e.log(end -time())
 
@@ -150,7 +149,6 @@ class Cook:
         try:
             self.e.log("Cooking: Paused")
             self.steps[self.currentStep]['pauseTime'] = time()
-            self.e.log("CurrStep: {}".format(self.steps[self.currentStep]['type']))
             self.pauseTime = time() # legacy
             self.SIGPAUSE = True
 
