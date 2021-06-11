@@ -7,7 +7,7 @@ class Audio:
         # self.volume = 50
 
     def readVolume(self):
-        result = run("awk -F\"[][]\" '/dB/ { print $2 }' <(amixer -M sget Headphone)", stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True).stdout
+        result = run("awk -F\"[][]\" '/dB/ { print $2 }' <(amixer -M sget Headphone)", stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
         print(result)
         return result.stdout.split(-1)
 
