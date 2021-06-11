@@ -73,7 +73,7 @@ class Cook:
 
         await self.topRod.reachTemp(s['temp'])
 
-        if time() >= end:
+        if time() > end:
             s['isDone'] = True
             
         return
@@ -97,7 +97,7 @@ class Cook:
 
         await self.topRod.sustainTemp(s['topTemp'],end)
 
-        if time() >= end:
+        if time() > end:
             s['isDone'] = True
             
         return
@@ -150,6 +150,7 @@ class Cook:
         try:
             self.e.log("Cooking: Paused")
             self.steps[self.currentStep]['pauseTime'] = time()
+            self.e.log("CurrStep: {}".format(self.steps[self.currentStep]['type']))
             self.pauseTime = time() # legacy
             self.SIGPAUSE = True
 
@@ -166,6 +167,9 @@ class Cook:
             s = self.steps[self.currentStep]
             s['startTime'] = time() -(s['pauseTime']-s['startTime'])
             s['endTime'] = s['endTime'] + (time()-s['pauseTime'])
+
+            self.e.log("Start: {}".format(time() - s['startTime']))
+            self.e.log("End: {}".format(s['endTime'] - time()))
 
             self.SIGPAUSE = False
 
