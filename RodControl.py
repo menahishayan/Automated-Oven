@@ -87,6 +87,9 @@ class RodControl:
 
         self.isAdjusting = True
 
+        self.SIGKILLADJUST = False
+        self.SIGKILLSUSTAIN = False
+
         if self.lastHeatTime > 0:
             self.currentTemp = self.coolingTemp(time() - self.lastHeatTime)
 
@@ -110,6 +113,9 @@ class RodControl:
             await sleep(1)
 
         self.isSustaining = True
+
+        self.SIGKILLADJUST = False
+        self.SIGKILLSUSTAIN = False
 
         if self.lastHeatTime > 0:
             self.currentTemp = self.coolingTemp(time() - self.lastHeatTime)

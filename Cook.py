@@ -100,7 +100,7 @@ class Cook:
 
         await self.topRod.sustainTemp(s['topTemp'],s['endTime'])
 
-        if time() > end:
+        if time() > s['endTime']:
             s['isDone'] = True
             
         return
