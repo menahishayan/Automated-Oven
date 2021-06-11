@@ -185,6 +185,10 @@ class Cook:
         self.cooktype = 'Done'
         self.topRod.off()
 
+        self.steps = None
+        self.currentStep = -1
+        self.totalSteps = 0
+
     async def stop(self):
                 # steps
         try:
