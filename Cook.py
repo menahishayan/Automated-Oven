@@ -23,7 +23,6 @@ class Cook:
 
     async def cookingHandler(self):
         while not self.e._SIGKILL:
-            self.e.log(self.isCooking)
             if self.isCooking:
                 return False
             elif len(self.steps) > 0 and self.currentStep == -1:
@@ -51,7 +50,7 @@ class Cook:
                 except Exception as e:
                     self.e.err(e)
             else:
-                sleep(0.7)
+                await sleep(0.7)
 
     async def startFromDB(self, item):
         if not self.isCooking:
