@@ -20,6 +20,8 @@ from os import kill, getpid
 
 class EventHandler:
     def __init__(self):
+        self.__version__ = '1.0.1'
+
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
                             datefmt="%H:%M:%S", filename='./logfile.log', filemode='w')
@@ -31,6 +33,7 @@ class EventHandler:
         self.logging = logging
 
         self.config = DB('./config.json')
+
         self.display = DisplayContent()
         self.detector = Detector()
         self.ultrasound = Ultrasound()
@@ -44,6 +47,9 @@ class EventHandler:
 
         signal.signal(signal.SIGTERM, self.sig_handler)
         signal.signal(signal.SIGINT, self.sig_handler)
+
+        self.log("Boot: v"+ self.__version__)
+
         # signal.signal(signal.SIGSTOP, self.sig_handler)
 
     def log(self, msg):
@@ -85,9 +91,7 @@ class EventHandler:
 
                         self.log("Detection: " + res)
 
-                        await self.dispatch([
-                            [self.cook.start, res]
-                        ])
+                        await self.cook.startFromDB(res)
                     else:
                         await asyncio.sleep(0.3)
                 else:

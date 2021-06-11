@@ -1,6 +1,4 @@
-import asyncio
 from asyncio.tasks import sleep
-from pandas import read_csv
 from time import time
 import RodControl
 from board import D12
@@ -10,56 +8,75 @@ from DB import DB
 class Cook:
     def __init__(self, e):
         self.e = e
-        self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 0, 0, 0, 'Cook'
         self.SIGPAUSE = False
         self.SIGTERM = False
         self.isCooking = False
-        self.startTime, self.pauseTime = None, None
+        self.isDone = False
         self.topRod = RodControl.RodControl(D12, e)
 
         self.steps = None
         self.currentStep = -1
-        self.totalSteps = 0
+        self.item = 'Empty'
 
-    async def init(self, method='fixed'):
-        self.df = read_csv('Temp.csv', index_col=0)
+    async def init(self):
         self.db = DB('./FoodDB.json')
 
-    async def start(self, item):
-        try:
-            # self.top = int(self.df['Top'][item])
-            # self.bottom = int(self.df['Bottom'][item])
-            # self.endTime = time() + (int(self.df['Time'][item]) * 20)
-            # self.cooktype = str(self.df['Type'][item])
-            # self.startTime = time()
+    async def cookingHandler(self):
+        while not self.e._SIGKILL:
+            if self.isCooking:
+                return False
+            elif len(self.steps) > 0 and self.currentStep == -1:
+                try:
+                    self.isCooking = True
+                    self.SIGTERM = False
+                    self.isDone = False
 
+                    for s in range(len(self.steps)):
+                        self.currentStep = s
+                        step = self.steps[s]
+
+                        step['isDone'] = False
+
+                        while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
+                            await getattr(self, step['type'])(step)
+                            while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
+                                await sleep(0.5)
+
+                        if self.e._SIGKILL or self.SIGTERM:
+                            break
+
+                    self.done()
+
+                except Exception as e:
+                    self.e.err(e)
+            else:
+                sleep(0.7)
+
+    async def startFromDB(self, item):
+        if not self.isCooking:
             self.item = item
-
-            self.isCooking = True
-            self.SIGTERM = False
-
             self.steps = self.db._get(item).copy()['steps']
-            self.totalSteps = len(self.steps)
+            return True
+        return False
 
-            for s in range(self.totalSteps):
-                self.currentStep = s
-                step = self.steps[s]
+    async def startCustom(self, args):
+        if not self.isCooking:
+            self.item = 'Custom'
+            self.steps = []
 
-                step['isDone'] = False
-
-                while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
-                    await getattr(self, step['type'])(step)
-                    while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
-                        await sleep(1)
-
-                if self.e._SIGKILL or self.SIGTERM:
-                    break
-
-            self.done()
-
-        except Exception as e:
-            self.e.err(e)
-            self.item, self.top, self.bottom, self.endTime, self.cooktype = '', 180, 180, 20 + time(), 'Cook'
+            if args['preheat']:
+                self.steps.append({
+                    'type': 'preheat',
+                    'temp': args['temp']
+                })
+            self.steps.append({
+                'type': 'cook',
+                'topTemp': args['temp'],
+                'bottomTemp': args['temp'],
+                'duration': args['time'],
+            })
+            return True
+        return False
 
     async def sleepTill(self, end):
         while time() <= end and not self.e._SIGKILL:
@@ -82,7 +99,7 @@ class Cook:
         return
 
     async def cook(self, s):
-        duration = s['duration']*10  # *60
+        duration = s['duration'] * (10 if self.e.config._get('demoMode') else 60)
         self.e.log("Cooking: Cooking {}".format(duration))
 
         if 'pauseTime' not in s:
@@ -118,7 +135,7 @@ class Cook:
         s['startTime'] = time()
 
         self.topRod.off()
-        s['endTime'] = s['startTime'] + s['duration']  # *10
+        s['endTime'] = s['startTime'] + s['duration'] * (10 if self.e.config._get('demoMode') else 60)
 
         await self.sleepTill(s['endTime'])
         s['isDone'] = True
@@ -158,12 +175,11 @@ class Cook:
         self.SIGTERM = True
         self.topRod.off()
         self.isCooking = False
+        self.isDone = True
         self.SIGPAUSE = False
-        self.cooktype = 'Done'
 
         self.steps = None
         self.currentStep = -1
-        self.totalSteps = 0
 
     async def stop(self):
         try:
@@ -212,73 +228,56 @@ class Cook:
             self.e.err(e)
             return False
 
-    async def setTopTemp(self, temp):
-        # steps
+    async def setTemp(self, _type, temp):
         try:
-            self.top = int(temp)
-            await self.e.dispatch([[self.topRod.reachTemp, self.top]])
-            return True
-        except Exception as e:
-            self.e.err(e)
+            if self.isCooking:
+                s = self.steps[self.currentStep]
+                if _type == 'preheat':
+                    if s['type'] == 'preheat':
+                        s['temp'] = int(temp)
+                        return True
+                elif _type == 'top':
+                    if s['type'] == 'cook':
+                        s['topTemp'] = int(temp)
+                        return True
+                elif _type == 'bottom':
+                    if s['type'] == 'cook':
+                        s['bottomTemp'] = int(temp)
+                        return True
             return False
-
-    async def setBottomTemp(self, temp):
-        # steps
-        try:
-            self.bottom = int(temp)
-            return True
         except Exception as e:
             self.e.err(e)
             return False
 
     async def setTime(self, t):
-        # steps
         try:
-            if self.startTime > 0 and self.isCooking == True:
-                self.endTime = self.startTime + int(t)
-                return True
-            else:
-                raise Exception("Cook.setTime is only supported during cooking")
+            if self.isCooking:
+                s = self.steps[self.currentStep]
+                if s['type'] == 'cook':
+                    d = int(t) * (10 if self.e.config._get('demoMode') else 60)
+                    if 'pauseTime' in s:
+                        s['endTime'] = d - (s['pauseTime'] - s['startTime'])
+                        s['duration'] = d
+                    else:
+                        self.topRod.off()
+                        self.SIGPAUSE = True
+                        s['duration'] = d
+                        self.SIGPAUSE = False
+                    return True
+            return False
         except Exception as e:
             self.e.err(e)
             return False
 
     async def get(self):
         try:
-            if self.isCooking == True:
-                if self.SIGPAUSE == False:
-                    return {
-                        'item': self.item,
-
-                        'steps': self.steps,
-                        'currentStep': self.currentStep,
-
-                        'cooktype': self.cooktype,
-                        'isPaused': self.SIGPAUSE,
-                        'isCooking': self.isCooking,
-                        'pauseTime': 0,
-                    }
-                else:
-                    return {
-                        'item': self.item,
-
-                        'steps': self.steps,
-                        'currentStep': self.currentStep,
-
-                        'cooktype': self.cooktype,
-                        'isPaused': self.SIGPAUSE,
-                        'isCooking': self.isCooking,
-                        'pauseTime': self.pauseTime,
-                    }
-            else:
-                return {
-                    'steps': self.steps,
-                    'currentStep': self.currentStep,
-
-                    'cooktype': self.cooktype,
-                    'isPaused': self.SIGPAUSE,
-                    'isCooking': self.isCooking,
-                }
+            return {
+                'item': self.item,
+                'steps': self.steps,
+                'currentStep': self.currentStep,
+                'isPaused': self.SIGPAUSE,
+                'isCooking': self.isCooking,
+            }
         except Exception as e:
             self.e.log(e)
             return {

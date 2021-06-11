@@ -50,8 +50,5 @@ class WebSocketServer(WebSocket):
             logs = log
         return logs
 
-    # def handleConnected(self):
-    #     self.e.log("Socket: {} Connected".format(list(self.address)[0]))
-
-    # def handleClose(self):
-    #     print(self.address, 'closed')
+    async def getVersion(self):
+        return self.e.__version__
