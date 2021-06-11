@@ -1,7 +1,7 @@
 from SimpleWebSocketServer import WebSocket
 import json
 from asgiref.sync import async_to_sync
-
+from os import system
 
 class WebSocketServer(WebSocket):
     def init(self, e):
@@ -49,6 +49,10 @@ class WebSocketServer(WebSocket):
         with open('./logfile.log') as log:
             logs = log
         return logs
+
+    async def restart(self):
+        system('sudo reboot')
+        return True
 
     async def getVersion(self):
         return self.e.__version__

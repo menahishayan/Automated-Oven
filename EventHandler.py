@@ -63,9 +63,6 @@ class EventHandler:
         self.server.close()
         exit()
 
-    def poweroff(self):
-        kill(getpid(), signal.SIGTERM)
-
     def dispatchWorker(self, fn, *args):
         return asyncio.run(fn(*args))
 
