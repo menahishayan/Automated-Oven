@@ -87,8 +87,8 @@ class Cook:
             s['startTime'] = time()
             s['endTime'] = s['startTime'] + duration 
         else:
-            s['startTime'] = time() -(s['pauseTime']-s['startTime'])
-            s['endTime'] = s['endTime'] + (time()-s['pauseTime'])
+            # s['startTime'] = time() -(s['pauseTime']-s['startTime'])
+            # s['endTime'] = s['endTime'] + (time()-s['pauseTime'])
 
             self.e.log("Start: {}".format(time() - s['startTime']))
             self.e.log("End: {}".format(s['endTime'] - time()))
