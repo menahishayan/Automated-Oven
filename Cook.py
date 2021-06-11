@@ -20,13 +20,10 @@ class Cook:
         self.totalSteps = 0
 
     async def init(self, method='fixed'):
-        # if method == 'fixed':
         self.df = read_csv('Temp.csv', index_col=0)
         self.db = DB('./FoodDB.json')
-        # derived
 
     async def start(self, item):
-        # steps
         try:
             self.top = int(self.df['Top'][item])
             self.bottom = int(self.df['Bottom'][item])
@@ -48,7 +45,7 @@ class Cook:
                 step['isDone'] = False
 
                 while not step['isDone'] and not self.e._SIGKILL:
-                    await getattr(self,step['type'])(self.steps[self.currentStep])
+                    await getattr(self,step['type'])(step)
                     while self.SIGPAUSE and not self.e._SIGKILL:
                         await sleep(1)
 
@@ -81,69 +78,46 @@ class Cook:
     async def cook(self,s):
         duration = s['duration']*10 # *60
         self.e.log("Cooking: Cooking {}".format(duration))
-        
 
         if 'pauseTime' not in s:
             s['startTime'] = time()
             s['endTime'] = s['startTime'] + duration 
         else:
-            # s['startTime'] = time() -(s['pauseTime']-s['startTime'])
-            # s['endTime'] = s['endTime'] + (time()-s['pauseTime'])
-
             self.e.log("Start: {}".format(time() - s['startTime']))
             self.e.log("End: {}".format(s['endTime'] - time()))
-            # end = s['endTime']
-
             del(s['pauseTime'])
 
         await self.topRod.sustainTemp(s['topTemp'],s['endTime'])
 
         if time() > s['endTime']:
             s['isDone'] = True
-        self.e.log("{} Done: {}".format(s['type'],s['isDone']))
             
         return
 
     async def checkpoint(self,s):
-        
-        s['startTime'] = time()
         self.e.log("Cooking: Checkpoint")
 
-        end = s['startTime'] + s['maxWaitTime']
+        s['startTime'] = time()
+        s['endTime'] = s['startTime'] + s['maxWaitTime']
+        await self.sleepTill(s['endTime'])
 
-        s['endTime'] = end
-
-        await self.sleepTill(end)
-
-        # if time() >= end:
         s['isDone'] = True
-            
         return
 
     async def notify(self,s):
-        
         self.e.log("Cooking: Notify")
-
         s['isDone'] = True
-            
         return
 
     async def cool(self,s):
-        
-        s['startTime'] = time()
         self.e.log("Cooking: Cool")
+        s['startTime'] = time()
 
         self.topRod.off()
+        s['endTime'] = s['startTime'] + s['duration'] # *10
 
-        end = s['startTime'] + s['duration'] # *10
-
-        s['endTime'] = end
-
-        await self.sleepTill(end)
-
-        # if time() >= end:
+        await self.sleepTill(s['endTime'])
         s['isDone'] = True
-            
         return
 
     async def pause(self,s=None):
@@ -152,7 +126,6 @@ class Cook:
         try:
             self.e.log("Cooking: Paused")
             self.steps[self.currentStep]['pauseTime'] = time()
-            # self.pauseTime = time() # legacy
             self.SIGPAUSE = True
 
             self.topRod.off()
@@ -169,11 +142,10 @@ class Cook:
             s['startTime'] = time() -(s['pauseTime']-s['startTime'])
             s['endTime'] = s['endTime'] + (time()-s['pauseTime'])
 
-            self.e.log("Start_R: {}".format(time() - self.steps[self.currentStep]['startTime']))
-            self.e.log("End_R: {}".format(s['endTime'] - time()))
+            # self.e.log("Start_R: {}".format(time() - self.steps[self.currentStep]['startTime']))
+            # self.e.log("End_R: {}".format(s['endTime'] - time()))
 
             self.SIGPAUSE = False
-
             self.e.log("Cooking: Resumed")
 
             return True
