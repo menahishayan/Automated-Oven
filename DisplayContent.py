@@ -252,11 +252,11 @@ class DisplayContent:
                     )
                 )
 
-                imDraw.line([(40, 40), (135, 40)], fill="#fff", width=5)
+                imDraw.line((40, 135, 40, 40), fill="#fff", width=5)
 
-                topText = str(steps[curStepIndex]['temp'])
+                # topText = str(steps[curStepIndex]['temp'])
                 # w_s, _ = imDraw.textsize(topText, font=self.fonts['mini'])
-                imDraw.text((120, 30), topText, font=self.fonts['mini'], align="right", fill="#fff")
+                # imDraw.text((120, 30), topText, font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(1)
