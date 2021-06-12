@@ -89,7 +89,7 @@ class DisplayContent:
 
         image = ImageEnhance.Color(image).enhance(3)
         image = ImageEnhance.Contrast(image).enhance(0.7)
-        # image = ImageEnhance.Brightness(image).enhance(0.6)
+        image = ImageEnhance.Brightness(image).enhance(0.6)
 
         image = invert(image)
         self.disp.image(image)
