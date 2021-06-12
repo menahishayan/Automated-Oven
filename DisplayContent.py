@@ -256,7 +256,7 @@ class DisplayContent:
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)
 
-                currTemp = int(self.e.cook.topRod.get())
+                currTemp = self.e.cook.topRod.get()
                 percent = currTemp/steps[curStepIndex]['temp']
                 if percent > 1:
                     break
@@ -270,14 +270,14 @@ class DisplayContent:
                     )
                 )
 
-                imDraw.line((135-(currTemp*60/250), 44, 135, 44), fill="#fff", width=3)
+                imDraw.line((140-(currTemp*60/250), 44, 140, 44), fill="#fff", width=3)
 
                 finalTemp = int(steps[curStepIndex]['temp'])
                 w_s, _ = imDraw.textsize(str(finalTemp), font=self.fonts['mini'])
                 imDraw.text((self.width-w_s-25, 27), str(finalTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.5)
         except Exception as e:
             self.e.err(e)
             self.e.err(sys.exc_info()[-1].tb_lineno)
@@ -315,18 +315,18 @@ class DisplayContent:
                 )
 
                 topTemp = int(steps[curStepIndex]['topTemp'])
-                imDraw.line((135-(topTemp*60/250), 44, 135, 44), fill="#fff", width=3)
+                imDraw.line((140-(topTemp*60/250), 44, 140, 44), fill="#fff", width=3)
                 w_t, _ = imDraw.textsize(str(topTemp), font=self.fonts['mini'])
                 imDraw.text((self.width-w_t-25, 27), str(topTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
 
                 bottomTemp = int(steps[curStepIndex]['bottomTemp'])
-                imDraw.line((135-(bottomTemp*60/250), 78, 135, 78), fill="#fff", width=3)
+                imDraw.line((140-(bottomTemp*60/250), 78, 140, 78), fill="#fff", width=3)
                 w_b, _ = imDraw.textsize(str(bottomTemp), font=self.fonts['mini'])
                 imDraw.text((self.width-w_b-25, 80), str(bottomTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.5)
         except Exception as e:
             self.e.err(e)
             self.e.err(sys.exc_info()[-1].tb_lineno)
