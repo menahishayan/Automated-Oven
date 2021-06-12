@@ -298,11 +298,9 @@ class DisplayContent:
 
                     d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
                     percent = round(n/d,2)
-                    self.e.log(percent)
-
-                    timeRemaining = int(steps[curStepIndex]['endTime'] - time())
-                    if timeRemaining < 0: 
+                    if percent > 1:
                         break
+                    timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     # pause
 
                 image.paste(
