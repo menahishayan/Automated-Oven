@@ -53,7 +53,7 @@ class DisplayContent:
             'subtitle': ImageFont.truetype('./fonts/SF-Pro-Display-Regular.ttf', 16),
             'alert': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 28),
             'prompt': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 20),
-            'mini': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 12),
+            'mini': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 13),
         }
 
         self.colors = {
@@ -257,11 +257,11 @@ class DisplayContent:
                     )
                 )
 
-                imDraw.line((135-(currTemp*60/250), 43, 135, 43), fill="#fff", width=3)
+                imDraw.line((135-(currTemp*60/250), 44, 135, 44), fill="#fff", width=3)
 
                 finalTemp = int(steps[curStepIndex]['temp'])
                 w_s, _ = imDraw.textsize(str(finalTemp), font=self.fonts['mini'])
-                imDraw.text((self.width-w_s-25, 28), str(finalTemp), font=self.fonts['mini'], align="right", fill="#fff")
+                imDraw.text((self.width-w_s-25, 27), str(finalTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(1)
