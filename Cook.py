@@ -38,9 +38,8 @@ class Cook:
                         while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
                             await self.e.dispatch([
                                 [getattr(self, step['type']),step],
-                                [self.e.display.preheat,self.currentStep, self.steps]
+                                [getattr(self.e.display, step['type']),self.currentStep, self.steps]
                             ])
-                            # await getattr(self, step['type'])(step)
                             while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
                                 await sleep(0.5)
 
@@ -241,19 +240,19 @@ class Cook:
     async def setTemp(self, _type, temp):
         try:
             if self.isCooking:
+                self.SIGPAUSE = True
                 s = self.steps[self.currentStep]
                 if _type == 'preheat':
                     if s['type'] == 'preheat':
                         s['temp'] = int(temp)
-                        return True
                 elif _type == 'top':
                     if s['type'] == 'cook':
                         s['topTemp'] = int(temp)
-                        return True
                 elif _type == 'bottom':
                     if s['type'] == 'cook':
                         s['bottomTemp'] = int(temp)
-                        return True
+                self.SIGPAUSE = False
+                return True
             return False
         except Exception as e:
             self.e.err(e)

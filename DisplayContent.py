@@ -97,9 +97,9 @@ class DisplayContent:
 
         self.display(image)
 
-    def icon(self, path):
+    def icon(self, path, large=False):
         image = Image.open(path)
-        return image.resize((30, 30), Image.BICUBIC)
+        return image.resize((60, 60), Image.BICUBIC) if large else image.resize((30, 30), Image.BICUBIC)
 
     async def text(self, text):
         image = Image.new("RGB", (self.width, self.height))
@@ -232,6 +232,23 @@ class DisplayContent:
 
         return image
 
+    def baseImageCenterIcon(self, curStepIndex, stepTypes):
+        image = Image.new("RGB", (self.width, self.height))
+
+        imDraw = ImageDraw.Draw(image)
+
+        name = stepTypes[curStepIndex].capitalize()
+
+        image.paste(self.getProgressItems(curStepIndex, stepTypes))
+        icon = self.icon('./images/{}Icon.png'.format(name), large=True)
+        image.paste(icon, ((self.width-60)//2, (self.height-60)//2), mask=icon)
+
+        textSub = name
+        w_s, _ = imDraw.textsize(textSub, font=self.fonts['mini'])
+        imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
+
+        return image
+
     async def preheat(self, curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM:
@@ -262,6 +279,112 @@ class DisplayContent:
                 finalTemp = int(steps[curStepIndex]['temp'])
                 w_s, _ = imDraw.textsize(str(finalTemp), font=self.fonts['mini'])
                 imDraw.text((self.width-w_s-25, 27), str(finalTemp), font=self.fonts['mini'], align="right", fill="#fff")
+
+                self.display(image)
+                await asyncio.sleep(1)
+        except Exception as e:
+            self.e.err(e)
+            self.e.err(sys.exc_info()[-1].tb_lineno)
+
+    async def cook(self, curStepIndex, steps):
+        try:
+            while not self.e._SIGKILL and not self.e.cook.SIGTERM:
+                if steps[curStepIndex]['isDone']:
+                    break
+                image = Image.new("RGB", (self.width, self.height))
+                imDraw = ImageDraw.Draw(image)
+
+                percent = 0
+                timeRemaining = steps[curStepIndex]['duration'] * (10 if self.e.config._get('demoMode') else 60)
+
+                if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
+                    n = time()-steps[curStepIndex]['startTime']
+                    d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
+                    percent = int(n/d)
+
+                    timeRemaining = int(steps[curStepIndex]['endTime'] - time())
+                    # pause
+
+                image.paste(
+                    self.baseImageLeftIcon(
+                        curStepIndex,
+                        [s['type'] for s in steps],
+                        '{:02d}:{:02d}'.format(timeRemaining//60, timeRemaining % 60),
+                        percent
+                    )
+                )
+
+
+                topTemp = int(steps[curStepIndex]['topTemp'])
+                imDraw.line((135-(topTemp*60/250), 44, 135, 44), fill="#fff", width=3)
+                w_t, _ = imDraw.textsize(str(topTemp), font=self.fonts['mini'])
+                imDraw.text((self.width-w_t-25, 27), str(topTemp), font=self.fonts['mini'], align="right", fill="#fff")
+
+
+                bottomTemp = int(steps[curStepIndex]['bottomTemp'])
+                imDraw.line((135-(bottomTemp*60/250), 78, 135, 78), fill="#fff", width=3)
+                w_t, _ = imDraw.textsize(str(topTemp), font=self.fonts['mini'])
+                imDraw.text((self.width-w_t-25, 80), str(bottomTemp), font=self.fonts['mini'], align="right", fill="#fff")
+
+                self.display(image)
+                await asyncio.sleep(1)
+        except Exception as e:
+            self.e.err(e)
+            self.e.err(sys.exc_info()[-1].tb_lineno)
+
+    async def notify(self, curStepIndex, steps):
+        try:
+            while not self.e._SIGKILL and not self.e.cook.SIGTERM:
+                if steps[curStepIndex]['isDone']:
+                    break
+                image = Image.new("RGB", (self.width, self.height))
+                
+                image.paste(
+                    self.baseImageCenterIcon(
+                        curStepIndex,
+                        [s['type'] for s in steps]
+                    )
+                )
+
+                self.display(image)
+                await asyncio.sleep(1)
+        except Exception as e:
+            self.e.err(e)
+            self.e.err(sys.exc_info()[-1].tb_lineno)
+
+    async def checkpoint(self, curStepIndex, steps):
+        try:
+            while not self.e._SIGKILL and not self.e.cook.SIGTERM:
+                if steps[curStepIndex]['isDone']:
+                    break
+                image = Image.new("RGB", (self.width, self.height))
+                
+                image.paste(
+                    self.baseImageCenterIcon(
+                        curStepIndex,
+                        [s['type'] for s in steps]
+                    )
+                )
+
+                self.display(image)
+                await asyncio.sleep(1)
+        except Exception as e:
+            self.e.err(e)
+            self.e.err(sys.exc_info()[-1].tb_lineno)
+
+    async def cool(self, curStepIndex, steps):
+        try:
+            while not self.e._SIGKILL and not self.e.cook.SIGTERM:
+                if steps[curStepIndex]['isDone']:
+                    break
+                image = Image.new("RGB", (self.width, self.height))
+                
+                image.paste(
+                    self.baseImageCenterIcon(
+                        curStepIndex,
+                        [s['type'] for s in steps]
+                    )
+                )
 
                 self.display(image)
                 await asyncio.sleep(1)
