@@ -28,7 +28,7 @@ class RodControl:
 
 
     def heatingTime(self,temp):
-        return (0.36*(temp-self.currentTemp)) - 0.626 +1
+        return (0.36*(temp-self.currentTemp)) - 0.626 +0.5
 
     def heatingTemp(self,_time):
         return self.currentTemp + (_time * 2.778)
@@ -50,9 +50,9 @@ class RodControl:
 
             await sleep(0.5)
             if not cool:
-                self.currentTemp = self.heatingTemp(1)
+                self.currentTemp = self.heatingTemp(0.5)
             else:
-                self.currentTemp = self.coolingTemp(1)
+                self.currentTemp = self.coolingTemp(0.5)
 
     async def heat(self,temp,adjust=False):
         self.pin.value = True
@@ -75,10 +75,10 @@ class RodControl:
 
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
-            await sleep(1)
+            await sleep(0.5)
         elif self.isAdjusting:
             self.SIGKILLADJUST = True
-            await sleep(1)
+            await sleep(0.5)
 
         self.isAdjusting = True
 
@@ -99,10 +99,10 @@ class RodControl:
     async def sustainTemp(self,temp,end):
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
-            await sleep(1)
+            await sleep(0.5)
         elif self.isAdjusting:
             self.SIGKILLADJUST = True
-            await sleep(1)
+            await sleep(0.5)
 
         self.isSustaining = True
 
