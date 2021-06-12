@@ -179,11 +179,10 @@ class DisplayContent:
     def circleProgressLeft(self, percent, color):
         dia = 50
 
-        image = Image.new("RGB", (dia+10, dia+10))
+        image = Image.new("RGB", (dia+5, dia+5))
 
         draw = Draw(image)
-        pen = Pen(self.colors[color], 5)
-
+        pen = Pen(self.colors[color], 7)
 
         radian = percent * 3.6
         draw.arc((0, 0, dia, dia), 450-radian, 90, pen)
@@ -213,7 +212,7 @@ class DisplayContent:
 
         return image
 
-    def baseImageLeftIcon(self, curStepIndex, stepTypes, textMain, start, end=None):
+    def baseImageLeftIcon(self, curStepIndex, stepTypes, textMain, start, end):
         image = Image.new("RGB", (self.width, self.height))
 
         imDraw = ImageDraw.Draw(image)
@@ -222,7 +221,7 @@ class DisplayContent:
 
         image.paste(self.getProgressItems(curStepIndex, stepTypes))
         if start and end:
-            image.paste(self.circleProgressLeft((time()-start)/(end-start), stepTypes[curStepIndex]),(20, (self.height-40)//2))
+            image.paste(self.circleProgressLeft((time()-start)/(end-start), stepTypes[curStepIndex]),(15, (self.height-60)//2))
         image.paste(self.icon('./images/{}Icon.png'.format(name)), (23, (self.height-30)//2))
 
         textSub = name
