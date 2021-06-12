@@ -49,18 +49,18 @@ class DisplayContent:
 
         self.fonts = {
             'timer': ImageFont.truetype('./fonts/SF-Compact-Display-Medium.ttf', 36),
-            'subtitle': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 16),
+            'subtitle': ImageFont.truetype('./fonts/SF-Pro-Display-Regular.ttf', 16),
             'alert': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 28),
             'prompt': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 20),
             'mini': ImageFont.truetype('./fonts/SF-Pro-Display-Regular.ttf', 14),
         }
 
         self.colors = {
-            'orange': '#ff7300',
-            'yellow': '#ffd600',
+            'preheat': '#ff7300',
+            'cook': '#ffd600',
             'red': '#e93838',
-            'purple': '#634dd3',
-            'blue': '#3f91ff'
+            'notify': '#634dd3',
+            'checkpoint': '#3f91ff'
         }
     
     def clear(self):
@@ -156,22 +156,18 @@ class DisplayContent:
         self.display(image)
 
     async def loading(self):
-        # image = Image.new("RGB", (self.width, self.height))
+        image = Image.new("RGB", (self.width, self.height))
 
-        # draw = Draw(image)
+        draw = Draw(image)
 
-        # # pen = Pen(color)
-        # # brush = Brush(color)
-        # colors = list(self.colors.values())
-        # draw.ellipse((50, 59, 60, 69), Pen(colors[0]), Brush(colors[0]))
-        # draw.ellipse((75, 59, 85, 69), Pen(colors[1]), Brush(colors[1]))
-        # draw.ellipse((100, 59, 110, 69), Pen(colors[2]), Brush(colors[2]))
+        colors = list(self.colors.values())
+        draw.ellipse((50, 59, 60, 69), Pen(colors[0]), Brush(colors[0]))
+        draw.ellipse((75, 59, 85, 69), Pen(colors[1]), Brush(colors[1]))
+        draw.ellipse((100, 59, 110, 69), Pen(colors[2]), Brush(colors[2]))
 
-        # draw.flush()
+        draw.flush()
 
-        # image = invert(image)
-        # self.display(image)
-        await self.path('./images/color_test.jpg')
+        self.display(image)
 
 
     # async def cookingListener(self):
@@ -181,16 +177,36 @@ class DisplayContent:
     #         else:
     #             await asyncio.sleep(1)
 
+    def getProgressItems(self,curStepIndex, steps):
+        total = len(steps)
+        marginTop = 3
+        dia = 8
+        space = 10
+
+        image = Image.new("RGB", (self.width, dia+marginTop))
+        draw = Draw(image)
+
+        w = ((dia + space) * total) - space
+        marginLeft = (self.width - w)/2
+        
+        for s in range(total):
+            left = marginLeft + ((dia+space)*s)
+            draw.ellipse((left, marginTop, left+dia, marginTop+dia), Pen(self.colors[steps[s]]), Brush(self.colors[steps[s]]))
+
+        return
+
     async def preheat(self,curStepIndex, steps):
         image = Image.open('./images/PreheatScreen.jpg')
 
         imDraw = ImageDraw.Draw(image)
 
+        image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
+
         textMain = '{:.1f}'.format(self.e.cook.topRod.currentTemp)
         textSub = 'Preheat'
         w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
-        w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
-        imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill=self.colors['orange'])
+        w_s, h_s = imDraw.textsize(textSub, font=self.fonts['mini'])
+        imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['mini'], align="center", fill="#fff")
 
         self.display(image)
 
