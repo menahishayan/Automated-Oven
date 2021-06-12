@@ -96,6 +96,10 @@ class DisplayContent:
 
         self.display(image)
 
+    def icon(self, path):
+        image = Image.open(path)
+        return image.resize((30, 30), Image.BICUBIC)
+
     async def text(self, text):
         image = Image.new("RGB", (self.width, self.height))
 
@@ -207,15 +211,15 @@ class DisplayContent:
                 image = Image.new("RGB",(self.width,self.height))
 
                 imDraw = ImageDraw.Draw(image)
-                image.paste(Image.open('./images/PreheatScreen.jpg'))
 
                 image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
+                image.paste(self.icon('./images/PreheatScreen.jpg'),(30,40))
 
                 textMain = '{}'.format(int(self.e.cook.topRod.get()))
                 textSub = 'Preheat'
                 w_m, _ = imDraw.textsize(textMain, font=self.fonts['alert'])
                 w_s, _ = imDraw.textsize(textSub, font=self.fonts['mini'])
-                imDraw.text((self.width-w_m-22, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
+                imDraw.text((self.width-w_m-32, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
                 imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
 
                 self.display(image)
