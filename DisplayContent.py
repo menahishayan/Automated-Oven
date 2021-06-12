@@ -11,7 +11,7 @@ from aggdraw import Draw, Pen, Brush
 from time import time
 from math import floor
 from random import sample
-
+import sys
 
 class DisplayContent:
     def __init__(self, CS_PIN=CE0, DC_PIN=D24, RESET_PIN=D25):
@@ -255,13 +255,13 @@ class DisplayContent:
                 imDraw.line((40, 135, 40, 40), fill="#fff", width=5)
 
                 topText = str(steps[curStepIndex]['temp'])
-                w_s, _ = imDraw.textsize(topText, font=self.fonts['mini'])
+                # w_s, _ = imDraw.textsize(topText, font=self.fonts['mini'])
                 imDraw.text((120, 30), topText, font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(1)
-        except Exception as e:
-            self.e.err(str(e))
+        except Exception:
+            self.e.err(sys.exc_info()[-1].tb_lineno)
 
     # async def cooking(self):
     #     image = Image.new("RGB", (self.width, self.height))
