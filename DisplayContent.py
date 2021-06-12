@@ -10,7 +10,7 @@ from PIL.ImageOps import invert
 from aggdraw import Draw, Pen, Brush
 from time import time
 from math import floor
-
+from random import choice
 
 class DisplayContent:
     def __init__(self, CS_PIN=CE0, DC_PIN=D24, RESET_PIN=D25):
@@ -60,6 +60,14 @@ class DisplayContent:
             'alert': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 28),
             'prompt': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 20),
             'mini': ImageFont.truetype('./fonts/SF-Pro-Display-Regular.ttf', 14),
+        }
+
+        self.colors = {
+            'orange': '#ff7300',
+            'yellow': '#ffd600',
+            'red': '#e93838',
+            'purple': '#634dd3',
+            'blue': '#3f91ff'
         }
 
     async def path(self, path):
@@ -149,22 +157,19 @@ class DisplayContent:
         image = Image.new("RGB", (self.width, self.height))
 
         draw = Draw(image)
-        # pen = Pen("white")
-        # brush = Brush("white")
 
-        # draw.ellipse((50, 59, 60, 69), pen, brush)
-        # draw.ellipse((75, 59, 85, 69), pen, brush)
-        # draw.ellipse((100, 59, 110, 69), pen, brush)
+        # pen = Pen(color)
+        # brush = Brush(color)
+        colors = list(self.colors.values())
 
-        # radius = 100
-        percent = 0
+        color = choice(colors)
+        draw.ellipse((50, 59, 60, 69), Pen(color), Brush(color))
 
-        for n in range(percent):
-            pen = Pen((255 - (n*2),0,n*2), 7)
+        color = choice(colors)
+        draw.ellipse((75, 59, 85, 69), Pen(color), Brush(color))
 
-            radian = n * 3.6
-            draw.arc((50, 34, 110, 94), 450-radian, 90+radian-1, pen)
-            percent+=5
+        color = choice(colors)
+        draw.ellipse((100, 59, 110, 69), Pen(color), Brush(color))
 
         draw.flush()
 
@@ -179,10 +184,18 @@ class DisplayContent:
     #             await asyncio.sleep(1)
 
     async def preheat(self,curStepIndex, steps, args):
-        image = Image.new("RGB", (self.width, self.height))
+        image = Image.open('./images/PreheatScreen.jpg')
 
         imDraw = ImageDraw.Draw(image)
 
+        textMain = '{:.1f}'.format(self.e.cook.topRod.currentTemp)
+        textSub = 'Preheat'
+        w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
+        w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
+        imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill="#000")
+
+        image = invert(image)
+        self.disp.image(image)
 
     # async def cooking(self):
     #     image = Image.new("RGB", (self.width, self.height))
