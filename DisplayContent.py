@@ -30,7 +30,7 @@ class DisplayContent:
             height=160,
             x_offset=0,
             y_offset=0,
-            baudrate=24000000,
+            baudrate=25000000,
             cs=DigitalInOut(self.CS_PIN),
             dc=DigitalInOut(self.DC_PIN),
             rst=DigitalInOut(self.RESET_PIN))
