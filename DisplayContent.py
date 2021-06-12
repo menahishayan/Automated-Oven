@@ -161,7 +161,6 @@ class DisplayContent:
         image = invert(image)
         self.display(image)
 
-    
     async def loading(self):
         image = Image.new("RGB", (self.width, self.height))
 
@@ -177,7 +176,7 @@ class DisplayContent:
         self.display(image)
 
     def circleProgressLeft(self, percent, color):
-        dia = 45
+        dia = 44
 
         image = Image.new("RGB", (dia+6, dia+6))
 
@@ -185,7 +184,7 @@ class DisplayContent:
         pen = Pen(self.colors[color], 7)
 
         self.e.log(percent)
-        radian = percent * 36
+        radian = percent * 3600
         draw.arc((3, 3, dia+3, dia+3), 450-radian, 90, pen)
 
         draw.flush()
@@ -213,7 +212,7 @@ class DisplayContent:
 
         return image
 
-    def baseImageLeftIcon(self, curStepIndex, stepTypes, textMain, start, end):
+    def baseImageLeftIcon(self, curStepIndex, stepTypes, textMain, percent):
         image = Image.new("RGB", (self.width, self.height))
 
         imDraw = ImageDraw.Draw(image)
@@ -221,10 +220,9 @@ class DisplayContent:
         name = stepTypes[curStepIndex].capitalize()
 
         image.paste(self.getProgressItems(curStepIndex, stepTypes))
-        if start and end:
-            image.paste(self.circleProgressLeft((time()-start)/(end-start), stepTypes[curStepIndex]),(14, (self.height-50)//2))
+        image.paste(self.circleProgressLeft(percent, stepTypes[curStepIndex]), (14, (self.height-50)//2))
         icon = self.icon('./images/{}Icon.png'.format(name))
-        image.paste(icon, (23, (self.height-30)//2), mask = icon)
+        image.paste(icon, (23, (self.height-30)//2), mask=icon)
 
         textSub = name
         w_m, _ = imDraw.textsize(textMain, font=self.fonts['alert'])
@@ -240,16 +238,25 @@ class DisplayContent:
                 if steps[curStepIndex]['isDone']:
                     break
                 image = Image.new("RGB", (self.width, self.height))
+                imDraw = ImageDraw.Draw(image)
+
+                start = steps[curStepIndex]['startTime'] if 'startTime' in steps[curStepIndex] else time(),
+                end = steps[curStepIndex]['endTime'] if 'endTime' in steps[curStepIndex] else 0
 
                 image.paste(
                     self.baseImageLeftIcon(
                         curStepIndex,
                         [s['type'] for s in steps],
                         str(self.e.cook.topRod),
-                        steps[curStepIndex]['startTime'] if 'startTime' in steps[curStepIndex] else None,
-                        steps[curStepIndex]['endTime'] if 'endTime' in steps[curStepIndex] else None
+                        (time()-start)/(end-start)
                     )
                 )
+
+                imDraw.line([(40, 40), (135, 40)], fill="#fff", width=5)
+
+                topText = str(steps[curStepIndex]['temp'])
+                # w_s, _ = imDraw.textsize(topText, font=self.fonts['mini'])
+                imDraw.text((120, 30), topText, font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(1)
