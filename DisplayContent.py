@@ -12,6 +12,7 @@ from time import time
 from math import floor
 from random import sample
 
+
 class DisplayContent:
     def __init__(self, CS_PIN=CE0, DC_PIN=D24, RESET_PIN=D25):
         self.CS_PIN = CS_PIN
@@ -63,7 +64,7 @@ class DisplayContent:
             'red': '#e93838',
             'cool': '#f3fbff',
         }
-    
+
     def clear(self):
         image = Image.new("RGB", (self.width, self.height))
         draw = ImageDraw.Draw(image)
@@ -160,6 +161,21 @@ class DisplayContent:
         image = invert(image)
         self.display(image)
 
+    async def circleProgressLeft(self, percent, color):
+        image = Image.new("RGB", (self.width, self.height))
+
+        draw = Draw(image)
+        pen = Pen(self.colors[color], 5)
+
+        dia = 50
+
+        radian = percent * 3.6
+        draw.arc((50, 20, 50+dia, 20+dia), 450-radian, 90, pen)
+
+        draw.flush()
+
+        return image
+
     async def loading(self):
         image = Image.new("RGB", (self.width, self.height))
 
@@ -174,15 +190,7 @@ class DisplayContent:
 
         self.display(image)
 
-
-    # async def cookingListener(self):
-    #     while not self.e._SIGKILL:
-    #         if self.e.cook.isCooking:
-    #             await self.e.dispatch([[self.cooking]])
-    #         else:
-    #             await asyncio.sleep(1)
-
-    def getProgressItems(self,curStepIndex, steps):
+    def getProgressItems(self, curStepIndex, steps):
         total = len(steps)
         marginTop = 4
         dia = 9
@@ -193,25 +201,27 @@ class DisplayContent:
 
         w = ((dia + space) * total) - space
         marginLeft = (self.width - w)/2
-        
+
         for s in range(total):
             left = marginLeft + ((dia+space)*s)
             draw.ellipse((left, marginTop, left+dia, marginTop+dia), Pen(self.colors[steps[s]]), Brush(self.colors[steps[s]]))
             if curStepIndex < s:
-                draw.ellipse((left+ (dia*0.25), marginTop + (dia*0.25), left+(dia*0.75), marginTop+(dia*0.75)), Pen("#000"), Brush("#000"))
+                draw.ellipse((left + (dia*0.25), marginTop + (dia*0.25), left+(dia*0.75), marginTop+(dia*0.75)), Pen("#000"), Brush("#000"))
         draw.flush()
 
         return image
 
-    def baseImageLeftIcon(self,curStepIndex, stepTypes, textMain):
-        image = Image.new("RGB",(self.width,self.height))
+    def baseImageLeftIcon(self, curStepIndex, stepTypes, textMain, start, end=None):
+        image = Image.new("RGB", (self.width, self.height))
 
         imDraw = ImageDraw.Draw(image)
 
         name = stepTypes[curStepIndex].capitalize()
 
-        image.paste(self.getProgressItems(curStepIndex,stepTypes))
-        image.paste(self.icon('./images/{}Icon.png'.format(name)),(23,(self.height-30)//2))
+        image.paste(self.getProgressItems(curStepIndex, stepTypes))
+        if end:
+            image.paste(self.circleProgressLeft((time()-start)/(end-start), self.colors[stepTypes]))
+        image.paste(self.icon('./images/{}Icon.png'.format(name)), (23, (self.height-30)//2))
 
         textSub = name
         w_m, _ = imDraw.textsize(textMain, font=self.fonts['alert'])
@@ -221,14 +231,22 @@ class DisplayContent:
 
         return image
 
-    async def preheat(self,curStepIndex,steps):
+    async def preheat(self, curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM:
                 if steps[curStepIndex]['isDone']:
                     break
-                image = Image.new("RGB",(self.width,self.height))
+                image = Image.new("RGB", (self.width, self.height))
 
-                image.paste(self.baseImageLeftIcon(curStepIndex,[s['type'] for s in steps],str(self.e.cook.topRod)))
+                image.paste(
+                    self.baseImageLeftIcon(
+                        curStepIndex,
+                        [s['type'] for s in steps],
+                        str(self.e.cook.topRod),
+                        steps[curStepIndex]['startTime'],
+                        steps[curStepIndex]['endTime'] if 'endTime' in steps[curStepIndex] else None
+                    )
+                )
 
                 self.display(image)
                 await asyncio.sleep(1)
@@ -257,7 +275,6 @@ class DisplayContent:
     #             elif not bottom == str(self.e.cook.bottom):
     #                 await self.alert(str(self.e.cook.bottom))
     #                 await asyncio.sleep(1)
-
 
     #         # Top
     #         top = str(self.e.cook.top)
@@ -291,12 +308,11 @@ class DisplayContent:
     #             imDraw.text(((self.width-w_m)/2, (self.height-h_m)/2), textMain, font=self.fonts['timer'], align="center", fill="#000")
     #             imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill="#000")
 
-
     #             self.disp.image(image)
     #         await asyncio.sleep(1)
 
     #     # self.e.cook.done()
-     
+
     #     if self.e._SIGKILL:
     #         await self.path('./images/PowerScreen.jpg')
     #     else:

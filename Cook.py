@@ -285,6 +285,7 @@ class Cook:
                 'item': self.item,
                 'steps': self.steps,
                 'currentStep': self.currentStep,
+                'currentTempTop': self.topRod.get(),
                 'isPaused': self.SIGPAUSE,
                 'isCooking': self.isCooking,
             }
