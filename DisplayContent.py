@@ -18,7 +18,7 @@ class DisplayContent:
         self.DC_PIN = DC_PIN
         self.RESET_PIN = RESET_PIN
 
-    async def init(self, e):
+    async def init(self, e=None):
         self.e = e
 
         spi = SPI(clock=SCK, MOSI=MOSI, MISO=MISO)
@@ -152,88 +152,105 @@ class DisplayContent:
         pen = Pen("white")
         brush = Brush("white")
 
-        draw.ellipse((50, 59, 60, 69), pen, brush)
-        draw.ellipse((75, 59, 85, 69), pen, brush)
-        draw.ellipse((100, 59, 110, 69), pen, brush)
+        # draw.ellipse((50, 59, 60, 69), pen, brush)
+        # draw.ellipse((75, 59, 85, 69), pen, brush)
+        # draw.ellipse((100, 59, 110, 69), pen, brush)
+
+        radius = 20
+
+        for n in range(radius):
+            n = float(n)
+            r = float(radius - n)
+            opacity = int(( 0.25 * n / radius) * 100)
+            brush = Brush((255, 0, 0), int(opacity))
+            tl = (radius - r) // 2  # ie. top-left
+            br = (radius - r) // 2 + r  # ie. bottom-right
+            draw.ellipse((tl, tl, br, br), brush)
 
         draw.flush()
 
         image = invert(image)
         self.disp.image(image)
 
-    async def cookingListener(self):
-        while not self.e._SIGKILL:
-            if self.e.cook.isCooking:
-                await self.e.dispatch([[self.cooking]])
-            else:
-                await asyncio.sleep(1)
+    # async def cookingListener(self):
+    #     while not self.e._SIGKILL:
+    #         if self.e.cook.isCooking:
+    #             await self.e.dispatch([[self.cooking]])
+    #         else:
+    #             await asyncio.sleep(1)
 
-    async def cooking(self):
+    async def preheat(self,curStepIndex, steps, args):
         image = Image.new("RGB", (self.width, self.height))
 
         imDraw = ImageDraw.Draw(image)
 
-        item = self.e.cook.item
-        end = self.e.cook.endTime
-        start = self.e.cook.startTime
-        top, bottom = '0','0'
 
-        while floor(end-time()) > 0:
-            if self.e._SIGKILL:
-                break
-            imDraw.rectangle((0, 0, self.width, self.height), fill="#fff")
+    # async def cooking(self):
+    #     image = Image.new("RGB", (self.width, self.height))
 
-            if not top == '0' and not bottom == '0':
-                if not top == str(self.e.cook.top):
-                    await self.alert(str(self.e.cook.top))
-                    await asyncio.sleep(1)
-                elif not bottom == str(self.e.cook.bottom):
-                    await self.alert(str(self.e.cook.bottom))
-                    await asyncio.sleep(1)
+    #     imDraw = ImageDraw.Draw(image)
 
+    #     item = self.e.cook.item
+    #     end = self.e.cook.endTime
+    #     start = self.e.cook.startTime
+    #     top, bottom = '0','0'
 
-            # Top
-            top = str(self.e.cook.top)
-            imDraw.text((2, 16), top, font=self.fonts['subtitle'], align="center", fill="#000")
+    #     while floor(end-time()) > 0:
+    #         if self.e._SIGKILL:
+    #             break
+    #         imDraw.rectangle((0, 0, self.width, self.height), fill="#fff")
 
-            # Bottom
-            bottom = str(self.e.cook.bottom)
-            w_mini, _ = imDraw.textsize(bottom, font=self.fonts['subtitle'])
-            imDraw.text((self.width-w_mini-2, 16), bottom, font=self.fonts['subtitle'], align="center", fill="#000")
-
-            # Measured
-            try:
-                overalltemp = str(self.e.temp)
-                w_mini, _ = imDraw.textsize(overalltemp, font=self.fonts['subtitle'])
-                imDraw.text(((self.width-w_mini)/2, 16), overalltemp, font=self.fonts['subtitle'], align="center", fill="#000")
-            except Exception as e:
-                self.e.err("error: " + e)
-
-            if self.e.cook.isPaused == True:
-                await self.path('./images/PauseScreen.jpg')
-            else:
-                end = self.e.cook.endTime
-
-                image.paste(await self._progress(((time() - start) / (end - start))*100))
-                textMain = '{:02d}:{:02d}'.format(
-                    floor((end-time())/60), int(end-time()) % 60)
-                textSub = '{}'.format(item)
-                w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
-                w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
-
-                imDraw.text(((self.width-w_m)/2, (self.height-h_m)/2), textMain, font=self.fonts['timer'], align="center", fill="#000")
-                imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill="#000")
+    #         if not top == '0' and not bottom == '0':
+    #             if not top == str(self.e.cook.top):
+    #                 await self.alert(str(self.e.cook.top))
+    #                 await asyncio.sleep(1)
+    #             elif not bottom == str(self.e.cook.bottom):
+    #                 await self.alert(str(self.e.cook.bottom))
+    #                 await asyncio.sleep(1)
 
 
-                self.disp.image(image)
-            await asyncio.sleep(1)
+    #         # Top
+    #         top = str(self.e.cook.top)
+    #         imDraw.text((2, 16), top, font=self.fonts['subtitle'], align="center", fill="#000")
 
-        # self.e.cook.done()
+    #         # Bottom
+    #         bottom = str(self.e.cook.bottom)
+    #         w_mini, _ = imDraw.textsize(bottom, font=self.fonts['subtitle'])
+    #         imDraw.text((self.width-w_mini-2, 16), bottom, font=self.fonts['subtitle'], align="center", fill="#000")
+
+    #         # Measured
+    #         # try:
+    #         #     overalltemp = str(self.e.temp)
+    #         #     w_mini, _ = imDraw.textsize(overalltemp, font=self.fonts['subtitle'])
+    #         #     imDraw.text(((self.width-w_mini)/2, 16), overalltemp, font=self.fonts['subtitle'], align="center", fill="#000")
+    #         # except Exception as e:
+    #         #     self.e.err("error: " + e)
+
+    #         if self.e.cook.isPaused == True:
+    #             await self.path('./images/PauseScreen.jpg')
+    #         else:
+    #             end = self.e.cook.endTime
+
+    #             image.paste(await self._progress(((time() - start) / (end - start))*100))
+    #             textMain = '{:02d}:{:02d}'.format(
+    #                 floor((end-time())/60), int(end-time()) % 60)
+    #             textSub = '{}'.format(item)
+    #             w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
+    #             w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
+
+    #             imDraw.text(((self.width-w_m)/2, (self.height-h_m)/2), textMain, font=self.fonts['timer'], align="center", fill="#000")
+    #             imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill="#000")
+
+
+    #             self.disp.image(image)
+    #         await asyncio.sleep(1)
+
+    #     # self.e.cook.done()
      
-        if self.e._SIGKILL:
-            await self.path('./images/PowerScreen.jpg')
-        else:
-            await self.path('./images/DoneScreen.jpg')
+    #     if self.e._SIGKILL:
+    #         await self.path('./images/PowerScreen.jpg')
+    #     else:
+    #         await self.path('./images/DoneScreen.jpg')
 
     async def setBacklight(self, percent):
         self.backlight.duty_cycle = int(65535 * percent / 100)
