@@ -177,7 +177,7 @@ class DisplayContent:
         self.display(image)
 
     def circleProgressLeft(self, percent, color):
-        dia = 50
+        dia = 45
 
         image = Image.new("RGB", (dia+5, dia+5))
 
@@ -185,7 +185,7 @@ class DisplayContent:
         pen = Pen(self.colors[color], 7)
 
         radian = percent * 3.6
-        draw.arc((0, 0, dia, dia), 450-radian, 90, pen)
+        draw.arc((3, 3, dia+3, dia+3), 450-radian, 90, pen)
 
         draw.flush()
 
