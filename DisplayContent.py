@@ -220,7 +220,7 @@ class DisplayContent:
 
         image.paste(self.getProgressItems(curStepIndex, stepTypes))
         if end:
-            image.paste(self.circleProgressLeft((time()-start)/(end-start), self.colors[stepTypes]))
+            image.paste(self.circleProgressLeft((time()-start)/(end-start), self.colors[stepTypes[curStepIndex]]))
         image.paste(self.icon('./images/{}Icon.png'.format(name)), (23, (self.height-30)//2))
 
         textSub = name
