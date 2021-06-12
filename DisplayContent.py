@@ -88,8 +88,8 @@ class DisplayContent:
         image = image.crop((x, y, x + self.width, y + self.height))
 
         image = ImageEnhance.Color(image).enhance(2.1)
-        image = ImageEnhance.Contrast(image).enhance(1.3)
-        image = ImageEnhance.Brightness(image).enhance(0.9)
+        # image = ImageEnhance.Contrast(image).enhance(1.3)
+        # image = ImageEnhance.Brightness(image).enhance(0.9)
 
         image = invert(image)
         self.disp.image(image)
