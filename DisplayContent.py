@@ -87,8 +87,8 @@ class DisplayContent:
         y = scaled_height // 2 - self.height // 2
         image = image.crop((x, y, x + self.width, y + self.height))
 
-        image = ImageEnhance.Contrast(image).enhance(1.2)
-        image = ImageEnhance.Brightness(image).enhance(0.2)
+        image = ImageEnhance.Contrast(image).enhance(1.5)
+        image = ImageEnhance.Brightness(image).enhance(0.8)
 
         image = invert(image)
         self.disp.image(image)
