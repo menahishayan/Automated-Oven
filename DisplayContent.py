@@ -184,7 +184,7 @@ class DisplayContent:
         pen = Pen(self.colors[color], 6)
 
         self.e.log(percent)
-        radian = percent * 3600
+        radian = percent * 360
         draw.arc((3, 3, dia+3, dia+3), 450-radian, 90, pen)
 
         draw.flush()
@@ -261,7 +261,7 @@ class DisplayContent:
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     n = time()-steps[curStepIndex]['startTime']
                     d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
-                    percent = int(n/d)
+                    percent = int(n/d)*100
 
                 currTemp = int(self.e.cook.topRod.get())
                 
@@ -300,7 +300,7 @@ class DisplayContent:
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     n = time()-steps[curStepIndex]['startTime']
                     d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
-                    percent = int(n/d)
+                    percent = int(n/d)*100
 
                     timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     # pause
@@ -323,8 +323,8 @@ class DisplayContent:
 
                 bottomTemp = int(steps[curStepIndex]['bottomTemp'])
                 imDraw.line((135-(bottomTemp*60/250), 78, 135, 78), fill="#fff", width=3)
-                w_t, _ = imDraw.textsize(str(topTemp), font=self.fonts['mini'])
-                imDraw.text((self.width-w_t-25, 80), str(bottomTemp), font=self.fonts['mini'], align="right", fill="#fff")
+                w_b, _ = imDraw.textsize(str(bottomTemp), font=self.fonts['mini'])
+                imDraw.text((self.width-w_b-25, 80), str(bottomTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(1)
