@@ -211,7 +211,7 @@ class DisplayContent:
 
                 image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
 
-                textMain = '{}'.format(self.e.cook.topRod.get())
+                textMain = '{:.1f}'.format(self.e.cook.topRod.get())
                 textSub = 'Preheat'
                 w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
                 w_s, h_s = imDraw.textsize(textSub, font=self.fonts['mini'])
