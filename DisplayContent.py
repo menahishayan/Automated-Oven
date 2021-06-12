@@ -244,22 +244,25 @@ class DisplayContent:
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     n = time()-steps[curStepIndex]['startTime']
                     d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
-                    percent = n/d
+                    percent = int(n/d)
+
+                currTemp = int(self.e.cook.topRod.get())
+                
 
                 image.paste(
                     self.baseImageLeftIcon(
                         curStepIndex,
                         [s['type'] for s in steps],
-                        str(self.e.cook.topRod),
+                        str(currTemp),
                         percent
                     )
                 )
 
-                temp = int(steps[curStepIndex]['temp'])
-                imDraw.line((temp*70/250, 42, 135, 42), fill="#fff", width=3)
+                imDraw.line((currTemp*70/250, 42, 135, 42), fill="#fff", width=3)
 
-                w_s, _ = imDraw.textsize(str(temp), font=self.fonts['mini'])
-                imDraw.text((self.width-w_s-25, 30), str(temp), font=self.fonts['mini'], align="right", fill="#fff")
+                finalTemp = int(steps[curStepIndex]['temp'])
+                w_s, _ = imDraw.textsize(str(finalTemp), font=self.fonts['mini'])
+                imDraw.text((self.width-w_s-25, 30), str(finalTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(1)
