@@ -193,7 +193,9 @@ class DisplayContent:
             left = marginLeft + ((dia+space)*s)
             draw.ellipse((left, marginTop, left+dia, marginTop+dia), Pen(self.colors[steps[s]]), Brush(self.colors[steps[s]]))
 
-        return
+        draw.flush()
+
+        return image
 
     async def preheat(self,curStepIndex, steps):
         image = Image.open('./images/PreheatScreen.jpg')
