@@ -163,8 +163,7 @@ class DisplayContent:
             pen = Pen((255 - (n*2),0,n*2), 7)
 
             radian = n * 3.6
-            draw.arc((50, 34, 110, 94), 450-radian, 90, pen)
-            await asyncio.sleep(0.5)
+            draw.arc((50, 34, 110, 94), 450-radian, 90+radian-1, pen)
             percent+=5
 
         draw.flush()
