@@ -215,7 +215,7 @@ class DisplayContent:
                 name = steps[curStepIndex]['type'].capitalize()
 
                 image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
-                image.paste(self.icon('./images/{}Icon.png'.format(name)),(23,(self.height-30)/2))
+                image.paste(self.icon('./images/{}Icon.png'.format(name)),(23,(self.height-30)//2))
 
                 textMain = '{}'.format(int(self.e.cook.topRod.get()))
                 textSub = name
