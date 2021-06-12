@@ -190,7 +190,7 @@ class DisplayContent:
 
         # image = invert(image)
         # self.disp.image(image)
-        self.image('./images/color_test.jpg')
+        await self.path('./images/color_test.jpg')
 
     # async def cooking(self):
     #     image = Image.new("RGB", (self.width, self.height))
