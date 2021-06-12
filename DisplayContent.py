@@ -277,7 +277,7 @@ class DisplayContent:
                 imDraw.text((self.width-w_s-16, 27), str(finalTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
-                await asyncio.sleep(0.5)
+                await asyncio.sleep(0.3)
         except Exception as e:
             self.e.err(e)
             self.e.err(sys.exc_info()[-1].tb_lineno)
@@ -324,7 +324,7 @@ class DisplayContent:
                 imDraw.text((self.width-w_b-16, 80), str(bottomTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
-                await asyncio.sleep(0.5)
+                await asyncio.sleep(0.3)
         except Exception as e:
             self.e.err(e)
             self.e.err(sys.exc_info()[-1].tb_lineno)
