@@ -161,21 +161,7 @@ class DisplayContent:
         image = invert(image)
         self.display(image)
 
-    async def circleProgressLeft(self, percent, color):
-        image = Image.new("RGB", (self.width, self.height))
-
-        draw = Draw(image)
-        pen = Pen(self.colors[color], 5)
-
-        dia = 50
-
-        radian = percent * 3.6
-        draw.arc((50, 20, 50+dia, 20+dia), 450-radian, 90, pen)
-
-        draw.flush()
-
-        return image
-
+    
     async def loading(self):
         image = Image.new("RGB", (self.width, self.height))
 
@@ -189,6 +175,22 @@ class DisplayContent:
         draw.flush()
 
         self.display(image)
+
+    async def circleProgressLeft(self, percent, color):
+        dia = 50
+
+        image = Image.new("RGB", (dia+10, dia+10))
+
+        draw = Draw(image)
+        pen = Pen(self.colors[color], 5)
+
+
+        radian = percent * 3.6
+        draw.arc((0, 0, dia, dia), 450-radian, 90, pen)
+
+        draw.flush()
+
+        return image
 
     def getProgressItems(self, curStepIndex, steps):
         total = len(steps)
@@ -220,7 +222,7 @@ class DisplayContent:
 
         image.paste(self.getProgressItems(curStepIndex, stepTypes))
         if end:
-            image.paste(self.circleProgressLeft((time()-start)/(end-start), self.colors[stepTypes[curStepIndex]]))
+            image.paste(self.circleProgressLeft((time()-start)/(end-start), self.colors[stepTypes[curStepIndex]]),(18, (self.height-40)//2))
         image.paste(self.icon('./images/{}Icon.png'.format(name)), (23, (self.height-30)//2))
 
         textSub = name
