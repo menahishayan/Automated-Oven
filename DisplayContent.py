@@ -186,7 +186,7 @@ class DisplayContent:
         textSub = 'Preheat'
         w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
         w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
-        imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill="#000")
+        imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill=self.colors['orange'])
 
         image = invert(image)
         self.disp.image(image)
