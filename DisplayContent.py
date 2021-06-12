@@ -99,7 +99,7 @@ class DisplayContent:
 
     def icon(self, path, large=False):
         image = Image.open(path)
-        return image.resize((60, 60), Image.BICUBIC) if large else image.resize((30, 30), Image.BICUBIC)
+        return image.resize((50, 50), Image.BICUBIC) if large else image.resize((30, 30), Image.BICUBIC)
 
     async def text(self, text):
         image = Image.new("RGB", (self.width, self.height))
@@ -240,7 +240,7 @@ class DisplayContent:
 
         image.paste(self.getProgressItems(curStepIndex, stepTypes))
         icon = self.icon('./images/{}Icon.png'.format(name), large=True)
-        image.paste(icon, ((self.width-60)//2, (self.height-60)//2), mask=icon)
+        image.paste(icon, ((self.width-50)//2, (self.height-50)//2), mask=icon)
 
         textSub = name
         w_s, _ = imDraw.textsize(textSub, font=self.fonts['mini'])
@@ -295,7 +295,7 @@ class DisplayContent:
                     n = time()-steps[curStepIndex]['startTime']
 
                     d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
-                    percent = int(n*100/d)
+                    percent = int(n*10/d)
                     self.e.log(percent)
 
                     timeRemaining = int(steps[curStepIndex]['endTime'] - time())
