@@ -160,7 +160,7 @@ class DisplayContent:
 
         # pen = Pen(color)
         # brush = Brush(color)
-        colors = sample(list(self.colors.values()),3)
+        colors = list(self.colors.values())
         draw.ellipse((50, 59, 60, 69), Pen(colors[0]), Brush(colors[0]))
         draw.ellipse((75, 59, 85, 69), Pen(colors[1]), Brush(colors[1]))
         draw.ellipse((100, 59, 110, 69), Pen(colors[2]), Brush(colors[2]))
@@ -178,18 +178,19 @@ class DisplayContent:
     #             await asyncio.sleep(1)
 
     async def preheat(self,curStepIndex, steps):
-        image = Image.open('./images/CookScreen.jpg')
+        # image = Image.open('./images/PreheatScreen.jpg')
 
-        imDraw = ImageDraw.Draw(image)
+        # imDraw = ImageDraw.Draw(image)
 
-        textMain = '{:.1f}'.format(self.e.cook.topRod.currentTemp)
-        textSub = 'Preheat'
-        w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
-        w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
-        imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill=self.colors['orange'])
+        # textMain = '{:.1f}'.format(self.e.cook.topRod.currentTemp)
+        # textSub = 'Preheat'
+        # w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
+        # w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
+        # imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill=self.colors['orange'])
 
-        image = invert(image)
-        self.disp.image(image)
+        # image = invert(image)
+        # self.disp.image(image)
+        self.image('./images/color_test.jpg')
 
     # async def cooking(self):
     #     image = Image.new("RGB", (self.width, self.height))
