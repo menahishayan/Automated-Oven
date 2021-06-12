@@ -179,9 +179,9 @@ class DisplayContent:
 
     def getProgressItems(self,curStepIndex, steps):
         total = len(steps)
-        marginTop = 3
-        dia = 8
-        space = 10
+        marginTop = 4
+        dia = 9
+        space = 12
 
         image = Image.new("RGB", (self.width, dia+marginTop))
         draw = Draw(image)
@@ -192,13 +192,15 @@ class DisplayContent:
         for s in range(total):
             left = marginLeft + ((dia+space)*s)
             draw.ellipse((left, marginTop, left+dia, marginTop+dia), Pen(self.colors[steps[s]]), Brush(self.colors[steps[s]]))
-
+            if curStepIndex < s:
+                draw.ellipse((left+ (dia*0.25), marginTop + (dia*0.25), left+(dia*0.75), marginTop+(dia*0.75)), Pen("#000"), Brush("#000"))
         draw.flush()
 
         return image
 
     async def preheat(self,curStepIndex, steps):
-        image = Image.open('./images/PreheatScreen.jpg')
+        image = Image.new("RGB",(self.width,self.height))
+        image.paste(Image.open('./images/PreheatScreen.jpg'))
 
         imDraw = ImageDraw.Draw(image)
 
