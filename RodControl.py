@@ -126,7 +126,7 @@ class RodControl:
         self.SIGKILLSUSTAIN = True
 
     def get(self):
-        return round(self.currentTemp)
+        return round(self.currentTemp,1)
 
     def __str__(self):
         return str(self.get())

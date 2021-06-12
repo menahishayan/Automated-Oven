@@ -184,7 +184,7 @@ class DisplayContent:
         dia = 9
         space = 12
 
-        image = Image.new("RGB", (self.width, dia+marginTop))
+        image = Image.new("RGB", (self.width, dia+(marginTop*1.5)))
         draw = Draw(image)
 
         w = ((dia + space) * total) - space
@@ -202,7 +202,6 @@ class DisplayContent:
     async def preheat(self,curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM:
-
                 if ('endTime' in steps[curStepIndex]) and (time() >= steps[curStepIndex]['endTime']):
                     break
                 image = Image.new("RGB",(self.width,self.height))
@@ -212,7 +211,7 @@ class DisplayContent:
 
                 image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
 
-                textMain = '{:.1f}'.format(self.e.cook.topRod.currentTemp)
+                textMain = '{:.1f}'.format(self.e.cook.topRod.get())
                 textSub = 'Preheat'
                 w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
                 w_s, h_s = imDraw.textsize(textSub, font=self.fonts['mini'])
