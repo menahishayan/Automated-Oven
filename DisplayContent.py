@@ -52,7 +52,7 @@ class DisplayContent:
             'subtitle': ImageFont.truetype('./fonts/SF-Pro-Display-Regular.ttf', 16),
             'alert': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 28),
             'prompt': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 20),
-            'mini': ImageFont.truetype('./fonts/SF-Pro-Display-Regular.ttf', 14),
+            'mini': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 14),
         }
 
         self.colors = {
@@ -193,26 +193,29 @@ class DisplayContent:
             left = marginLeft + ((dia+space)*s)
             draw.ellipse((left, marginTop, left+dia, marginTop+dia), Pen(self.colors[steps[s]]), Brush(self.colors[steps[s]]))
             if curStepIndex < s:
-                draw.ellipse((left+ (dia*0.35), marginTop + (dia*0.35), left+(dia*0.65), marginTop+(dia*0.65)), Pen("#000"), Brush("#000"))
+                draw.ellipse((left+ (dia*0.25), marginTop + (dia*0.25), left+(dia*0.75), marginTop+(dia*0.75)), Pen("#000"), Brush("#000"))
         draw.flush()
 
         return image
 
     async def preheat(self,curStepIndex, steps):
-        image = Image.new("RGB",(self.width,self.height))
-        image.paste(Image.open('./images/PreheatScreen.jpg'))
+        while not self.e._SIGKILL and not self.e.cook.SIGTERM:
+            image = Image.new("RGB",(self.width,self.height))
 
-        imDraw = ImageDraw.Draw(image)
+            imDraw = ImageDraw.Draw(image)
+            image.paste(Image.open('./images/PreheatScreen.jpg'))
 
-        image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
+            image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
 
-        textMain = '{:.1f}'.format(self.e.cook.topRod.currentTemp)
-        textSub = 'Preheat'
-        w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
-        w_s, h_s = imDraw.textsize(textSub, font=self.fonts['mini'])
-        imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['mini'], align="center", fill="#fff")
+            textMain = '{:.1f}'.format(self.e.cook.topRod.currentTemp)
+            textSub = 'Preheat'
+            w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
+            w_s, h_s = imDraw.textsize(textSub, font=self.fonts['mini'])
+            imDraw.text((73, 55), textMain, font=self.fonts['timer'], align="right", fill="#000")
+            imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
 
-        self.display(image)
+            self.display(image)
+            await asyncio.sleep(0.5)
 
     # async def cooking(self):
     #     image = Image.new("RGB", (self.width, self.height))
