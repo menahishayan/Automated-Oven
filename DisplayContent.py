@@ -226,7 +226,7 @@ class DisplayContent:
         textSub = name
         w_m, _ = imDraw.textsize(textMain, font=self.fonts['alert'])
         w_s, _ = imDraw.textsize(textSub, font=self.fonts['mini'])
-        imDraw.text((self.width-w_m-20, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
+        imDraw.text((self.width-w_m-16, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
         imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
 
         return image
@@ -270,11 +270,11 @@ class DisplayContent:
                     )
                 )
 
-                imDraw.line((140-(currTemp*60/250), 44, 140, 44), fill="#fff", width=3)
+                imDraw.line((144-(currTemp*60/250), 44, 144, 44), fill="#fff", width=3)
 
                 finalTemp = int(steps[curStepIndex]['temp'])
                 w_s, _ = imDraw.textsize(str(finalTemp), font=self.fonts['mini'])
-                imDraw.text((self.width-w_s-20, 27), str(finalTemp), font=self.fonts['mini'], align="right", fill="#fff")
+                imDraw.text((self.width-w_s-16, 27), str(finalTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(0.5)
@@ -315,15 +315,15 @@ class DisplayContent:
                 )
 
                 topTemp = int(steps[curStepIndex]['topTemp'])
-                imDraw.line((140-(topTemp*60/250), 44, 140, 44), fill="#fff", width=3)
+                imDraw.line((144-(topTemp*60/250), 44, 144, 44), fill="#fff", width=3)
                 w_t, _ = imDraw.textsize(str(topTemp), font=self.fonts['mini'])
-                imDraw.text((self.width-w_t-20, 27), str(topTemp), font=self.fonts['mini'], align="right", fill="#fff")
+                imDraw.text((self.width-w_t-16, 27), str(topTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
 
                 bottomTemp = int(steps[curStepIndex]['bottomTemp'])
-                imDraw.line((140-(bottomTemp*60/250), 78, 140, 78), fill="#fff", width=3)
+                imDraw.line((144-(bottomTemp*60/250), 78, 144, 78), fill="#fff", width=3)
                 w_b, _ = imDraw.textsize(str(bottomTemp), font=self.fonts['mini'])
-                imDraw.text((self.width-w_b-20, 80), str(bottomTemp), font=self.fonts['mini'], align="right", fill="#fff")
+                imDraw.text((self.width-w_b-16, 80), str(bottomTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(0.5)
