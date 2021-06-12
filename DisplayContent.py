@@ -156,13 +156,13 @@ class DisplayContent:
         # draw.ellipse((75, 59, 85, 69), pen, brush)
         # draw.ellipse((100, 59, 110, 69), pen, brush)
 
-        radius = 100
+        # radius = 100
         percent = 0
 
-        for n in range(radius):
+        for n in range(percent):
             pen = Pen((255 - (n*2),0,n*2), 7)
 
-            radian = percent * 3.6
+            radian = n * 3.6
             draw.arc((50, 34, 110, 94), 450-radian, 90, pen)
             await asyncio.sleep(0.5)
             percent+=5
