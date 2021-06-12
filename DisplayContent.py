@@ -58,9 +58,9 @@ class DisplayContent:
         self.colors = {
             'preheat': '#ff7300',
             'cook': '#ffd600',
-            'red': '#e93838',
             'notify': '#634dd3',
-            'checkpoint': '#3f91ff'
+            'checkpoint': '#3f91ff',
+            'red': '#e93838'
         }
     
     def clear(self):
