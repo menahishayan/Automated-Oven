@@ -293,11 +293,10 @@ class DisplayContent:
 
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     n = time()-steps[curStepIndex]['startTime']
-                    self.e.log(n)
 
                     d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
-                    self.e.log(d)
-                    percent = int(n/d)*100
+                    percent = int(n*100/d)
+                    self.e.log(percent)
 
                     timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     if timeRemaining < 0: 
