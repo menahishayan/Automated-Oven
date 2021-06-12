@@ -184,6 +184,8 @@ class DisplayContent:
         draw = Draw(image)
         pen = Pen(self.colors[color], 7)
 
+        self.e.log(percent)
+
         radian = percent * 3.6
         draw.arc((3, 3, dia+3, dia+3), 450-radian, 90, pen)
 
