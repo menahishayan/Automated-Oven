@@ -183,7 +183,6 @@ class DisplayContent:
         draw = Draw(image)
         pen = Pen(self.colors[color], 6)
 
-        self.e.log(percent)
         radian = percent * 360
         draw.arc((3, 3, dia+3, dia+3), 450-radian, 90, pen)
 
@@ -294,13 +293,16 @@ class DisplayContent:
 
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     n = time()-steps[curStepIndex]['startTime']
+                    self.e.log(n)
+
                     d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
+                    self.e.log(d)
                     percent = int(n/d)*100
 
                     timeRemaining = int(steps[curStepIndex]['endTime'] - time())
+                    if timeRemaining < 0: 
+                        timeRemaining = 0
                     # pause
-                else:
-                    self.e.log(steps[curStepIndex])
 
                 image.paste(
                     self.baseImageLeftIcon(
