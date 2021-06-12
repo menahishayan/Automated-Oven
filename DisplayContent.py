@@ -52,7 +52,7 @@ class DisplayContent:
                        outline="#fff", fill="#fff")
 
         self.disp.image(image)
-        await self.setBacklight(100)
+        await self.setBacklight(50)
 
         self.fonts = {
             'timer': ImageFont.truetype('./fonts/SF-Compact-Display-Medium.ttf', 36),
