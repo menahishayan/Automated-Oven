@@ -53,7 +53,7 @@ class DisplayContent:
             'subtitle': ImageFont.truetype('./fonts/SF-Pro-Display-Regular.ttf', 16),
             'alert': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 28),
             'prompt': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 20),
-            'mini': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 14),
+            'mini': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 12),
         }
 
         self.colors = {
@@ -222,7 +222,7 @@ class DisplayContent:
         image.paste(self.getProgressItems(curStepIndex, stepTypes))
         image.paste(self.circleProgressLeft(percent, stepTypes[curStepIndex]), (14, (self.height-50)//2))
         icon = self.icon('./images/{}Icon.png'.format(name))
-        image.paste(icon, (23, (self.height-30)//2), mask=icon)
+        image.paste(icon, (24, (self.height-30)//2), mask=icon)
 
         textSub = name
         w_m, _ = imDraw.textsize(textMain, font=self.fonts['alert'])
@@ -257,7 +257,7 @@ class DisplayContent:
                     )
                 )
 
-                imDraw.line((currTemp*60/250, 43, 135, 43), fill="#fff", width=3)
+                imDraw.line((135-(currTemp*60/250), 43, 135, 43), fill="#fff", width=3)
 
                 finalTemp = int(steps[curStepIndex]['temp'])
                 w_s, _ = imDraw.textsize(str(finalTemp), font=self.fonts['mini'])
