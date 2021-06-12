@@ -184,17 +184,17 @@ class DisplayContent:
         dia = 9
         space = 12
 
-        image = Image.new("RGB", (self.width, dia+(marginTop*1.5)))
+        image = Image.new("RGB", (self.width, dia+int(marginTop*1.5)))
         draw = Draw(image)
 
         w = ((dia + space) * total) - space
-        marginLeft = int((self.width - w)/2)
+        marginLeft = (self.width - w)/2
         
         for s in range(total):
             left = marginLeft + ((dia+space)*s)
             draw.ellipse((left, marginTop, left+dia, marginTop+dia), Pen(self.colors[steps[s]]), Brush(self.colors[steps[s]]))
             if curStepIndex < s:
-                draw.ellipse((left+ int(dia*0.25), marginTop + int(dia*0.25), left+int(dia*0.75), marginTop+int(dia*0.75)), Pen("#000"), Brush("#000"))
+                draw.ellipse((left+ (dia*0.25), marginTop + (dia*0.25), left+(dia*0.75), marginTop+(dia*0.75)), Pen("#000"), Brush("#000"))
         draw.flush()
 
         return image
@@ -213,9 +213,10 @@ class DisplayContent:
 
                 textMain = '{:.1f}'.format(self.e.cook.topRod.get())
                 textSub = 'Preheat'
+                w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
                 w_s, h_s = imDraw.textsize(textSub, font=self.fonts['mini'])
                 imDraw.text((73, 55), textMain, font=self.fonts['timer'], align="right", fill="#000")
-                imDraw.text(((int(self.width-w_s)/2), 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
+                imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(1)
