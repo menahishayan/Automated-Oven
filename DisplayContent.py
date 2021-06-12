@@ -243,12 +243,15 @@ class DisplayContent:
                 start = steps[curStepIndex]['startTime'] if 'startTime' in steps[curStepIndex] else time(),
                 end = steps[curStepIndex]['endTime'] if 'endTime' in steps[curStepIndex] else 0
 
+                percent = (time()-start)/(end-start)
+                self.e.log(percent)
+
                 image.paste(
                     self.baseImageLeftIcon(
                         curStepIndex,
                         [s['type'] for s in steps],
                         str(self.e.cook.topRod),
-                        (time()-start)/(end-start)
+                        percent
                     )
                 )
 
