@@ -213,7 +213,7 @@ class DisplayContent:
                 imDraw = ImageDraw.Draw(image)
 
                 image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
-                image.paste(self.icon('./images/PreheatScreen.jpg'),(23,40))
+                image.paste(self.icon('./images/PreheatIcon.png'),(23,40))
 
                 textMain = '{}'.format(int(self.e.cook.topRod.get()))
                 textSub = 'Preheat'
