@@ -37,7 +37,7 @@ class Cook:
 
                         while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
                             await self.e.dispatch([
-                                [self.e.display.preheat],
+                                [self.e.display.preheat,self.currentStep, self.steps],
                                 [getattr(self, step['type']),step]
                             ])
                             # await getattr(self, step['type'])(step)

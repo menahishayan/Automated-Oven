@@ -10,7 +10,7 @@ from PIL.ImageOps import invert
 from aggdraw import Draw, Pen, Brush
 from time import time
 from math import floor
-from random import choice
+from random import sample
 
 class DisplayContent:
     def __init__(self, CS_PIN=CE0, DC_PIN=D24, RESET_PIN=D25):
@@ -160,16 +160,10 @@ class DisplayContent:
 
         # pen = Pen(color)
         # brush = Brush(color)
-        colors = list(self.colors.values())
-
-        color = choice(colors)
-        draw.ellipse((50, 59, 60, 69), Pen(color), Brush(color))
-
-        color = choice(colors)
-        draw.ellipse((75, 59, 85, 69), Pen(color), Brush(color))
-
-        color = choice(colors)
-        draw.ellipse((100, 59, 110, 69), Pen(color), Brush(color))
+        colors = sample(list(self.colors.values()),3)
+        draw.ellipse((50, 59, 60, 69), Pen(colors[0]), Brush(colors[0]))
+        draw.ellipse((75, 59, 85, 69), Pen(colors[1]), Brush(colors[1]))
+        draw.ellipse((100, 59, 110, 69), Pen(colors[2]), Brush(colors[2]))
 
         draw.flush()
 
@@ -183,7 +177,7 @@ class DisplayContent:
     #         else:
     #             await asyncio.sleep(1)
 
-    async def preheat(self,curStepIndex, steps, args):
+    async def preheat(self,curStepIndex, steps):
         image = Image.open('./images/PreheatScreen.jpg')
 
         imDraw = ImageDraw.Draw(image)
@@ -192,7 +186,7 @@ class DisplayContent:
         textSub = 'Preheat'
         w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
         w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
-        imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill="#000")
+        imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill="#fff")
 
         image = invert(image)
         self.disp.image(image)

@@ -19,7 +19,7 @@ import signal
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '1.4.0'
+        self.__version__ = '1.5.0'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
