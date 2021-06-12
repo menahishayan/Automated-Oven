@@ -156,6 +156,8 @@ class Cook:
 
             self.topRod.off()
 
+            await self.e.display.pause(self.currentStep,[s['type'] for s in self.steps])
+
             return True
         except:
             return False
