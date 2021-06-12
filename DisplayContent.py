@@ -149,23 +149,23 @@ class DisplayContent:
         image = Image.new("RGB", (self.width, self.height))
 
         draw = Draw(image)
-        pen = Pen("white")
-        brush = Brush("white")
+        # pen = Pen("white")
+        # brush = Brush("white")
 
         # draw.ellipse((50, 59, 60, 69), pen, brush)
         # draw.ellipse((75, 59, 85, 69), pen, brush)
         # draw.ellipse((100, 59, 110, 69), pen, brush)
 
         radius = 100
+        percent = 0
 
         for n in range(radius):
-            n = float(n)
-            r = float(radius - n)
-            # opacity = int(( 0.25 * n / radius) * 100)
-            brush = Brush((255 - int(n*2), 0, int(n*2)))
-            tl = (radius - r) // 2  # ie. top-left
-            br = (radius - r) // 2 + r  # ie. bottom-right
-            draw.ellipse((tl, tl, br, br), brush)
+            pen = Pen((255 - (n*2),0,n*2), 7)
+
+            radian = percent * 3.6
+            draw.arc((50, 34, 110, 94), 450-radian, 90, pen)
+            await asyncio.sleep(0.5)
+            percent+=5
 
         draw.flush()
 
