@@ -41,10 +41,10 @@ class Energy(DB):
             await self.add(self.lastUpdatedValueNow/(3600/interval))
 
     async def detect(self):
+        base = 15
         if self.e.cook.topRod.pin.value:
-            return 325
-        else:
-            return 0
+            base += 325
+        return base
 
     async def getNow(self):
         return self.lastUpdatedValueNow

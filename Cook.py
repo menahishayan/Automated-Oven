@@ -254,6 +254,7 @@ class Cook:
                     if s['type'] == 'cook':
                         s['bottomTemp'] = int(temp)
                 self.SIGPAUSE = False
+                # change in actual rod value
                 return True
             return False
         except Exception as e:
