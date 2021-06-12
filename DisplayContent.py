@@ -199,23 +199,28 @@ class DisplayContent:
         return image
 
     async def preheat(self,curStepIndex, steps):
-        while not self.e._SIGKILL and not self.e.cook.SIGTERM:
-            image = Image.new("RGB",(self.width,self.height))
+        try:
+            while not self.e._SIGKILL and not self.e.cook.SIGTERM:
+                if time() >= steps[curStepIndex]['endTime']:
+                    break
+                image = Image.new("RGB",(self.width,self.height))
 
-            imDraw = ImageDraw.Draw(image)
-            image.paste(Image.open('./images/PreheatScreen.jpg'))
+                imDraw = ImageDraw.Draw(image)
+                image.paste(Image.open('./images/PreheatScreen.jpg'))
 
-            image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
+                image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
 
-            textMain = '{:.1f}'.format(self.e.cook.topRod.currentTemp)
-            textSub = 'Preheat'
-            w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
-            w_s, h_s = imDraw.textsize(textSub, font=self.fonts['mini'])
-            imDraw.text((73, 55), textMain, font=self.fonts['timer'], align="right", fill="#000")
-            imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
+                textMain = '{:.1f}'.format(self.e.cook.topRod.currentTemp)
+                textSub = 'Preheat'
+                w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
+                w_s, h_s = imDraw.textsize(textSub, font=self.fonts['mini'])
+                imDraw.text((73, 55), textMain, font=self.fonts['timer'], align="right", fill="#000")
+                imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
 
-            self.display(image)
-            await asyncio.sleep(0.5)
+                self.display(image)
+                await asyncio.sleep(1)
+        except Exception as e:
+            self.e.err(e)
 
     # async def cooking(self):
     #     image = Image.new("RGB", (self.width, self.height))
