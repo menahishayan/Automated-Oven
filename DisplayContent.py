@@ -258,8 +258,8 @@ class DisplayContent:
                 temp = int(steps[curStepIndex]['temp'])
                 imDraw.line((40, temp*70/250, 135, 40), fill="#fff", width=3)
 
-                w_s, _ = imDraw.textsize(temp, font=self.fonts['mini'])
-                imDraw.text((self.width-w_s-25, 30), temp, font=self.fonts['mini'], align="right", fill="#fff")
+                w_s, _ = imDraw.textsize(str(temp), font=self.fonts['mini'])
+                imDraw.text((self.width-w_s-25, 30), str(temp), font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(1)
