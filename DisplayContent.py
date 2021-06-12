@@ -203,6 +203,24 @@ class DisplayContent:
 
         return image
 
+    def baseImageLeftIcon(self,curStepIndex, stepTypes, textMain):
+        image = Image.new("RGB",(self.width,self.height))
+
+        imDraw = ImageDraw.Draw(image)
+
+        name = stepTypes[curStepIndex].capitalize()
+
+        image.paste(self.getProgressItems(curStepIndex,stepTypes))
+        image.paste(self.icon('./images/{}Icon.png'.format(name)),(23,(self.height-30)//2))
+
+        textSub = name
+        w_m, _ = imDraw.textsize(textMain, font=self.fonts['alert'])
+        w_s, _ = imDraw.textsize(textSub, font=self.fonts['mini'])
+        imDraw.text((self.width-w_m-32, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
+        imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
+
+        return image
+
     async def preheat(self,curStepIndex,steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM:
@@ -210,19 +228,7 @@ class DisplayContent:
                     break
                 image = Image.new("RGB",(self.width,self.height))
 
-                imDraw = ImageDraw.Draw(image)
-
-                name = steps[curStepIndex]['type'].capitalize()
-
-                image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
-                image.paste(self.icon('./images/{}Icon.png'.format(name)),(23,(self.height-30)//2))
-
-                textMain = '{}'.format(int(self.e.cook.topRod.get()))
-                textSub = name
-                w_m, _ = imDraw.textsize(textMain, font=self.fonts['alert'])
-                w_s, _ = imDraw.textsize(textSub, font=self.fonts['mini'])
-                imDraw.text((self.width-w_m-32, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
-                imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
+                image.paste(self.baseImageLeftIcon(curStepIndex,[s['type'] for s in steps],str(self.e.cook.topRod)))
 
                 self.display(image)
                 await asyncio.sleep(1)
