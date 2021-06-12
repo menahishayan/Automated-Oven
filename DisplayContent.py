@@ -240,10 +240,10 @@ class DisplayContent:
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)
 
-                start = steps[curStepIndex]['startTime'] if 'startTime' in steps[curStepIndex] else time(),
-                end = steps[curStepIndex]['endTime'] if 'endTime' in steps[curStepIndex] else 0
+                start = steps[curStepIndex]['startTime'] if 'startTime' in steps[curStepIndex] else None,
+                end = steps[curStepIndex]['endTime'] if 'endTime' in steps[curStepIndex] else None
 
-                percent = (time()-start)/(end-start)
+                percent = (time()-start)/(end-start) if start and end else 0
                 self.e.log(percent)
 
                 image.paste(
