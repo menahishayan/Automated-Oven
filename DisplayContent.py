@@ -212,11 +212,13 @@ class DisplayContent:
 
                 imDraw = ImageDraw.Draw(image)
 
+                name = steps[curStepIndex]['type'].capitalize()
+
                 image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
-                image.paste(self.icon('./images/PreheatIcon.png'),(23,40))
+                image.paste(self.icon('./images/{}Icon.png'.format(name)),(23,(self.height-30)/2))
 
                 textMain = '{}'.format(int(self.e.cook.topRod.get()))
-                textSub = 'Preheat'
+                textSub = name
                 w_m, _ = imDraw.textsize(textMain, font=self.fonts['alert'])
                 w_s, _ = imDraw.textsize(textSub, font=self.fonts['mini'])
                 imDraw.text((self.width-w_m-32, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
