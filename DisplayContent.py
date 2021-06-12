@@ -257,13 +257,8 @@ class DisplayContent:
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)
 
-                percent = 0
-                if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
-                    n = time()-steps[curStepIndex]['startTime']
-                    d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
-                    percent = int(n/d)*100
-
                 currTemp = int(self.e.cook.topRod.get())
+                percent = currTemp/steps[curStepIndex]['temp']
                 
                 image.paste(
                     self.baseImageLeftIcon(
@@ -304,6 +299,8 @@ class DisplayContent:
 
                     timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     # pause
+                else:
+                    self.e.log(steps[curStepIndex])
 
                 image.paste(
                     self.baseImageLeftIcon(
@@ -313,7 +310,6 @@ class DisplayContent:
                         percent
                     )
                 )
-
 
                 topTemp = int(steps[curStepIndex]['topTemp'])
                 imDraw.line((135-(topTemp*60/250), 44, 135, 44), fill="#fff", width=3)
