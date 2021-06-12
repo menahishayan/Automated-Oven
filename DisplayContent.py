@@ -222,7 +222,7 @@ class DisplayContent:
 
         image.paste(self.getProgressItems(curStepIndex, stepTypes))
         if end:
-            image.paste(self.circleProgressLeft((time()-start)/(end-start), self.colors[stepTypes[curStepIndex]]),(18, (self.height-40)//2))
+            image.paste(self.circleProgressLeft((time()-start)/(end-start), self.colors[stepTypes[curStepIndex]]),(20, (self.height-40)//2,20+50,((self.height-40)//2) + 50))
         image.paste(self.icon('./images/{}Icon.png'.format(name)), (23, (self.height-30)//2))
 
         textSub = name
@@ -253,7 +253,7 @@ class DisplayContent:
                 self.display(image)
                 await asyncio.sleep(1)
         except Exception as e:
-            self.e.err(e)
+            self.e.err("Display: " + e)
 
     # async def cooking(self):
     #     image = Image.new("RGB", (self.width, self.height))
