@@ -5,7 +5,7 @@ from pwmio import PWMOut
 from board import SCK, MOSI, MISO, CE0, D24, D25, D22
 
 from adafruit_rgb_display.st7789 import ST7789
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageEnhance
 from PIL.ImageOps import invert
 from aggdraw import Draw, Pen, Brush
 from time import time
@@ -30,7 +30,7 @@ class DisplayContent:
             height=160,
             x_offset=0,
             y_offset=0,
-            baudrate=25000000,
+            baudrate=24000000,
             cs=DigitalInOut(self.CS_PIN),
             dc=DigitalInOut(self.DC_PIN),
             rst=DigitalInOut(self.RESET_PIN))
@@ -86,6 +86,9 @@ class DisplayContent:
         x = scaled_width // 2 - self.width // 2
         y = scaled_height // 2 - self.height // 2
         image = image.crop((x, y, x + self.width, y + self.height))
+
+        image = ImageEnhance.Contrast(image).enhance(50)
+        image = ImageEnhance.Brightness(image).enhance(-20)
 
         image = invert(image)
         self.disp.image(image)
