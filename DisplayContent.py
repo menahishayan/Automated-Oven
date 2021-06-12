@@ -60,7 +60,8 @@ class DisplayContent:
             'cook': '#ffd600',
             'notify': '#634dd3',
             'checkpoint': '#3f91ff',
-            'red': '#e93838'
+            'red': '#e93838',
+            'cool': '#f3fbff',
         }
     
     def clear(self):
