@@ -67,7 +67,7 @@ class EventHandler:
 
     async def startDetectionLoop(self):
         await self.dispatch([
-            [self.display.text, "Place The Item"],
+            # [self.display.text, "Place The Item"],
             [self.cook.init]
         ])
 

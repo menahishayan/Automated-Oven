@@ -156,13 +156,13 @@ class DisplayContent:
         # draw.ellipse((75, 59, 85, 69), pen, brush)
         # draw.ellipse((100, 59, 110, 69), pen, brush)
 
-        radius = 20
+        radius = 100
 
         for n in range(radius):
             n = float(n)
             r = float(radius - n)
-            opacity = int(( 0.25 * n / radius) * 100)
-            brush = Brush((255, 0, 0), int(opacity))
+            # opacity = int(( 0.25 * n / radius) * 100)
+            brush = Brush((255 - int(n*2), 0, int(n*2)))
             tl = (radius - r) // 2  # ie. top-left
             br = (radius - r) // 2 + r  # ie. bottom-right
             draw.ellipse((tl, tl, br, br), brush)
