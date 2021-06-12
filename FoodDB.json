@@ -93,6 +93,10 @@
         "type": "checkpoint",
         "maxWaitTime": 5,
         "confirmationRequired": true
+      },
+      {
+        "type": "cool",
+        "duration": 10
       }
     ]
   },
