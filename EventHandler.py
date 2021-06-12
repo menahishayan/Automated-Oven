@@ -77,7 +77,7 @@ class EventHandler:
                 if not self.cook.isCooking:
                     dist = await self.ultrasound.get()
                     # self.log(dist)
-                    if dist < 20:
+                    if dist < 200:
                         tasks = await self.dispatch([
                             [self.display.loading],
                             [self.detector.detect],
