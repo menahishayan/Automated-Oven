@@ -35,6 +35,7 @@ class WebSocketServer(WebSocket):
         self.sendMessage(json.dumps(res))
 
     async def setUserName(self,name):
+        self.e.log(name)
         name = name.capitalize()
         with open('./users.json') as db:
             db = json.load(db)
