@@ -70,7 +70,7 @@ class DisplayContent:
         self.disp.image(image)
 
     def display(self, image):
-        image = ImageEnhance.Color(image).enhance(2.8)
+        image = ImageEnhance.Color(image).enhance(3.5)
         # image = ImageEnhance.Contrast(image).enhance(0.9)
         # image = ImageEnhance.Brightness(image).enhance(0.4)
         image = invert(image)
@@ -107,7 +107,7 @@ class DisplayContent:
         draw.text(((self.width-w)/2, (self.height-h)/2), text,
                   font=self.fonts['prompt'], align="center", fill="#000")
 
-        self.display(image)
+        self.disp.image(image)
 
     async def alert(self, text):
         image = Image.new("RGB", (self.width, self.height))
@@ -193,7 +193,7 @@ class DisplayContent:
             left = marginLeft + ((dia+space)*s)
             draw.ellipse((left, marginTop, left+dia, marginTop+dia), Pen(self.colors[steps[s]]), Brush(self.colors[steps[s]]))
             if curStepIndex < s:
-                draw.ellipse((left+ (dia*0.25), marginTop + (dia*0.25), left+(dia*0.75), marginTop+(dia*0.75)), Pen("#000"), Brush("#000"))
+                draw.ellipse((left+ (dia*0.35), marginTop + (dia*0.35), left+(dia*0.65), marginTop+(dia*0.65)), Pen("#000"), Brush("#000"))
         draw.flush()
 
         return image
