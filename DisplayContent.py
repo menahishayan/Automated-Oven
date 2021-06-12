@@ -181,7 +181,7 @@ class DisplayContent:
         image = Image.new("RGB", (dia+6, dia+6))
 
         draw = Draw(image)
-        pen = Pen(self.colors[color], 7)
+        pen = Pen(self.colors[color], 6)
 
         self.e.log(percent)
         radian = percent * 3600
@@ -248,7 +248,6 @@ class DisplayContent:
 
                 currTemp = int(self.e.cook.topRod.get())
                 
-
                 image.paste(
                     self.baseImageLeftIcon(
                         curStepIndex,
@@ -258,11 +257,11 @@ class DisplayContent:
                     )
                 )
 
-                imDraw.line((currTemp*70/250, 42, 135, 42), fill="#fff", width=3)
+                imDraw.line((currTemp*60/250, 43, 135, 43), fill="#fff", width=3)
 
                 finalTemp = int(steps[curStepIndex]['temp'])
                 w_s, _ = imDraw.textsize(str(finalTemp), font=self.fonts['mini'])
-                imDraw.text((self.width-w_s-25, 30), str(finalTemp), font=self.fonts['mini'], align="right", fill="#fff")
+                imDraw.text((self.width-w_s-25, 28), str(finalTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(1)
