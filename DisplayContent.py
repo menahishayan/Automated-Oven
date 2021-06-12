@@ -227,7 +227,7 @@ class DisplayContent:
         textSub = name
         w_m, _ = imDraw.textsize(textMain, font=self.fonts['alert'])
         w_s, _ = imDraw.textsize(textSub, font=self.fonts['mini'])
-        imDraw.text((self.width-w_m-32, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
+        imDraw.text((self.width-w_m-25, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
         imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
 
         return image
@@ -255,11 +255,11 @@ class DisplayContent:
                     )
                 )
 
-                imDraw.line((40, 40, 135, 40), fill="#fff", width=3)
+                temp = int(steps[curStepIndex]['temp'])
+                imDraw.line((40, temp*70/250, 135, 40), fill="#fff", width=3)
 
-                topText = str(steps[curStepIndex]['temp'])
-                w_s, _ = imDraw.textsize(topText, font=self.fonts['mini'])
-                imDraw.text((self.width-w_s-20, 30), topText, font=self.fonts['mini'], align="right", fill="#fff")
+                w_s, _ = imDraw.textsize(temp, font=self.fonts['mini'])
+                imDraw.text((self.width-w_s-25, 30), temp, font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
                 await asyncio.sleep(1)
