@@ -44,19 +44,12 @@ class DisplayContent:
 
         self.backlight = PWMOut(D22, frequency=1000, duty_cycle=0)
 
-        image = Image.new("RGB", (self.width, self.height))
-
-        draw = ImageDraw.Draw(image)
-
-        draw.rectangle((0, 0, self.width, self.height),
-                       outline="#fff", fill="#fff")
-
-        self.disp.image(image)
+        self.clear()
         await self.setBacklight(50)
 
         self.fonts = {
             'timer': ImageFont.truetype('./fonts/SF-Compact-Display-Medium.ttf', 36),
-            'subtitle': ImageFont.truetype('./fonts/SF-Pro-Display-Regular.ttf', 16),
+            'subtitle': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 16),
             'alert': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 28),
             'prompt': ImageFont.truetype('./fonts/SF-Pro-Display-Semibold.ttf', 20),
             'mini': ImageFont.truetype('./fonts/SF-Pro-Display-Regular.ttf', 14),
@@ -69,6 +62,19 @@ class DisplayContent:
             'purple': '#634dd3',
             'blue': '#3f91ff'
         }
+    
+    def clear(self):
+        image = Image.new("RGB", (self.width, self.height))
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((0, 0, self.width, self.height), outline="#fff", fill="#fff")
+        self.disp.image(image)
+
+    def display(self, image):
+        image = ImageEnhance.Color(image).enhance(2.8)
+        # image = ImageEnhance.Contrast(image).enhance(0.9)
+        # image = ImageEnhance.Brightness(image).enhance(0.4)
+        image = invert(image)
+        self.disp.image(image)
 
     async def path(self, path):
         image = Image.open(path)
@@ -87,15 +93,7 @@ class DisplayContent:
         y = scaled_height // 2 - self.height // 2
         image = image.crop((x, y, x + self.width, y + self.height))
 
-        image = ImageEnhance.Color(image).enhance(2.8)
-        # image = ImageEnhance.Contrast(image).enhance(0.9)
-        # image = ImageEnhance.Brightness(image).enhance(0.4)
-
-        image = invert(image)
-        self.disp.image(image)
-
-    async def image(self, image):
-        self.disp.image(image)
+        self.display(image)
 
     async def text(self, text):
         image = Image.new("RGB", (self.width, self.height))
@@ -109,7 +107,7 @@ class DisplayContent:
         draw.text(((self.width-w)/2, (self.height-h)/2), text,
                   font=self.fonts['prompt'], align="center", fill="#000")
 
-        self.disp.image(image)
+        self.display(image)
 
     async def alert(self, text):
         image = Image.new("RGB", (self.width, self.height))
@@ -123,7 +121,7 @@ class DisplayContent:
         draw.text(((self.width-w)/2, (self.height-h)/2), text,
                   font=self.fonts['alert'], align="center", fill="#000")
 
-        self.disp.image(image)
+        self.display(image)
 
     async def _progress(self, percent):
         image = Image.new("RGB", (self.width, 12))
@@ -155,7 +153,7 @@ class DisplayContent:
                         text, font=self.fonts['prompt'], align="center", fill="#fff")
 
         image = invert(image)
-        self.disp.image(image)
+        self.display(image)
 
     async def loading(self):
         # image = Image.new("RGB", (self.width, self.height))
@@ -172,7 +170,7 @@ class DisplayContent:
         # draw.flush()
 
         # image = invert(image)
-        # self.disp.image(image)
+        # self.display(image)
         await self.path('./images/color_test.jpg')
 
 
@@ -184,19 +182,17 @@ class DisplayContent:
     #             await asyncio.sleep(1)
 
     async def preheat(self,curStepIndex, steps):
-        # image = Image.open('./images/PreheatScreen.jpg')
+        image = Image.open('./images/PreheatScreen.jpg')
 
-        # imDraw = ImageDraw.Draw(image)
+        imDraw = ImageDraw.Draw(image)
 
-        # textMain = '{:.1f}'.format(self.e.cook.topRod.currentTemp)
-        # textSub = 'Preheat'
-        # w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
-        # w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
-        # imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill=self.colors['orange'])
+        textMain = '{:.1f}'.format(self.e.cook.topRod.currentTemp)
+        textSub = 'Preheat'
+        w_m, h_m = imDraw.textsize(textMain, font=self.fonts['timer'])
+        w_s, h_s = imDraw.textsize(textSub, font=self.fonts['subtitle'])
+        imDraw.text(((self.width-w_s)/2, ((self.height-h_s)/2)+h_m+1), textSub, font=self.fonts['subtitle'], align="center", fill=self.colors['orange'])
 
-        # image = invert(image)
-        # self.disp.image(image)
-        await self.path('./images/color_test.jpg')
+        self.display(image)
 
     # async def cooking(self):
     #     image = Image.new("RGB", (self.width, self.height))
