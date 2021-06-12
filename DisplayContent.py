@@ -265,7 +265,8 @@ class DisplayContent:
 
                 self.display(image)
                 await asyncio.sleep(1)
-        except Exception:
+        except Exception as e:
+            self.e.err(e)
             self.e.err(sys.exc_info()[-1].tb_lineno)
 
     # async def cooking(self):
