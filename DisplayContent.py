@@ -211,7 +211,7 @@ class DisplayContent:
 
         return image
 
-    def baseImageLeftIcon(self, curStepIndex, stepTypes, textMain, percent):
+    def baseImageLeftIcon(self, curStepIndex, stepTypes, textMain, percent, subtitle=None):
         image = Image.new("RGB", (self.width, self.height))
 
         imDraw = ImageDraw.Draw(image)
@@ -223,7 +223,7 @@ class DisplayContent:
         icon = self.icon('./images/{}Icon.png'.format(name))
         image.paste(icon, (24, (self.height-30)//2), mask=icon)
 
-        textSub = name
+        textSub = subtitle if subtitle else name
         w_m, _ = imDraw.textsize(textMain, font=self.fonts['alert'])
         w_s, _ = imDraw.textsize(textSub, font=self.fonts['mini'])
         imDraw.text((self.width-w_m-16, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
@@ -308,7 +308,8 @@ class DisplayContent:
                         curStepIndex,
                         [s['type'] for s in steps],
                         '{:02d}:{:02d}'.format(timeRemaining//60, timeRemaining % 60),
-                        percent
+                        percent,
+                        self.e.cook.item
                     )
                 )
 
