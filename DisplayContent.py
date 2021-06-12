@@ -214,7 +214,7 @@ class DisplayContent:
                 textMain = '{:.1f}'.format(self.e.cook.topRod.get())
                 textSub = 'Preheat'
                 w_s, h_s = imDraw.textsize(textSub, font=self.fonts['mini'])
-                imDraw.text((73, 55), textMain, font=self.fonts['timer'], align="right", fill="#fff")
+                imDraw.text((73, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
                 imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
 
                 self.display(image)
