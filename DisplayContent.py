@@ -220,7 +220,7 @@ class DisplayContent:
         name = stepTypes[curStepIndex].capitalize()
 
         image.paste(self.getProgressItems(curStepIndex, stepTypes))
-        # image.paste(self.circleProgressLeft(percent, stepTypes[curStepIndex]), (14, (self.height-50)//2))
+        image.paste(self.circleProgressLeft(percent, stepTypes[curStepIndex]), (14, (self.height-50)//2))
         icon = self.icon('./images/{}Icon.png'.format(name))
         image.paste(icon, (23, (self.height-30)//2), mask=icon)
 
@@ -252,10 +252,10 @@ class DisplayContent:
                     )
                 )
 
-                imDraw.line((40, 135, 40, 40), fill="#fff", width=5)
+                # imDraw.line((40, 135, 40, 40), fill="#fff", width=5)
 
                 topText = str(steps[curStepIndex]['temp'])
-                w_s, _ = imDraw.textsize(topText, font=self.fonts['mini'])
+                # w_s, _ = imDraw.textsize(topText, font=self.fonts['mini'])
                 imDraw.text((120, 30), topText, font=self.fonts['mini'], align="right", fill="#fff")
 
                 self.display(image)
