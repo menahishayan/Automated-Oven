@@ -88,7 +88,7 @@ class DisplayContent:
         image = image.crop((x, y, x + self.width, y + self.height))
 
         image = ImageEnhance.Contrast(image).enhance(50)
-        image = ImageEnhance.Brightness(image).enhance(-20)
+        # image = ImageEnhance.Brightness(image).enhance(-20)
 
         image = invert(image)
         self.disp.image(image)
@@ -157,21 +157,23 @@ class DisplayContent:
         self.disp.image(image)
 
     async def loading(self):
-        image = Image.new("RGB", (self.width, self.height))
+        # image = Image.new("RGB", (self.width, self.height))
 
-        draw = Draw(image)
+        # draw = Draw(image)
 
-        # pen = Pen(color)
-        # brush = Brush(color)
-        colors = list(self.colors.values())
-        draw.ellipse((50, 59, 60, 69), Pen(colors[0]), Brush(colors[0]))
-        draw.ellipse((75, 59, 85, 69), Pen(colors[1]), Brush(colors[1]))
-        draw.ellipse((100, 59, 110, 69), Pen(colors[2]), Brush(colors[2]))
+        # # pen = Pen(color)
+        # # brush = Brush(color)
+        # colors = list(self.colors.values())
+        # draw.ellipse((50, 59, 60, 69), Pen(colors[0]), Brush(colors[0]))
+        # draw.ellipse((75, 59, 85, 69), Pen(colors[1]), Brush(colors[1]))
+        # draw.ellipse((100, 59, 110, 69), Pen(colors[2]), Brush(colors[2]))
 
-        draw.flush()
+        # draw.flush()
 
-        image = invert(image)
-        self.disp.image(image)
+        # image = invert(image)
+        # self.disp.image(image)
+        await self.path('./images/color_test.jpg')
+
 
     # async def cookingListener(self):
     #     while not self.e._SIGKILL:
