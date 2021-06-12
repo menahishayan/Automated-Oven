@@ -232,6 +232,10 @@
         "type": "checkpoint",
         "maxWaitTime": 5,
         "confirmationRequired": true
+      },
+      {
+        "type": "cool",
+        "duration": 5
       }
     ]
   },
@@ -333,7 +337,7 @@
       },
       {
         "type": "cool",
-        "duration": 10
+        "duration": 2
       }
     ]
   },
@@ -353,6 +357,10 @@
         "type": "checkpoint",
         "maxWaitTime": 5,
         "confirmationRequired": true
+      },
+      {
+        "type": "cool",
+        "duration": 2
       }
     ]
   },
