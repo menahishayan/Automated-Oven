@@ -211,15 +211,15 @@ class DisplayContent:
 
                 image.paste(self.getProgressItems(curStepIndex,[s['type'] for s in steps]))
 
-                textMain = '{:.1f}'.format(self.e.cook.topRod.get())
+                textMain = '{}'.format(int(self.e.cook.topRod.get()))
                 textSub = 'Preheat'
-                w_m, h_m = imDraw.textsize(textMain, font=self.fonts['alert'])
-                w_s, h_s = imDraw.textsize(textSub, font=self.fonts['mini'])
+                w_m, _ = imDraw.textsize(textMain, font=self.fonts['alert'])
+                w_s, _ = imDraw.textsize(textSub, font=self.fonts['mini'])
                 imDraw.text((self.width-w_m-22, 45), textMain, font=self.fonts['alert'], align="right", fill="#fff")
                 imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
 
                 self.display(image)
-                await asyncio.sleep(0.5)
+                await asyncio.sleep(1)
         except Exception as e:
             self.e.err(e)
 
