@@ -202,7 +202,7 @@ class DisplayContent:
     async def preheat(self,curStepIndex,steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM:
-                if steps['isDone']:
+                if steps[curStepIndex]['isDone']:
                     break
                 image = Image.new("RGB",(self.width,self.height))
 
