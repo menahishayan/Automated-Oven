@@ -19,7 +19,7 @@ import signal
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '1.5.0'
+        self.__version__ = '1.5.1'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -67,7 +67,7 @@ class EventHandler:
 
     async def startDetectionLoop(self):
         await self.dispatch([
-            # [self.display.text, "Place The Item"],
+            [self.display.text, "Place The Item"],
             [self.cook.init]
         ])
 
@@ -76,8 +76,8 @@ class EventHandler:
                 await self.temp.update()
                 if not self.cook.isCooking:
                     dist = await self.ultrasound.get()
-                    self.log(dist)
-                    if dist < 16:
+                    # self.log(dist)
+                    if dist < 20:
                         tasks = await self.dispatch([
                             [self.display.loading],
                             [self.detector.detect],
