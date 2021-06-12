@@ -188,13 +188,13 @@ class DisplayContent:
         draw = Draw(image)
 
         w = ((dia + space) * total) - space
-        marginLeft = (self.width - w)/2
+        marginLeft = int((self.width - w)/2)
         
         for s in range(total):
             left = marginLeft + ((dia+space)*s)
             draw.ellipse((left, marginTop, left+dia, marginTop+dia), Pen(self.colors[steps[s]]), Brush(self.colors[steps[s]]))
             if curStepIndex < s:
-                draw.ellipse((left+ (dia*0.25), marginTop + (dia*0.25), left+(dia*0.75), marginTop+(dia*0.75)), Pen("#000"), Brush("#000"))
+                draw.ellipse((left+ int(dia*0.25), marginTop + int(dia*0.25), left+int(dia*0.75), marginTop+int(dia*0.75)), Pen("#000"), Brush("#000"))
         draw.flush()
 
         return image
