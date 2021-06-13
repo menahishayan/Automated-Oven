@@ -290,13 +290,16 @@ class DisplayContent:
                 timeRemaining = steps[curStepIndex]['duration'] * (10 if self.e.config._get('demoMode') else 60)
 
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
-                    n = time()-steps[curStepIndex]['startTime']
+                    try:
+                        n = time()-steps[curStepIndex]['startTime']
 
-                    d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
-                    percent = round(n/d,2)
-                    if percent > 1:
-                        break
-                    timeRemaining = int(steps[curStepIndex]['endTime'] - time())
+                        d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
+                        percent = round(n/d,2)
+                        if percent > 1:
+                            break
+                        timeRemaining = int(steps[curStepIndex]['endTime'] - time())
+                    except Exception:
+                        return
                     # pause
 
                 image.paste(

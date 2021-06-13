@@ -10,10 +10,7 @@ class Users(DB):
 
     async def add(self, name):
         try:
-            self.e.log(name)
             self.currentUsers.add(name)
-            self.e.log(self.currentUsers)
-
             self.set(str(round(time())), list(self.currentUsers))
         except Exception as e:
             self.e.err(e)
