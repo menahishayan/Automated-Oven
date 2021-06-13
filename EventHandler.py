@@ -21,7 +21,7 @@ from History import History
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.0.0'
+        self.__version__ = '2.0.1'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -59,7 +59,7 @@ class EventHandler:
         self.logging.error(msg)
         self.logging.error(exc_info()[-1].tb_lineno)
 
-    def sig_handler(self, _, _):
+    def sig_handler(self, _, _2):
         self._SIGKILL = True
         self.server.close()
         exit()
