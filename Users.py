@@ -12,7 +12,7 @@ class Users(DB):
         try:
             self.currentUsers.add(name)
             self.set(str(round(time())), list(self.currentUsers))
-
+            self.e.log(self.db)
         except Exception as e:
             self.e.err(e)
 
