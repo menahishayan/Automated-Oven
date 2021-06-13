@@ -21,7 +21,7 @@ class Energy(DB):
                 self.db[date] = {}
 
             self.db[date][str(round(time.time()))] = {
-                'watts': int(entry),
+                'watts': round(entry,2),
                 'users': await self.e.users.get()
             }
             self.flush()
