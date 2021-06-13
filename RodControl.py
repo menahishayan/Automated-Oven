@@ -4,12 +4,11 @@ from time import time
 from math import log, exp
 
 class RodControl:
-    def __init__(self, pin, e, maxTemp=250):
+    def __init__(self, pin, e):
         self.pin = DigitalInOut(pin)
         self.pin.direction = Direction.OUTPUT 
         self.pin.value = False
 
-        self.maxTemp = int(maxTemp)
         self.e = e
         self.surroundingTemp = int(e.temp)
 
@@ -124,6 +123,9 @@ class RodControl:
     def off(self):
         self.SIGKILLADJUST = True
         self.SIGKILLSUSTAIN = True
+
+    def isOn(self):
+        return self.pin.value
 
     def get(self):
         return round(self.currentTemp,1)

@@ -49,7 +49,7 @@ class Energy(DB):
 
     async def detect(self):
         base = 15
-        if self.e.cook.topRod.pin.value:
+        if self.e.cook.topRod.isOn():
             base += 325
         return base
 
