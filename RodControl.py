@@ -111,8 +111,8 @@ class RodControl:
         if self.lastHeatTime > 0:
             self.currentTemp = self.coolingTemp(time() - self.lastHeatTime)
 
-        while time() <= end and not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
-            if round(self.currentTemp) >= temp:
+        while time() < end and not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
+            if round(self.currentTemp) > temp:
                 await self.cool(temp-8)
             elif round(self.currentTemp) < temp:
                 await self.heat(temp)
