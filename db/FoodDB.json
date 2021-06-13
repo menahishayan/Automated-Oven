@@ -13,8 +13,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       },
       {
         "type": "cool",
@@ -36,8 +36,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       },
       {
         "type": "cool",
@@ -58,7 +58,9 @@
         "duration": 20
       },
       {
-        "type": "notify"
+        "type": "notify",
+        "title": "Cooking Complete",
+        "message": "Item is done Cooking"
       },
       {
         "type": "cook",
@@ -68,8 +70,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       },
       {
         "type": "cool",
@@ -91,8 +93,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       },
       {
         "type": "cool",
@@ -113,7 +115,9 @@
         "duration": 25
       },
       {
-        "type": "notify"
+        "type": "notify",
+        "title": "Cooking Complete",
+        "message": "Item is done Cooking"
       },
       {
         "type": "cook",
@@ -123,8 +127,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       }
     ]
   },
@@ -142,8 +146,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       }
     ]
   },
@@ -160,7 +164,9 @@
         "duration": 15
       },
       {
-        "type": "notify"
+        "type": "notify",
+        "title": "Cooking Complete",
+        "message": "Item is done Cooking"
       },
       {
         "type": "cook",
@@ -170,8 +176,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       },
       {
         "type": "cool",
@@ -192,7 +198,9 @@
         "duration": 20
       },
       {
-        "type": "notify"
+        "type": "notify",
+        "title": "Cooking Complete",
+        "message": "Item is done Cooking"
       },
       {
         "type": "cook",
@@ -202,8 +210,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       }
     ]
   },
@@ -220,7 +228,9 @@
         "duration": 10
       },
       {
-        "type": "notify"
+        "type": "notify",
+        "title": "Cooking Complete",
+        "message": "Item is done Cooking"
       },
       {
         "type": "cook",
@@ -230,8 +240,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       },
       {
         "type": "cool",
@@ -252,7 +262,9 @@
         "duration": 15
       },
       {
-        "type": "notify"
+        "type": "notify",
+        "title": "Cooking Complete",
+        "message": "Item is done Cooking"
       },
       {
         "type": "cook",
@@ -262,8 +274,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       }
     ]
   },
@@ -281,8 +293,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       }
     ]
   },
@@ -299,7 +311,9 @@
         "duration": 45
       },
       {
-        "type": "notify"
+        "type": "notify",
+        "title": "Cooking Complete",
+        "message": "Item is done Cooking"
       },
       {
         "type": "cook",
@@ -309,8 +323,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       },
       {
         "type": "cool",
@@ -332,8 +346,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       },
       {
         "type": "cool",
@@ -355,8 +369,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       },
       {
         "type": "cool",
@@ -378,8 +392,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       }
     ]
   },
@@ -397,8 +411,8 @@
       },
       {
         "type": "checkpoint",
-        "maxWaitTime": 5,
-        "confirmationRequired": true
+        "timeout": 5,
+        "wait": true
       }
     ]
   }
