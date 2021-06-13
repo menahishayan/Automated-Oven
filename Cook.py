@@ -36,10 +36,17 @@ class Cook:
                         step['isDone'] = False
 
                         while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
-                            await self.e.dispatch([
-                                [getattr(self, step['type']),step],
-                                [getattr(self.e.display, step['type']),self.currentStep, self.steps]
-                            ])
+                            if step['type'] == 'cook':
+                                await self.e.dispatch([
+                                    [getattr(self, step['type']), step],
+                                    [getattr(self.e.display, step['type']), self.currentStep, self.steps],
+                                    [self.e.history.add, self.item, self.steps, step['topTemp'] if step['topTemp'] > step['bottomTemp'] else step['bottomTemp'], step['duration']]
+                                ])
+                            else:
+                                await self.e.dispatch([
+                                    [getattr(self, step['type']), step],
+                                    [getattr(self.e.display, step['type']), self.currentStep, self.steps]
+                                ])
                             while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
                                 await sleep(0.5)
 
@@ -64,21 +71,20 @@ class Cook:
 
     async def startCustom(self, args):
         if not self.isCooking:
-            self.item = 'Custom'
+            self.item = '{} for {} min'.format(args['temp'], args['time'])
             self.steps = []
 
-            if args['preheat']:
-                self.steps.append({
-                    'type': 'preheat',
-                    'temp': args['temp']
-                })
+            self.steps.append({
+                'type': 'preheat',
+                'temp': args['temp']
+            })
             self.steps.append({
                 'type': 'cook',
                 'topTemp': args['temp'],
                 'bottomTemp': args['temp'],
                 'duration': args['time'],
             })
-            await sleep(1)
+            await sleep(0.7)
 
             return True
         return False
@@ -156,7 +162,7 @@ class Cook:
 
             self.topRod.off()
 
-            await self.e.display.pause(self.currentStep,[s['type'] for s in self.steps])
+            await self.e.display.pause(self.currentStep, [s['type'] for s in self.steps])
 
             return True
         except:
@@ -187,6 +193,8 @@ class Cook:
 
         self.steps = None
         self.currentStep = -1
+        self.item = 'Empty'
+
         try:
             self.e.audio.play()
         except Exception as e:

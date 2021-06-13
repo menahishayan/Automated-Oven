@@ -37,12 +37,7 @@ class WebSocketServer(WebSocket):
     async def setUserName(self,name):
         self.e.log(name)
         name = name.capitalize()
-        with open('./users.json') as db:
-            db = json.load(db)
-            if name in db:
-                db[name].append(self.address)
-            else:
-                db[name] = [self.address]
+        self.e.users.add(name)
         return True
 
     async def getLogs(self):

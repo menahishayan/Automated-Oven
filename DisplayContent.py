@@ -9,9 +9,6 @@ from PIL import Image, ImageDraw, ImageFont, ImageEnhance
 from PIL.ImageOps import invert
 from aggdraw import Draw, Pen, Brush
 from time import time
-from math import floor
-from random import sample
-import sys
 
 class DisplayContent:
     def __init__(self, CS_PIN=CE0, DC_PIN=D24, RESET_PIN=D25):
@@ -280,7 +277,6 @@ class DisplayContent:
                 await asyncio.sleep(0.3)
         except Exception as e:
             self.e.err(e)
-            self.e.err(sys.exc_info()[-1].tb_lineno)
 
     async def cook(self, curStepIndex, steps):
         try:
@@ -328,7 +324,6 @@ class DisplayContent:
                 await asyncio.sleep(0.3)
         except Exception as e:
             self.e.err(e)
-            self.e.err(sys.exc_info()[-1].tb_lineno)
 
     async def notify(self, curStepIndex, steps):
         try:
@@ -348,7 +343,6 @@ class DisplayContent:
                 await asyncio.sleep(1)
         except Exception as e:
             self.e.err(e)
-            self.e.err(sys.exc_info()[-1].tb_lineno)
 
     async def checkpoint(self, curStepIndex, steps):
         try:
@@ -368,7 +362,6 @@ class DisplayContent:
                 await asyncio.sleep(1)
         except Exception as e:
             self.e.err(e)
-            self.e.err(sys.exc_info()[-1].tb_lineno)
 
     async def cool(self, curStepIndex, steps):
         try:
@@ -388,7 +381,6 @@ class DisplayContent:
                 await asyncio.sleep(1)
         except Exception as e:
             self.e.err(e)
-            self.e.err(sys.exc_info()[-1].tb_lineno)
 
     async def pause(self,curStepIndex,stepTypes):
         image = Image.open('./images/PauseScreen.jpg')

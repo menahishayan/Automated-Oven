@@ -2,6 +2,8 @@ import logging
 from logging.handlers import SysLogHandler
 import concurrent.futures as cf
 import asyncio
+from sys import exc_info
+import signal
 
 from DetectItem import Detector
 from DisplayContent import DisplayContent
@@ -9,17 +11,17 @@ from Cook import Cook
 from Ultrasound import Ultrasound
 from Temp import Temp
 from SimpleWebSocketServer import SimpleWebSocketServer
-import WebSocketServer
+from WebSocketServer import WebSocketServer
 from Energy import Energy
 from DB import DB
-from Automations import Automations
 from Audio import Audio
+from Users import Users
+from History import History
 
-import signal
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '1.9.0'
+        self.__version__ = '2.0.0'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -28,26 +30,25 @@ class EventHandler:
 
         # logging.info('Start')
         self._SIGKILL = False
-
         self.logging = logging
-
         self.config = DB('./config.json')
 
         self.display = DisplayContent()
         self.detector = Detector()
         self.ultrasound = Ultrasound()
         self.temp = Temp()
-        self.server = SimpleWebSocketServer('', 8069, WebSocketServer.WebSocketServer,self)
+        self.server = SimpleWebSocketServer('', 8069, WebSocketServer, self)
         self.cook = Cook(self)
         self.energy = Energy(self)
-        self.history = DB('./db/HistoryDB.json')
+        self.history = History(self)
         self.audio = Audio(self)
-        self.automations = Automations()
+        self.users = Users(self)
+        self.automations = DB('./db/AutomationsDB.json')
 
         signal.signal(signal.SIGTERM, self.sig_handler)
         signal.signal(signal.SIGINT, self.sig_handler)
 
-        self.log("Boot: v"+ self.__version__)
+        self.log("Boot: v" + self.__version__)
 
         # signal.signal(signal.SIGSTOP, self.sig_handler)
 
@@ -56,8 +57,9 @@ class EventHandler:
 
     def err(self, msg):
         self.logging.error(msg)
+        self.logging.error(exc_info()[-1].tb_lineno)
 
-    def sig_handler(self,signum, stack):
+    def sig_handler(self, _, _):
         self._SIGKILL = True
         self.server.close()
         exit()
@@ -95,7 +97,6 @@ class EventHandler:
         except Exception as e:
             self.err(e)
 
-
     async def dispatch(self, arrayOfDispatches):
         arrayOfFutures = []
         with cf.ThreadPoolExecutor(max_workers=4) as executor:
@@ -116,4 +117,3 @@ class EventHandler:
             [self.detector.init, self],
             [self.detector.load_model]
         ])
-

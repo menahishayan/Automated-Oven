@@ -5,6 +5,7 @@ from datetime import datetime
 from asyncio import sleep
 from DB import DB
 
+
 class Energy(DB):
     def __init__(self, e, dbPath='./db/EnergyDB.json'):
         super().__init__(dbPath)
@@ -16,9 +17,15 @@ class Energy(DB):
             date = datetime.now().strftime("%Y-%m-%d")
             if date not in self.db:
                 self.db[date] = {}
-            self.db[date][str(time.time()).split('.')[0]] = int(entry)
+
+            self.db[date][str(round(time.time()))] = {
+                'watts': int(entry),
+                'users': await self.e.users.get()
+            }
+            self.flush()
+
         except Exception as e:
-            print(e)
+            self.e.err(e)
 
     async def getAll(self, date=""):
         if len(date) > 0:
