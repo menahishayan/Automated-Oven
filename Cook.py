@@ -130,7 +130,7 @@ class Cook:
         self.e.log("Cooking: Checkpoint")
 
         s['startTime'] = time()
-        s['endTime'] = s['startTime'] + s['maxWaitTime']
+        s['endTime'] = s['startTime'] + s['timeout']
         await self.sleepTill(s['endTime'])
 
         s['isDone'] = True
