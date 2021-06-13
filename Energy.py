@@ -1,7 +1,4 @@
-import json
-from math import log
 import time
-from random import randint
 from datetime import datetime
 from asyncio import sleep
 from DB import DB
@@ -15,7 +12,6 @@ class Energy(DB):
 
     async def addEnergy(self, entry):
         try:
-            self.e.log(entry)
             date = datetime.now().strftime("%Y-%m-%d")
             if date not in self.db:
                 self.db[date] = {}
