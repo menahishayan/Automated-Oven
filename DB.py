@@ -1,17 +1,20 @@
 import json
 from time import process_time
 class DB:
-    def __init__(self, dbPath,readOnly=False):
+    def __init__(self, dbPath):
         self.path = dbPath
-        f = open(self.path).read()
-        self.db = json.loads(f)
+        with open(self.path, "r+") as f: 
+            self.db = json.loads(f.read())
 
     def flush(self):
-        interval = 120
+        interval = 60
         t = round(process_time())
-        if t % interval < 15 or t%interval >interval-15:
-            with open(self.path, "w") as outfile: 
-                json.dump(self.db, outfile)
+        try:
+            if t % interval < 15 or t%interval >interval-15:
+                with open(self.path, "w") as outfile: 
+                    json.dump(self.db, outfile)
+        except Exception as e:
+            print(e)
 
     def set(self,k,v):
         self.db[k] = v
