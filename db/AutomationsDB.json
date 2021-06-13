@@ -1,46 +1,39 @@
 {
   "8af3d9" : {
-    "name": "chicken",
+    "name": "Chicken",
     "createdBy": "Ruby",
     "creationDate": 1620975225,
     "lastUsed": 1620976225,
     "steps": [
       {
-        "type": "Preheat",
+        "type": "preheat",
         "temp": 100
       },
       {
-        "type": "Cook",
+        "type": "cook",
         "topTemp": 170,
         "bottomTemp": 0,
-        "time": 30
+        "duration": 30
       },
       {
-        "type": "Checkpoint",
+        "type": "checkpoint",
         "wait": true,
         "timeout": 30
       },
 
       {
-        "type": "Cook",
+        "type": "cook",
         "topTemp": 0,
         "bottomTemp": 160,
-        "time": 30
+        "duration": 30
       },
       {
-        "type": "Notify",
-        "destination": [
-          "person 1",
-          "person 2",
-          "person 3",
-          "google home",
-          "192.168.0.6"
-        ],
-        "title": "title",
-        "message": "test msg1"
+        "type": "notify",
+        "title": "Chicken Ready",
+        "message": "The chicken is done"
       },
       {
-        "type": "Power Off"
+        "type": "power off"
       }
     ]
   },
@@ -51,40 +44,39 @@
     "lastUsed": 1620977225,
     "steps": [
       {
-        "type": "Preheat",
+        "type": "preheat",
         "temp": 90
       },
       {
-        "type": "Cook",
+        "type": "cook",
         "topTemp": 170,
         "bottomTemp": 0,
-        "time": 30
+        "duration": 30
       },
 
       {
-        "type": "Checkpoint",
+        "type": "checkpoint",
         "wait": true,
         "timeout": 30
       },
       {
-        "type": "Cook",
+        "type": "cook",
         "topTemp": 0,
         "bottomTemp": 160,
-        "time": 10
+        "duration": 10
       },
       {
-        "type": "Notify",
-        "destination": ["John", "Bob", "Tom", "Alexa"],
+        "type": "notify",
         "title": "Cooking Complete",
         "message": "Pizza is done Cooking"
       },
       {
-        "type": "Cooling",
+        "type": "cooling",
         "duration": 10
       },
 
       {
-        "type": "PowerOff"
+        "type": "power off"
       }
     ]
   }
