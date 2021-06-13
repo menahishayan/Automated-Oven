@@ -37,7 +37,7 @@ class WebSocketServer(WebSocket):
     async def setUserName(self,name):
         self.e.log(name)
         name = name.capitalize()
-        self.e.users.add(name)
+        await self.e.users.add(name)
         return True
 
     async def getLogs(self):
