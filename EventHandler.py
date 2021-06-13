@@ -3,6 +3,7 @@ from logging.handlers import SysLogHandler
 import concurrent.futures as cf
 import asyncio
 from sys import exc_info
+from traceback import format_exc
 import signal
 
 from DetectItem import Detector
@@ -56,9 +57,10 @@ class EventHandler:
         self.logging.info(msg)
 
     def err(self, msg):
+        self.logging.error(msg.filename)
         self.logging.error(msg)
         self.logging.error(exc_info()[-1].tb_lineno)
-
+        # self.logging.error(format_exc())
     def sig_handler(self, _, _2):
         self._SIGKILL = True
         self.server.close()
