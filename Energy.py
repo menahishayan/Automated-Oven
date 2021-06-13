@@ -13,8 +13,9 @@ class Energy(DB):
         self.e = e
         self.lastUpdatedValueNow = 0
 
-    async def add(self, entry):
+    async def addEnergy(self, entry):
         try:
+            self.e.log(entry)
             date = datetime.now().strftime("%Y-%m-%d")
             if date not in self.db:
                 self.db[date] = {}
@@ -44,10 +45,9 @@ class Energy(DB):
                 aggregate.append(self.detect())
                 await sleep(interval)
 
-            self.e.log(aggregate)
             self.lastUpdatedValueNow = round(sum(aggregate)/interval)
 
-            await self.add(self.lastUpdatedValueNow/(3600/interval))
+            await self.addEnergy(self.lastUpdatedValueNow/(3600/interval))
 
     def detect(self):
         base = 15
