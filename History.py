@@ -15,9 +15,12 @@ class History(DB):
             startTime = steps[0]['startTime']
             steps = steps.copy()
             for s in steps:
-                del s['startTime']
-                del s['endTime']
-                del s['pauseTime']
+                if 'startTime' in s:
+                    del s['startTime']
+                if 'endTime' in s:
+                    del s['endTime']
+                if 'pauseTime' in s:
+                    del s['pauseTime']
 
             playbackHistory = {
                 'timestamp': startTime,
