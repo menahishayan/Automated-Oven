@@ -1,7 +1,7 @@
 import json
 
 class Automations:
-    def __init__(self, dbPath='./AutomationsDB.json'):
+    def __init__(self, dbPath='./db/AutomationsDB.json'):
         self.path = dbPath
 
     async def add(self, entry):

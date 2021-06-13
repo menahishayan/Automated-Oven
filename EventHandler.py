@@ -19,7 +19,7 @@ import signal
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '1.8.0'
+        self.__version__ = '1.9.0'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -40,7 +40,7 @@ class EventHandler:
         self.server = SimpleWebSocketServer('', 8069, WebSocketServer.WebSocketServer,self)
         self.cook = Cook(self)
         self.energy = Energy(self)
-        self.history = DB('./HistoryDB.json')
+        self.history = DB('./db/HistoryDB.json')
         self.audio = Audio(self)
         self.automations = Automations()
 

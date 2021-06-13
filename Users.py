@@ -5,8 +5,9 @@ from datetime import datetime
 from asyncio import sleep
 from DB import DB
 
-class Energy(DB):
-    def __init__(self, e, dbPath='./db/EnergyDB.json'):
+
+class Users(DB):
+    def __init__(self, e, dbPath='./db/UsersDB.json'):
         super().__init__(dbPath)
         self.e = e
         self.lastUpdatedValueNow = 0

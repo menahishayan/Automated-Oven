@@ -19,7 +19,7 @@ class Cook:
         self.item = 'Empty'
 
     async def init(self):
-        self.db = DB('./FoodDB.json')
+        self.db = DB('./db/FoodDB.json')
 
     async def cookingHandler(self):
         while not self.e._SIGKILL:
