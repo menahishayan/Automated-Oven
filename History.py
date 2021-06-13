@@ -23,7 +23,7 @@ class History(DB):
                     del s['pauseTime']
 
             playbackHistory = {
-                'timestamp': startTime,
+                'timestamp': round(startTime),
                 'users': await self.e.users.get()
             }
             if self.has(name) and len(self.db[name]['steps']) == len(steps):

@@ -1,4 +1,5 @@
 import json
+from math import log
 import time
 from random import randint
 from datetime import datetime
@@ -40,14 +41,15 @@ class Energy(DB):
         while not self.e._SIGKILL:
             aggregate = []
             for _ in range(interval):
-                aggregate.append(await self.detect())
+                aggregate.append(self.detect())
                 await sleep(interval)
 
+            self.e.log(aggregate)
             self.lastUpdatedValueNow = round(sum(aggregate)/interval)
 
             await self.add(self.lastUpdatedValueNow/(3600/interval))
 
-    async def detect(self):
+    def detect(self):
         base = 15
         if self.e.cook.topRod.isOn():
             base += 325
