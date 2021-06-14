@@ -36,7 +36,6 @@ class Cook:
                         step['isDone'] = False
 
                         while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
-                            # try:
                             if step['type'] == 'cook':
                                 await self.e.dispatch([
                                     [getattr(self, step['type']), step],
@@ -48,8 +47,6 @@ class Cook:
                                     [getattr(self, step['type']), step],
                                     [getattr(self.e.display, step['type']), self.currentStep, self.steps]
                                 ])
-                            # except:
-                            #     await getattr(self.e.display, step['type'])(self.currentStep, self.steps)
                             while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
                                 await sleep(0.5)
 

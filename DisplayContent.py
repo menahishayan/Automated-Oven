@@ -248,7 +248,7 @@ class DisplayContent:
     async def preheat(self, curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
-                if steps[curStepIndex]['type'] == 'preheat' and steps[curStepIndex]['isDone']:
+                if steps[curStepIndex]['isDone']:
                     break
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)
@@ -256,7 +256,7 @@ class DisplayContent:
                 currTemp = self.e.cook.topRod.get()
                 percent = currTemp/steps[curStepIndex]['temp']
 
-                if percent > 1:
+                if percent >= 1:
                     break
 
                 image.paste(
@@ -282,7 +282,7 @@ class DisplayContent:
     async def cook(self, curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
-                if steps[curStepIndex]['type'] == 'cook' and steps[curStepIndex]['isDone']:
+                if steps[curStepIndex]['isDone']:
                     break
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)
@@ -296,7 +296,7 @@ class DisplayContent:
 
                         d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
                         percent = round(n/d,2)
-                        if percent > 1:
+                        if percent >= 1:
                             break
                         timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     except Exception:
