@@ -249,7 +249,6 @@ class DisplayContent:
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['type'] == 'preheat' and steps[curStepIndex]['isDone']:
-                    self.e.log("Display: Preheat done")
                     break
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)
@@ -296,7 +295,6 @@ class DisplayContent:
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['type'] == 'cook' and steps[curStepIndex]['isDone']:
-                    self.e.log("Display: Cook done")
                     break
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)

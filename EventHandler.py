@@ -57,8 +57,8 @@ class EventHandler:
         self.logging.info(msg)
 
     def err(self, msg):
-        # self.logging.error(msg.filename)
-        self.logging.error(exc_info()[-1].tb_lineno)
+        self.logging.error(msg)
+        # self.logging.error(exc_info()[-1].tb_lineno)
         # self.logging.error(format_exc())
     def sig_handler(self, _, _2):
         self._SIGKILL = True
