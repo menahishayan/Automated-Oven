@@ -110,7 +110,7 @@ class Cook:
         return
 
     async def cook(self, s):
-        duration = s['duration'] * (10 if self.e.config._get('demoMode') else 60)
+        duration = s['duration'] * (2 if self.e.config._get('demoMode') else 60)
         self.e.log("Cooking: Cooking {}".format(duration))
 
         if 'pauseTime' not in s:
@@ -146,7 +146,7 @@ class Cook:
         s['startTime'] = time()
 
         self.topRod.off()
-        s['endTime'] = s['startTime'] + s['duration'] * (10 if self.e.config._get('demoMode') else 60)
+        s['endTime'] = s['startTime'] + s['duration'] * (2 if self.e.config._get('demoMode') else 60)
 
         await self.sleepTill(s['endTime'])
         s['isDone'] = True
@@ -274,7 +274,7 @@ class Cook:
             if self.isCooking:
                 s = self.steps[self.currentStep]
                 if s['type'] == 'cook':
-                    d = int(t) * (10 if self.e.config._get('demoMode') else 60)
+                    d = int(t) * (2 if self.e.config._get('demoMode') else 60)
                     if 'pauseTime' in s:
                         s['endTime'] = d - (s['pauseTime'] - s['startTime'])
                         s['duration'] = d

@@ -287,7 +287,7 @@ class DisplayContent:
                 imDraw = ImageDraw.Draw(image)
 
                 percent = 0
-                timeRemaining = steps[curStepIndex]['duration'] * (10 if self.e.config._get('demoMode') else 60)
+                timeRemaining = steps[curStepIndex]['duration'] * (2 if self.e.config._get('demoMode') else 60)
 
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     try:
