@@ -290,18 +290,14 @@ class DisplayContent:
                 timeRemaining = steps[curStepIndex]['duration'] * (10 if self.e.config._get('demoMode') else 60)
 
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
-                    try:
-                        n = time()-steps[curStepIndex]['startTime']
+                    n = round(time()-steps[curStepIndex]['startTime'],2)
 
-                        d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
-                        percent = round(n/d,2)
-                        if percent > 1:
-                            break
-                        timeRemaining = int(steps[curStepIndex]['endTime'] - time())
-                    except Exception:
-                        self.e.log("DisplayCook: calc exception")
-
-                        return
+                    d = round(steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime'],2)
+                    percent = round(n/d,2)
+                    if percent > 1:
+                        break
+                    timeRemaining = round(steps[curStepIndex]['endTime'] - time())
+                    
                     # pause
 
                 image.paste(
