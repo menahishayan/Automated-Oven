@@ -35,10 +35,7 @@ class RodControl:
     def coolingTime(self,temp):
         if self.currentTemp <= self.surroundingTemp or temp <=self.surroundingTemp:
             return 0
-        logExp = (self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp)
-        if logExp < 0:
-            self.e.log("expMDErr: log")
-        return log(logExp)/0.008
+        return log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008
 
     def coolingTemp(self,_time):
         return self.surroundingTemp + (self.currentTemp - self.surroundingTemp)*exp(-0.008*_time)

@@ -281,8 +281,6 @@ class DisplayContent:
 
     async def cook(self, curStepIndex, steps):
         try:
-            # self.e.log("DCD: {}".format(steps))
-            # self.e.log("DCD: Index {}".format(curStepIndex))
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
                     break
@@ -333,7 +331,6 @@ class DisplayContent:
     async def notify(self, curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
-                self.e.log("CenterScreen: Start {} End {}".format(time() - steps[curStepIndex]['startTime'], steps[curStepIndex]['endTime'] - time()))
                 if steps[curStepIndex]['endTime'] <= time():
                     break
                 image = Image.new("RGB", (self.width, self.height))
@@ -353,7 +350,6 @@ class DisplayContent:
     async def checkpoint(self, curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
-                self.e.log("CenterScreen: Start {} End {}".format(time() - steps[curStepIndex]['startTime'], steps[curStepIndex]['endTime'] - time()))
                 if steps[curStepIndex]['endTime'] <= time():
                     break
                 image = Image.new("RGB", (self.width, self.height))
@@ -373,7 +369,6 @@ class DisplayContent:
     async def cool(self, curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM:
-                self.e.log("CenterScreen: Start {} End {}".format(time() - steps[curStepIndex]['startTime'], steps[curStepIndex]['endTime'] - time()))
                 if steps[curStepIndex]['endTime'] <= time():
                     break
                 image = Image.new("RGB", (self.width, self.height))

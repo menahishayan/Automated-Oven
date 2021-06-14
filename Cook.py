@@ -99,8 +99,8 @@ class Cook:
         self.e.log("Cooking: Preheating")
 
         calcTemp = s['temp'] if s['temp'] > int(self.e.temp) else int(self.e.temp)
-        heatTime = self.topRod.heatingTime(calcTemp)
-        coolTime = self.topRod.coolingTime(calcTemp)
+        heatTime = self.topRod.heatingTime(calcTemp)/0.3
+        coolTime = self.topRod.coolingTime(calcTemp)/0.3
         self.e.log("time: CTemp{} CurrTemp {} h {} c {}".format(calcTemp, self.topRod.get(), heatTime,coolTime))
         s['endTime'] = s['startTime'] + (heatTime if heatTime >= 0 else coolTime)
 
