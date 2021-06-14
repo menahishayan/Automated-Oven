@@ -255,6 +255,8 @@ class DisplayContent:
 
                 currTemp = self.e.cook.topRod.get()
                 percent = currTemp/steps[curStepIndex]['temp']
+                ht = self.e.cook.topRod.heatingTime(steps[curStepIndex]['temp'])
+                self.e.log("259: HTime {}".format(ht))
 
                 if percent >= 1:
                     break
