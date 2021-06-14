@@ -10,7 +10,7 @@ async def startLoop():
     e.log("Boot: {} s".format(round(time.process_time(),1)))
     await e.dispatch([
         [e.startDetectionLoop],
-        [e.server.serveforever],
+        [e.startWebsocket],
         [e.cook.cookingHandler],
         [e.energy.logEnergy]
     ])

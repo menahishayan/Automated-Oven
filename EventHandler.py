@@ -63,8 +63,11 @@ class EventHandler:
         # self.logging.error(format_exc())
     def sig_handler(self, _, _2):
         self._SIGKILL = True
-        self.server.close()
         exit()
+
+    async def startWebsocket(self):
+        while not self._SIGKILL:
+            self.server.serveonce()
 
     def dispatchWorker(self, fn, *args):
         return asyncio.run(fn(*args))
