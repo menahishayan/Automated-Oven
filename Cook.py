@@ -37,19 +37,19 @@ class Cook:
 
                         while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
                             self.e.log("CookStart: {}".format(s['type']))
-                            if step['type'] == 'cook':
-                                await self.e.dispatch([
-                                    [getattr(self, step['type']), step],
-                                    [getattr(self.e.display, step['type']), self.currentStep, self.steps],
-                                    [self.e.history.add, self.item, self.steps, step['topTemp'] if step['topTemp'] > step['bottomTemp'] else step['bottomTemp'], step['duration']]
-                                ])
-                            else:
-                                await self.e.dispatch([
-                                    [getattr(self, step['type']), step],
-                                    [getattr(self.e.display, step['type']), self.currentStep, self.steps]
-                                ])
-                            while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
-                                await sleep(0.5)
+                            # if step['type'] == 'cook':
+                            #     await self.e.dispatch([
+                            #         [getattr(self, step['type']), step],
+                            #         [getattr(self.e.display, step['type']), self.currentStep, self.steps],
+                            #         [self.e.history.add, self.item, self.steps, step['topTemp'] if step['topTemp'] > step['bottomTemp'] else step['bottomTemp'], step['duration']]
+                            #     ])
+                            # else:
+                            #     await self.e.dispatch([
+                            #         [getattr(self, step['type']), step],
+                            #         [getattr(self.e.display, step['type']), self.currentStep, self.steps]
+                            #     ])
+                            # while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
+                            #     await sleep(0.5)
                             self.e.log("Cook: {} isDone: {}".format(s['type'],s['isDone']))
 
                         if self.e._SIGKILL or self.SIGTERM:
@@ -123,7 +123,7 @@ class Cook:
 
         await self.topRod.sustainTemp(s['topTemp'], s['endTime'])
         self.e.log("Cook: sustain exit")
-        
+
         if time() > s['endTime']:
             s['isDone'] = True
 
