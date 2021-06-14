@@ -299,6 +299,8 @@ class DisplayContent:
                             break
                         timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     except Exception:
+                        self.e.log("DisplayCook: calc exception")
+
                         return
                     # pause
 
@@ -325,6 +327,8 @@ class DisplayContent:
 
                 self.display(image)
                 await asyncio.sleep(0.3)
+            self.e.log("DisplayCook: exit")
+            
         except Exception as e:
             self.e.err(e)
 

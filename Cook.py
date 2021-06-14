@@ -120,7 +120,7 @@ class Cook:
             del s['pauseTime']
 
         await self.topRod.sustainTemp(s['topTemp'], s['endTime'])
-
+        self.e.log("Cook: sustain exit")
         if time() > s['endTime']:
             s['isDone'] = True
 
