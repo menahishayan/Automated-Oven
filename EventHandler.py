@@ -61,9 +61,10 @@ class EventHandler:
         self.logging.error(msg)
         self.logging.error(exc_info()[-1].tb_lineno)
         # self.logging.error(format_exc())
-        
+
     def sig_handler(self, _, _2):
         self._SIGKILL = True
+        self.server.close()
         exit()
 
     async def startWebsocket(self):
