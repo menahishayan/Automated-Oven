@@ -11,7 +11,7 @@ class Temp:
         try:
             self.value = self.dhtDevice.temperature
         except: 
-            self.value = 0
+            self.value = 28
 
     async def update(self):
         try:
