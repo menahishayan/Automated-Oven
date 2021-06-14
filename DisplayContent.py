@@ -352,7 +352,7 @@ class DisplayContent:
     async def checkpoint(self, curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
-                if steps[curStepIndex]['isDone'] or steps[curStepIndex]['endTime'] >= time():
+                if self.e.cook.getStep(curStepIndex)['isDone']:
                     break
                 image = Image.new("RGB", (self.width, self.height))
                 
@@ -371,7 +371,7 @@ class DisplayContent:
     async def cool(self, curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM:
-                if steps[curStepIndex]['isDone'] or steps[curStepIndex]['endTime'] >= time():
+                if steps[curStepIndex]['isDone']:
                     break
                 image = Image.new("RGB", (self.width, self.height))
                 

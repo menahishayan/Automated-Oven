@@ -327,3 +327,5 @@ class Cook:
             return {
                 'error': str(e)
             }
+    def getStep(self,index):
+        return self.steps[index] if self.steps else None
