@@ -106,7 +106,7 @@ class Cook:
         # self.e.log("time: CTemp{} CurrTemp {} h {} c {}".format(calcTemp, self.topRod.get(), heatTime,coolTime))
         # s['endTime'] = s['startTime'] + (heatTime if heatTime >= 0 else coolTime)
 
-        self.e.log("Preheat: Start: {} End: {}".format( time() -s['startTime'], s['endTime']-time()))
+        # self.e.log("Preheat: Start: {} End: {}".format( time() -s['startTime'], s['endTime']-time()))
         await self.topRod.reachTemp(s['temp'])
 
         s['isDone'] = True
