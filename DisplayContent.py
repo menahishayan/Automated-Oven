@@ -299,7 +299,7 @@ class DisplayContent:
                             break
                         timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     except Exception:
-                        return
+                        break
                     # pause
 
                 image.paste(
