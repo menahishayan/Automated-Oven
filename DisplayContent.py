@@ -298,8 +298,8 @@ class DisplayContent:
 
                     d = round(steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime'],2)
                     percent = round(n/d,2)
-                    if percent > 1:
-                        self.e.log("DisplayCook: percnet >1")
+                    if percent >= 1:
+                        self.e.log("DisplayCook: percnet >=1")
                         break
                     timeRemaining = round(steps[curStepIndex]['endTime'] - time())
                     
