@@ -105,8 +105,8 @@ class Cook:
 
         await self.topRod.reachTemp(s['temp'])
 
-        if time() > end:
-            s['isDone'] = True
+        # if time() > end:
+        s['isDone'] = True
 
         return
 
