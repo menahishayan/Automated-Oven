@@ -190,7 +190,7 @@ class Cook:
             return False
 
     def done(self):
-        if not self.SIGTERM and self.isCooking:
+        if self.isCooking:
             self.SIGTERM = True
             self.topRod.off()
             self.isCooking = False
