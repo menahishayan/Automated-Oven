@@ -200,7 +200,7 @@ class Cook:
         self.item = 'Empty'
 
         try:
-            self.e.audio.play()
+            self.e.audio._play()
         except Exception as e:
             self.e.err(e)
 

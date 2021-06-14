@@ -114,7 +114,7 @@ class RodControl:
         if self.lastHeatTime > 0:
             self.currentTemp = self.coolingTemp(time() - self.lastHeatTime)
 
-        while time() < end and not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
+        while round(time()) < round(end) and not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
             if round(self.currentTemp) > temp:
                 if(self.coolingTime(temp-8) + time() > end):
                     self.e.log("Compromise: Req: {} End: {}".format(self.coolingTime(temp-8) + time(),end))

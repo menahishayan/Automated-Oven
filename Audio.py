@@ -15,26 +15,29 @@ class Audio:
         res = int(str(result.stdout).split('[')[1].split('%')[0])
         return res
 
-    def getVolume(self):
+    async def getVolume(self):
         return self.volume
 
-    def getAvailableTones(self):
+    async def getAvailableTones(self):
         result = run('ls /home/pi/OS/audio/', stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
         res = str(result.stdout).split("\n")
         return [r.split('.wav')[0] for r in res]
 
-    def getSelectedTone(self):
+    async def getSelectedTone(self):
         return self.selectedTone
 
-    def setSelectedTone(self,name):
+    async def setSelectedTone(self,name):
         self.selectedTone = name
         self.e.config.set('selectedTone',name)
 
-    def setVolume(self,vol):
+    async def setVolume(self,vol):
         system("amixer -q -M sset Headphone {}%".format(vol))
         self.volume = vol
 
-    def play(self):
+    async def play(self):
+        system('aplay audio/{}.wav'.format(self.selectedTone))
+
+    def _play(self):
         system('aplay audio/{}.wav'.format(self.selectedTone))
 
 # if __name__ == '__main__':

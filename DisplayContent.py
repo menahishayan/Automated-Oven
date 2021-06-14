@@ -248,7 +248,7 @@ class DisplayContent:
     async def preheat(self, curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
-                if steps[curStepIndex]['isDone']:
+                if steps[curStepIndex]['type'] == 'preheat' and steps[curStepIndex]['isDone']:
                     break
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)
@@ -281,7 +281,7 @@ class DisplayContent:
     async def cook(self, curStepIndex, steps):
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
-                if steps[curStepIndex]['isDone']:
+                if steps[curStepIndex]['type'] == 'cook' and steps[curStepIndex]['isDone']:
                     break
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)
