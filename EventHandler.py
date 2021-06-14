@@ -85,15 +85,13 @@ class EventHandler:
                 await self.temp.update()
                 if not self.cook.isCooking:
                     dist = await self.ultrasound.get()
-                    # self.log(dist)
                     if dist < 200:
                         tasks = await self.dispatch([
                             [self.display.loading],
                             [self.detector.detect],
                         ])
 
-                        # res = tasks[1].result()
-                        res = 'Fish'
+                        res = tasks[1].result()
 
                         self.log("Detection: " + res)
 

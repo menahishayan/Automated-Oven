@@ -34,7 +34,6 @@ class Cook:
                         step = self.steps[s]
 
                         step['isDone'] = False
-                        self.e.log("CookStart: Line 37")
 
                         while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
                             self.e.log("CookStart: {}".format(s['type']))
@@ -107,8 +106,8 @@ class Cook:
 
         await self.topRod.reachTemp(s['temp'])
 
-        # if time() > end:
-        s['isDone'] = True
+        if time() > end:
+            s['isDone'] = True
 
         return
 
@@ -124,6 +123,7 @@ class Cook:
 
         await self.topRod.sustainTemp(s['topTemp'], s['endTime'])
         self.e.log("Cook: sustain exit")
+        
         if time() > s['endTime']:
             s['isDone'] = True
 

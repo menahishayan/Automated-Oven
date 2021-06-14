@@ -11,6 +11,7 @@ async def startLoop():
     try:
         await e.dispatch([
             [e.startDetectionLoop],
+            [e.startWebsocket],
             [e.cook.cookingHandler],
             [e.energy.logEnergy]
         ])
