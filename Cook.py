@@ -36,6 +36,7 @@ class Cook:
                         step['isDone'] = False
 
                         while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
+                            self.e.log("CookStart: {}".format(s['type']))
                             if step['type'] == 'cook':
                                 await self.e.dispatch([
                                     [getattr(self, step['type']), step],

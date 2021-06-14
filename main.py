@@ -8,11 +8,14 @@ async def startLoop():
     e = EventHandler.EventHandler()
     await e.init()
     e.log("Boot: {} s".format(round(time.process_time(),1)))
-    await e.dispatch([
-        [e.startDetectionLoop],
-        [e.startWebsocket],
-        [e.cook.cookingHandler],
-        [e.energy.logEnergy]
-    ])
+    try:
+        await e.dispatch([
+            [e.startDetectionLoop],
+            [e.startWebsocket],
+            [e.cook.cookingHandler],
+            [e.energy.logEnergy]
+        ])
+    except RuntimeError as ex:
+        e.err(ex)
 
 asyncio.run(startLoop())
