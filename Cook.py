@@ -138,6 +138,10 @@ class Cook:
 
     async def notify(self, s):
         self.e.log("Cooking: Notify")
+        s['startTime'] = time()
+        s['endTime'] = s['startTime'] + 2
+        await self.sleepTill(s['endTime'])
+
         s['isDone'] = True
         return
 
