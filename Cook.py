@@ -210,6 +210,7 @@ class Cook:
         self.steps = None
         self.currentStep = -1
         self.item = 'Empty'
+        self.e.display.done()
 
         try:
             self.e.audio._play()

@@ -228,7 +228,7 @@ class DisplayContent:
 
         return image
 
-    def baseImageCenterIcon(self, curStepIndex, stepTypes):
+    def baseImageCenterIcon(self, curStepIndex, stepTypes, customIcon=None, customText=None):
         image = Image.new("RGB", (self.width, self.height))
 
         imDraw = ImageDraw.Draw(image)
@@ -236,10 +236,10 @@ class DisplayContent:
         name = stepTypes[curStepIndex].capitalize()
 
         image.paste(self.getProgressItems(curStepIndex, stepTypes))
-        icon = self.icon('./images/{}Icon.png'.format(name), large=True)
+        icon = self.icon('./images/{}Icon.png'.format(customIcon if customIcon else name), large=True)
         image.paste(icon, ((self.width-50)//2, (self.height-50)//2), mask=icon)
 
-        textSub = name
+        textSub = customText if customText else name
         w_s, _ = imDraw.textsize(textSub, font=self.fonts['mini'])
         imDraw.text(((self.width-w_s)/2, 102), textSub, font=self.fonts['mini'], align="center", fill="#fff")
 
@@ -254,7 +254,6 @@ class DisplayContent:
                 imDraw = ImageDraw.Draw(image)
 
                 currTemp = self.e.cook.topRod.get()
-                # percent = currTemp/steps[curStepIndex]['temp']
                 percent = 0
 
                 ht = self.e.cook.topRod.heatingTime(steps[curStepIndex]['temp'])
@@ -268,7 +267,6 @@ class DisplayContent:
                         percent = round(n/d,2)
                         if percent > 1:
                             break
-                        timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     except Exception:
                         break
 
@@ -313,7 +311,6 @@ class DisplayContent:
                         timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     except Exception:
                         break
-                    # pause
 
                 image.paste(
                     self.baseImageLeftIcon(
@@ -399,8 +396,27 @@ class DisplayContent:
             self.e.err(e)
 
     async def pause(self,curStepIndex,stepTypes):
-        image = Image.open('./images/PauseScreen.jpg')
-        image.paste(self.getProgressItems(curStepIndex, stepTypes))
+        image = Image.new("RGB", (self.width, self.height))
+        image.paste(
+            self.baseImageCenterIcon(
+                curStepIndex,
+                stepTypes,
+                "Pause",
+                "Paused"
+            )
+        )
+        self.display(image)
+
+    def done(self,curStepIndex,stepTypes):
+        image = Image.new("RGB", (self.width, self.height))
+        image.paste(
+            self.baseImageCenterIcon(
+                curStepIndex,
+                stepTypes,
+                "Done",
+                "Done"
+            )
+        )
         self.display(image)
 
     async def setBacklight(self, percent):
