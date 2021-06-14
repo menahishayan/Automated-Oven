@@ -36,17 +36,18 @@ class Cook:
                         step['isDone'] = False
 
                         while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
-                            if step['type'] == 'cook':
-                                await self.e.dispatch([
-                                    [getattr(self, step['type']), step],
-                                    [getattr(self.e.display, step['type']), self.currentStep, self.steps],
-                                    [self.e.history.add, self.item, self.steps, step['topTemp'] if step['topTemp'] > step['bottomTemp'] else step['bottomTemp'], step['duration']]
-                                ])
-                            else:
-                                await self.e.dispatch([
-                                    [getattr(self, step['type']), step],
-                                    [getattr(self.e.display, step['type']), self.currentStep, self.steps]
-                                ])
+                            # if step['type'] == 'cook':
+                            #     await self.e.dispatch([
+                            #         [getattr(self, step['type']), step],
+                            #         [getattr(self.e.display, step['type']), self.currentStep, self.steps],
+                            #         [self.e.history.add, self.item, self.steps, step['topTemp'] if step['topTemp'] > step['bottomTemp'] else step['bottomTemp'], step['duration']]
+                            #     ])
+                            # else:
+                            #     await self.e.dispatch([
+                            #         [getattr(self, step['type']), step],
+                            #         [getattr(self.e.display, step['type']), self.currentStep, self.steps]
+                            #     ])
+                            await getattr(self, step['type'])(step)
                             while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
                                 await sleep(0.5)
 
@@ -104,7 +105,10 @@ class Cook:
         # s['endTime'] = s['startTime'] + (heatTime if heatTime >= 0 else coolTime)
 
         # self.e.log("Preheat: Start: {} End: {}".format( time() -s['startTime'], s['endTime']-time()))
-        await self.topRod.reachTemp(s['temp'])
+        await self.e.dispatch([
+            [self.topRod.reachTemp, s['temp']],
+            [getattr(self.e.display, s['type']), self.currentStep, self.steps]
+        ])
 
         s['isDone'] = True
 
@@ -120,7 +124,11 @@ class Cook:
         else:
             del s['pauseTime']
 
-        await self.topRod.sustainTemp(s['topTemp'], s['endTime'])
+        await self.e.dispatch([
+            [self.topRod.sustainTemp, s['topTemp'], s['endTime']],
+            [getattr(self.e.display, s['type']), self.currentStep, self.steps]
+        ])
+        # History
 
         if time() > s['endTime']:
             s['isDone'] = True
@@ -132,7 +140,11 @@ class Cook:
 
         s['startTime'] = time()
         s['endTime'] = s['startTime'] + s['timeout']
-        await self.sleepTill(s['endTime'])
+        
+        await self.e.dispatch([
+            [self.sleepTill, s['endTime']],
+            [getattr(self.e.display, s['type']), self.currentStep, self.steps]
+        ])
 
         s['isDone'] = True
         return
@@ -141,7 +153,10 @@ class Cook:
         self.e.log("Cooking: Notify")
         s['startTime'] = time()
         s['endTime'] = s['startTime'] + 2
-        await self.sleepTill(s['endTime'])
+        await self.e.dispatch([
+            [self.sleepTill, s['endTime']],
+            [getattr(self.e.display, s['type']), self.currentStep, self.steps]
+        ])
 
         s['isDone'] = True
         return
@@ -153,7 +168,10 @@ class Cook:
         self.topRod.off()
         s['endTime'] = s['startTime'] + s['duration'] * (2 if self.e.config._get('demoMode') else 60)
 
-        await self.sleepTill(s['endTime'])
+        await self.e.dispatch([
+            [self.sleepTill, s['endTime']],
+            [getattr(self.e.display, s['type']), self.currentStep, self.steps]
+        ])
         s['isDone'] = True
         return
 
