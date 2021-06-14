@@ -145,7 +145,7 @@ class Cook:
     async def notify(self, s):
         self.e.log("Cooking: Notify")
         s['startTime'] = time()
-        s['endTime'] = s['startTime'] + 5
+        s['endTime'] = s['startTime'] + 3
         await self.e.dispatch([
             [self.sleepTill, s['endTime']],
             [getattr(self.e.display, s['type']), self.currentStep, self.steps]
