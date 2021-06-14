@@ -256,8 +256,8 @@ class DisplayContent:
                 currTemp = self.e.cook.topRod.get()
                 percent = currTemp/steps[curStepIndex]['temp']
 
-                # if percent >= 1:
-                #     break
+                if percent >= 1:
+                    break
 
                 image.paste(
                     self.baseImageLeftIcon(
@@ -297,8 +297,8 @@ class DisplayContent:
                         n = time()-steps[curStepIndex]['startTime']
                         d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
                         percent = round(n/d,2)
-                        # if percent >= 0.95:
-                        #     break
+                        if percent >= 1:
+                            break
                         timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     except Exception:
                         break
