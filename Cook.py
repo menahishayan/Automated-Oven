@@ -49,6 +49,7 @@ class Cook:
                                 ])
                             while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
                                 await sleep(0.5)
+                            self.e.log("Cook: {} isDone: {}".format(s['type'],s['isDone']))
 
                         if self.e._SIGKILL or self.SIGTERM:
                             break
