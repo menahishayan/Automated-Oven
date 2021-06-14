@@ -255,18 +255,6 @@ class DisplayContent:
 
                 currTemp = self.e.cook.topRod.get()
                 percent = currTemp/steps[curStepIndex]['temp']
-                # if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
-                #     try:
-                #         n = time()-steps[curStepIndex]['startTime']
-
-                #         d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
-                #         percent2 = round(n/d,2)
-                #         self.e.log("Percen2: {}".format(percent2))
-                #         if percent2 > 1:
-                #             break
-                #         timeRemaining = int(steps[curStepIndex]['endTime'] - time())
-                #     except Exception:
-                #         break
 
                 if percent > 1:
                     break
