@@ -63,7 +63,7 @@ class Cook:
 
     async def startFromDB(self, item):
         if not self.isCooking:
-            self.item = 'Fish'
+            self.item = item
             self.steps = self.db._get(item).copy()['steps']
             await sleep(1)
 

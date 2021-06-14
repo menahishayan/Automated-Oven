@@ -92,7 +92,8 @@ class EventHandler:
                             [self.detector.detect],
                         ])
 
-                        res = tasks[1].result()
+                        # res = tasks[1].result()
+                        res = 'Fish'
 
                         self.log("Detection: " + res)
 
