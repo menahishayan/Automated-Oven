@@ -49,7 +49,7 @@ class Cook:
                                         [getattr(self.e.display, step['type']), self.currentStep, self.steps]
                                     ])
                             except:
-                                await getattr(self, step['type'])(step)
+                                await getattr(self.e.display, step['type'])(self.currentStep, self.steps)
                             while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
                                 await sleep(0.5)
 

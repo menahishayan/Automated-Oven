@@ -117,16 +117,18 @@ class RodControl:
         while round(time()) < round(end) and not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
             if round(self.currentTemp) > temp:
                 if(self.coolingTime(temp-8) + time() > end):
-                    self.e.log("Compromise: Req: {} End: {}".format(self.coolingTime(temp-8) + time(),end))
+                    # self.e.log("Compromise: Req: {} End: {}".format(self.coolingTime(temp-8) + time(),end))
                     compromiseTemp = self.coolingTemp(round(end-time()))
                     await self.cool(compromiseTemp)
+                    break
                 else:
                     await self.cool(temp-8)
             elif round(self.currentTemp) < temp:
                 if(self.heatingTime(temp) + time() > end):
-                    self.e.log("Compromise: Req: {} End: {}".format(self.heatingTime(temp) + time(),end))
+                    # self.e.log("Compromise: Req: {} End: {}".format(self.heatingTime(temp) + time(),end))
                     compromiseTemp = self.heatingTemp(round(end-time()))
                     await self.heat(compromiseTemp)
+                    break
                 else:
                     await self.heat(temp)
 
