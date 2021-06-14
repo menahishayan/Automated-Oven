@@ -25,7 +25,6 @@ class Cook:
         while not self.e._SIGKILL:
             if not self.isCooking and self.steps and self.currentStep == -1:
                 try:
-                    self.e.log("CookStart: Line 28")
                     self.isCooking = True
                     self.SIGTERM = False
                     self.isDone = False
@@ -35,6 +34,7 @@ class Cook:
                         step = self.steps[s]
 
                         step['isDone'] = False
+                        self.e.log("CookStart: Line 37")
 
                         while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
                             self.e.log("CookStart: {}".format(s['type']))
