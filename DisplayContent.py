@@ -254,12 +254,23 @@ class DisplayContent:
                 imDraw = ImageDraw.Draw(image)
 
                 currTemp = self.e.cook.topRod.get()
-                percent = currTemp/steps[curStepIndex]['temp']
-                ht = self.e.cook.topRod.heatingTime(steps[curStepIndex]['temp'])
-                self.e.log("259: HTime {}".format(ht))
+                # percent = currTemp/steps[curStepIndex]['temp']
+                percent = 0
 
-                if percent >= 1:
-                    break
+                ht = self.e.cook.topRod.heatingTime(steps[curStepIndex]['temp'])
+                if 'endTime' not in steps[curStepIndex]:
+                    steps[curStepIndex]['endTime'] = steps[curStepIndex]['startTime'] + (ht if ht > 0 else self.e.cook.topRod.coolingTime(steps[curStepIndex]['temp']))
+
+                if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
+                    try:
+                        n = time()-steps[curStepIndex]['startTime']
+                        d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
+                        percent = round(n/d,2)
+                        if percent > 1:
+                            break
+                        timeRemaining = int(steps[curStepIndex]['endTime'] - time())
+                    except Exception:
+                        break
 
                 image.paste(
                     self.baseImageLeftIcon(
