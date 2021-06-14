@@ -14,5 +14,6 @@ async def startLoop():
         [e.cook.cookingHandler],
         [e.energy.logEnergy]
     ])
+    
 
 asyncio.run(startLoop())

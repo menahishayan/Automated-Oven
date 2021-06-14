@@ -22,7 +22,7 @@ from History import History
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.0.3'
+        self.__version__ = '2.1.8'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -58,9 +58,10 @@ class EventHandler:
 
     def err(self, msg):
         self.logging.error(msg.filename)
-        self.logging.error(msg)
+        # self.logging.error(msg)
         self.logging.error(exc_info()[-1].tb_lineno)
-        # self.logging.error(format_exc())
+        self.logging.error(format_exc())
+
     def sig_handler(self, _, _2):
         self._SIGKILL = True
         self.server.close()
@@ -84,7 +85,6 @@ class EventHandler:
                 await self.temp.update()
                 if not self.cook.isCooking:
                     dist = await self.ultrasound.get()
-                    # self.log(dist)
                     if dist < 200:
                         tasks = await self.dispatch([
                             [self.display.loading],

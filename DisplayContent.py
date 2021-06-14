@@ -254,8 +254,8 @@ class DisplayContent:
                 imDraw = ImageDraw.Draw(image)
 
                 currTemp = self.e.cook.topRod.get()
-                percent = currTemp/steps[curStepIndex]['temp']
-                if percent > 1:
+                percent = round(currTemp/steps[curStepIndex]['temp'],2)
+                if percent >= 1:
                     break
 
                 image.paste(
@@ -275,13 +275,17 @@ class DisplayContent:
 
                 self.display(image)
                 await asyncio.sleep(0.3)
+            self.e.log("DisplayPrheat: Exit")
+            
         except Exception as e:
             self.e.err(e)
 
     async def cook(self, curStepIndex, steps):
         try:
+            self.e.log("DisplayCook: Enter")
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
+                    self.e.log("DisplayCook: done")
                     break
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)
@@ -290,16 +294,15 @@ class DisplayContent:
                 timeRemaining = steps[curStepIndex]['duration'] * (10 if self.e.config._get('demoMode') else 60)
 
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
-                    try:
-                        n = time()-steps[curStepIndex]['startTime']
+                    n = round(time()-steps[curStepIndex]['startTime'],2)
 
-                        d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
-                        percent = round(n/d,2)
-                        if percent > 1:
-                            break
-                        timeRemaining = int(steps[curStepIndex]['endTime'] - time())
-                    except Exception:
-                        return
+                    d = round(steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime'],2)
+                    percent = round(n/d,2)
+                    if percent >= 1:
+                        self.e.log("DisplayCook: percnet >=1")
+                        break
+                    timeRemaining = round(steps[curStepIndex]['endTime'] - time())
+                    
                     # pause
 
                 image.paste(
@@ -325,6 +328,8 @@ class DisplayContent:
 
                 self.display(image)
                 await asyncio.sleep(0.3)
+            self.e.log("DisplayCook: exit")
+            
         except Exception as e:
             self.e.err(e)
 
