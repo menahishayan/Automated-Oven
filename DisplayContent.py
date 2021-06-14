@@ -254,8 +254,8 @@ class DisplayContent:
                 imDraw = ImageDraw.Draw(image)
 
                 currTemp = self.e.cook.topRod.get()
-                percent = currTemp/steps[curStepIndex]['temp']
-                if percent > 1:
+                percent = round(currTemp/steps[curStepIndex]['temp'],2)
+                if percent >= 1:
                     break
 
                 image.paste(
@@ -282,6 +282,7 @@ class DisplayContent:
         try:
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
+                    self.e.log("Display: done")
                     break
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)
@@ -295,6 +296,7 @@ class DisplayContent:
                     d = round(steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime'],2)
                     percent = round(n/d,2)
                     if percent > 1:
+                        self.e.log("Display: percnet >1")
                         break
                     timeRemaining = round(steps[curStepIndex]['endTime'] - time())
                     
