@@ -283,7 +283,6 @@ class DisplayContent:
         try:
             self.e.log("DCD: {}".format(steps))
             self.e.log("DCD: Index {}".format(curStepIndex))
-            return
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
                     break
@@ -298,7 +297,7 @@ class DisplayContent:
                         n = time()-steps[curStepIndex]['startTime']
                         d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
                         percent = round(n/d,2)
-                        if percent >= 1:
+                        if percent > 1:
                             break
                         timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     except Exception:
