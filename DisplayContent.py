@@ -283,6 +283,7 @@ class DisplayContent:
         try:
             self.e.log("DCD: {}".format(steps))
             self.e.log("DCD: Index {}".format(curStepIndex))
+            return
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
                     break
