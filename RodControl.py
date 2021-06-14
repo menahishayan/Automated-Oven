@@ -70,7 +70,7 @@ class RodControl:
 
     async def reachTemp(self,temp):
         if temp == 0:
-            self.pin.value = False
+            temp = self.surroundingTemp
 
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
