@@ -29,6 +29,8 @@ class Cook:
                     self.SIGTERM = False
                     self.isDone = False
 
+                    self.e.log(self.steps)
+
                     for s in range(len(self.steps)):
                         self.currentStep = s
                         step = self.steps[s]
