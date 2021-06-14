@@ -100,11 +100,11 @@ class Cook:
         s['startTime'] = time()
         self.e.log("Cooking: Preheating")
 
-        calcTemp = s['temp'] if s['temp'] > int(self.e.temp) else int(self.e.temp)
-        heatTime = self.topRod.heatingTime(calcTemp)
-        s['endTime'] = s['startTime'] + (heatTime if heatTime >= 0 else self.topRod.coolingTime(calcTemp))
+        # calcTemp = s['temp'] if s['temp'] > int(self.e.temp) else int(self.e.temp)
+        # heatTime = self.topRod.heatingTime(calcTemp)
+        # s['endTime'] = s['startTime'] + (heatTime if heatTime >= 0 else self.topRod.coolingTime(calcTemp))
 
-        self.e.log("Preheat: Start: {} End: {}".format( time() -s['startTime'], s['endTime']-time()))
+        # self.e.log("Preheat: Start: {} End: {}".format( time() -s['startTime'], s['endTime']-time()))
         await self.topRod.reachTemp(s['temp'])
 
         s['isDone'] = True
