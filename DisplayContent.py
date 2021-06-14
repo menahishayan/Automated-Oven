@@ -281,7 +281,6 @@ class DisplayContent:
 
     async def cook(self, curStepIndex, steps):
         try:
-            self.e.log(steps[curStepIndex])
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
                     break
@@ -294,10 +293,9 @@ class DisplayContent:
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     try:
                         n = time()-steps[curStepIndex]['startTime']
-
                         d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
                         percent = round(n/d,2)
-                        if percent >= 1:
+                        if percent >= 0.95:
                             break
                         timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     except Exception:
@@ -345,7 +343,7 @@ class DisplayContent:
                 )
 
                 self.display(image)
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.5)
         except Exception as e:
             self.e.err(e)
 
@@ -364,7 +362,7 @@ class DisplayContent:
                 )
 
                 self.display(image)
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.5)
         except Exception as e:
             self.e.err(e)
 
@@ -383,7 +381,7 @@ class DisplayContent:
                 )
 
                 self.display(image)
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.5)
         except Exception as e:
             self.e.err(e)
 
