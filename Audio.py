@@ -28,6 +28,7 @@ class Audio:
 
     async def setSelectedTone(self,name):
         self.selectedTone = name
+        await self.play()
         self.e.config.set('selectedTone',name)
 
     async def setVolume(self,vol):
