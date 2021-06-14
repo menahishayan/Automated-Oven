@@ -29,8 +29,6 @@ class Cook:
                     self.SIGTERM = False
                     self.isDone = False
 
-                    self.e.log(self.steps)
-
                     for s in range(len(self.steps)):
                         self.currentStep = s
                         step = self.steps[s]
@@ -106,8 +104,7 @@ class Cook:
 
         await self.topRod.reachTemp(s['temp'])
 
-        if time() > end:
-            s['isDone'] = True
+        s['isDone'] = True
 
         return
 
