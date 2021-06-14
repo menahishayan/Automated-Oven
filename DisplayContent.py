@@ -281,6 +281,7 @@ class DisplayContent:
 
     async def cook(self, curStepIndex, steps):
         try:
+            self.e.log(steps[curStepIndex])
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
                     break
