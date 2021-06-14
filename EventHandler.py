@@ -3,7 +3,6 @@ from logging.handlers import SysLogHandler
 import concurrent.futures as cf
 import asyncio
 from sys import exc_info
-from traceback import format_exc
 import signal
 
 from DetectItem import Detector
@@ -22,7 +21,7 @@ from History import History
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.2.5'
+        self.__version__ = '2.2.6'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -51,15 +50,13 @@ class EventHandler:
 
         self.log("Boot: v" + self.__version__)
 
-        # signal.signal(signal.SIGSTOP, self.sig_handler)
-
     def log(self, msg):
         self.logging.info(msg)
 
     def err(self, msg):
         self.logging.error(msg)
         self.logging.error(exc_info()[-1].tb_lineno)
-        # self.logging.error(format_exc())
+
     def sig_handler(self, _, _2):
         self._SIGKILL = True
         self.server.close()

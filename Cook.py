@@ -36,17 +36,6 @@ class Cook:
                         step['isDone'] = False
 
                         while not self.e._SIGKILL and not self.SIGTERM and not step['isDone']:
-                            # if step['type'] == 'cook':
-                            #     await self.e.dispatch([
-                            #         [getattr(self, step['type']), step],
-                            #         [getattr(self.e.display, step['type']), self.currentStep, self.steps],
-                            #         [self.e.history.add, self.item, self.steps, step['topTemp'] if step['topTemp'] > step['bottomTemp'] else step['bottomTemp'], step['duration']]
-                            #     ])
-                            # else:
-                            #     await self.e.dispatch([
-                            #         [getattr(self, step['type']), step],
-                            #         [getattr(self.e.display, step['type']), self.currentStep, self.steps]
-                            #     ])
                             await getattr(self, step['type'])(step)
                             while self.SIGPAUSE and not self.e._SIGKILL and not self.SIGTERM:
                                 await sleep(0.5)
@@ -120,8 +109,8 @@ class Cook:
         await self.e.dispatch([
             [self.topRod.sustainTemp, s['topTemp'], s['endTime']],
             [getattr(self.e.display, s['type']), self.currentStep, self.steps]
+            [self.e.history.add, self.item, self.steps, s['topTemp'] if s['topTemp'] > s['bottomTemp'] else s['bottomTemp'], s['duration']]
         ])
-        # History
 
         if time() > s['endTime']:
             s['isDone'] = True
@@ -201,21 +190,19 @@ class Cook:
             return False
 
     def done(self):
-        self.SIGTERM = True
-        self.topRod.off()
-        self.isCooking = False
-        self.isDone = True
-        self.SIGPAUSE = False
+        if not self.SIGTERM and self.isCooking:
+            self.SIGTERM = True
+            self.topRod.off()
+            self.isCooking = False
+            self.isDone = True
+            self.SIGPAUSE = False
 
-        self.steps = None
-        self.currentStep = -1
-        self.item = 'Empty'
-        self.e.display.done()
+            self.steps = None
+            self.currentStep = -1
+            self.item = 'Empty'
+            self.e.display.done()
 
-        try:
             self.e.audio._play()
-        except Exception as e:
-            self.e.err(e)
 
     async def stop(self):
         try:

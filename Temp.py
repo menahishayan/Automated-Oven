@@ -1,8 +1,5 @@
-import RPi.GPIO as GPIO
 import adafruit_dht
-import time
 from board import D2
-from asyncio import sleep
 
 class Temp:
     def __init__(self):
