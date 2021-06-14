@@ -233,9 +233,11 @@ class DisplayContent:
 
         imDraw = ImageDraw.Draw(image)
 
-        name = stepTypes[curStepIndex].capitalize()
-
-        image.paste(self.getProgressItems(curStepIndex, stepTypes))
+        name = ""
+        if curStepIndex > -1:
+            name = stepTypes[curStepIndex].capitalize()
+            image.paste(self.getProgressItems(curStepIndex, stepTypes))
+            
         icon = self.icon('./images/{}Icon.png'.format(customIcon if customIcon else name), large=True)
         image.paste(icon, ((self.width-50)//2, (self.height-50)//2), mask=icon)
 
@@ -407,12 +409,12 @@ class DisplayContent:
         )
         self.display(image)
 
-    def done(self,curStepIndex,stepTypes):
+    def done(self):
         image = Image.new("RGB", (self.width, self.height))
         image.paste(
             self.baseImageCenterIcon(
-                curStepIndex,
-                stepTypes,
+                -1,
+                [],
                 "Done",
                 "Done"
             )
