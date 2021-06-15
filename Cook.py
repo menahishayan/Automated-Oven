@@ -115,8 +115,6 @@ class Cook:
         else:
             del s['pauseTime']
 
-        self.e.log(s)
-
         await self.e.dispatch([
             [self.topRod.sustainTemp, s['topTemp'], s['endTime']],
             [getattr(self.e.display, s['type']), self.currentStep, self.steps],
