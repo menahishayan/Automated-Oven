@@ -18,11 +18,12 @@ from DB import DB
 from Audio import Audio
 from Users import Users
 from History import History
+from Automations import Automations
 
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.3.0'
+        self.__version__ = '2.3.1'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -44,7 +45,7 @@ class EventHandler:
         self.history = History(self)
         self.audio = Audio(self)
         self.users = Users(self)
-        self.automations = DB('./db/AutomationsDB.json')
+        self.automations = Automations('./db/AutomationsDB.json')
 
         signal.signal(signal.SIGTERM, self.sig_handler)
         signal.signal(signal.SIGINT, self.sig_handler)
