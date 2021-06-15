@@ -50,8 +50,7 @@ class WebSocketServer(WebSocket):
         return True
 
     async def update(self):
-        system('nohup ~/OS/update.sh &')
-        self.e.sig_handler(None,None)
+        system('~/OS/update.sh | at now')
         return True
 
     async def getVersion(self):
