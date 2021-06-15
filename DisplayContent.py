@@ -409,6 +409,18 @@ class DisplayContent:
         )
         self.display(image)
 
+    async def poweroff(self,curStepIndex,stepTypes):
+        image = Image.new("RGB", (self.width, self.height))
+        image.paste(
+            self.baseImageCenterIcon(
+                curStepIndex,
+                stepTypes,
+                "PowerOff",
+                "Power Off"
+            )
+        )
+        self.display(image)
+
     def done(self):
         image = Image.new("RGB", (self.width, self.height))
         image.paste(
