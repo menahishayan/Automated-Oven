@@ -33,7 +33,7 @@
         "message": "The chicken is done"
       },
       {
-        "type": "power off"
+        "type": "poweroff"
       }
     ]
   },
@@ -76,7 +76,7 @@
       },
 
       {
-        "type": "power off"
+        "type": "poweroff"
       }
     ]
   }

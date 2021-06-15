@@ -1,5 +1,5 @@
-from time import time
 from DB import DB
+from asyncio import sleep
 
 
 class History(DB):
@@ -39,3 +39,9 @@ class History(DB):
 
         except Exception as e:
             self.e.err(e)
+
+    async def run(self,k):
+        if self.e.cook.isCooking:
+            self.e.cook.stop()
+            sleep(0.7)
+        self.e.cook.startFromSteps(self.db[k])

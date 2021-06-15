@@ -3,6 +3,7 @@ from logging.handlers import SysLogHandler
 import concurrent.futures as cf
 import asyncio
 from sys import exc_info
+from os import system
 import signal
 
 from DetectItem import Detector
@@ -21,7 +22,7 @@ from History import History
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.2.8'
+        self.__version__ = '2.3.0'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -61,6 +62,9 @@ class EventHandler:
         self._SIGKILL = True
         self.server.close()
         exit()
+
+    def poweroff(self):
+        system('sudo shutdown -h now')
 
     async def startWebsocket(self):
         while not self._SIGKILL:

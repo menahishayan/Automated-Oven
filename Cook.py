@@ -59,9 +59,18 @@ class Cook:
             return True
         return False
 
-    async def startCustom(self, args):
+    async def startFromSteps(self, args):
         if not self.isCooking:
-            self.item = '{} for {} min'.format(args['temp'], args['time'])
+            self.item = args['item']
+            self.steps = args['steps']
+            await sleep(0.7)
+
+            return True
+        return False
+
+    async def startFromSimple(self, args):
+        if not self.isCooking:
+            self.item = args['item']
             self.steps = []
 
             self.steps.append({
@@ -213,6 +222,9 @@ class Cook:
         except Exception as e:
             self.e.err(e)
             return False
+
+    async def poweroff(self):
+        self.e.poweroff()
 
     async def nextStep(self):
         if self.currentStep == len(self.steps)-1:
