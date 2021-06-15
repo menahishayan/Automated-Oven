@@ -7,13 +7,13 @@ class History(DB):
         super().__init__(dbPath)
         self.e = e
 
-    async def add(self, name, steps, temp, duration):
+    async def add(self, name, _steps, temp, duration):
         try:
             if not name or name == 'Empty':
                 name = '{} for {} min'.format(temp, duration)
 
-            startTime = steps[0]['startTime']
-            steps = steps.copy()
+            startTime = _steps[0]['startTime']
+            steps = _steps.copy()
             for s in steps:
                 if 'startTime' in s:
                     del s['startTime']

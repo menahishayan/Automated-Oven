@@ -119,8 +119,8 @@ class Cook:
 
         await self.e.dispatch([
             [self.topRod.sustainTemp, s['topTemp'], s['endTime']],
-            [getattr(self.e.display, s['type']), self.currentStep, self.steps]
-            # [self.e.history.add, self.item, self.steps, s['topTemp'] if s['topTemp'] > s['bottomTemp'] else s['bottomTemp'], s['duration']]
+            [getattr(self.e.display, s['type']), self.currentStep, self.steps],
+            [self.e.history.add, self.item, self.steps, s['topTemp'] if s['topTemp'] > s['bottomTemp'] else s['bottomTemp'], s['duration']]
         ])
 
         if time() > s['endTime']:
