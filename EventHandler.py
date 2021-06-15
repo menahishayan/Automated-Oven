@@ -30,7 +30,6 @@ class EventHandler:
                             datefmt="%H:%M:%S", filename='./logfile.log', filemode='w')
         logging.getLogger().addHandler(SysLogHandler(facility=SysLogHandler.LOG_DAEMON, address='/dev/log'))
 
-        # logging.info('Start')
         self._SIGKILL = False
         self.logging = logging
         self.config = DB('./config.json')

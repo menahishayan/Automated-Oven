@@ -49,5 +49,9 @@ class WebSocketServer(WebSocket):
         system('sudo reboot')
         return True
 
+    async def update(self):
+        system('nohup ~/OS/update.sh &')
+        return True
+
     async def getVersion(self):
         return self.e.__version__
