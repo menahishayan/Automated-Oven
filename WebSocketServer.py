@@ -50,7 +50,7 @@ class WebSocketServer(WebSocket):
         return True
 
     async def update(self):
-        system('nohup ~/OS/update.sh &; echo update;')
+        system('nohup ~/OS/update.sh &')
         self.e.sig_handler(None,None)
         return True
 
