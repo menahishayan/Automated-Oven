@@ -116,7 +116,7 @@ class Cook:
             del s['pauseTime']
 
         await self.e.dispatch([
-            [self.topRod.sustainTemp, s['topTemp'], s['endTime']],
+            [self.topRod.sustainTemp, s['topTemp'], s['endTime'] if 'endTime' in s else (s['startTime'] + duration)],
             [getattr(self.e.display, s['type']), self.currentStep, self.steps],
             [self.e.history.add, self.item, self.steps, s['topTemp'] if s['topTemp'] > s['bottomTemp'] else s['bottomTemp'], s['duration']]
         ])
