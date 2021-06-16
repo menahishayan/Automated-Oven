@@ -267,7 +267,7 @@ class DisplayContent:
                         n = time()-steps[curStepIndex]['startTime']
                         d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
                         percent = round(n/d,2)
-                        if percent >= 1:
+                        if percent > 1:
                             break
                     except Exception:
                         break
@@ -308,11 +308,10 @@ class DisplayContent:
                         n = time()-steps[curStepIndex]['startTime']
                         d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
                         percent = round(n/d,2)
-                        if percent >= 1:
+                        if percent > 1:
                             break
                         timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     except Exception:
-                        self.e.err("DisplayCook Exception")
                         break
 
                 image.paste(
