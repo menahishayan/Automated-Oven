@@ -42,7 +42,7 @@ class WebSocketServer(WebSocket):
     async def getLogs(self):
         logs = ""
         with open('./logfile.log') as log:
-            logs = log
+            logs += log
         self.e.log(len(logs))
         return logs
 
