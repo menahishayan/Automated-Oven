@@ -40,10 +40,13 @@ class DisplayContent:
             self.width = self.disp.width
             self.height = self.disp.height
 
-        self.backlight = PWMOut(D22, frequency=1000, duty_cycle=0)
+        self.backlight = PWMOut(D22, frequency=2000, duty_cycle=0)
 
         self.clear()
-        await self.setBacklight(50)
+        if self.e.config.has('backlight'):
+            await self.setBacklight(self.e.config.get('backlight'))
+        else:
+            await self.setBacklight(50)
 
         self.fonts = {
             'timer': ImageFont.truetype('./fonts/SF-Compact-Display-Medium.ttf', 36),
@@ -435,6 +438,7 @@ class DisplayContent:
 
     async def setBacklight(self, percent):
         self.backlight.duty_cycle = int(65535 * percent / 100)
+        self.e.config.set('backlight',percent)
         return True
 
     async def getBacklight(self):
