@@ -43,7 +43,6 @@ class WebSocketServer(WebSocket):
         logs = [""]
         with open('./logfile.log') as log:
             logs = log.readlines()
-        self.e.log(len(logs))
         return logs
 
     async def restart(self):
