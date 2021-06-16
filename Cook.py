@@ -78,7 +78,7 @@ class Cook:
             filterKeys = {'startTime','endTime','pauseTime','isDone'}
             steps = []
             for s in args['steps']:
-                s.append({x: s[x] for x in s if x not in filterKeys})
+                steps.append({x: s[x] for x in s if x not in filterKeys})
 
             self.steps = steps
             await sleep(0.7)

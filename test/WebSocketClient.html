@@ -4,10 +4,10 @@
   const ws = new WebSocket('ws://oven.local:8069/');
   ws.addEventListener('open', () => {
     req = {
-      "module": 'other',
+      "module": 'cook',
       // "function": 'pause',
-      "function": 'getLogs',
-      // "params": [{item: 'Chicken', temp:204, time:12}]
+      "function": 'startFromSteps',
+      "params": [{item: 'Reheat Chicken', steps: [{type:'preheat',temp:150}]}]
     }
     // document.write('Connected\n')
     ws.send(JSON.stringify(req));
