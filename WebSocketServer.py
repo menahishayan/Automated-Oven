@@ -2,6 +2,7 @@ from SimpleWebSocketServer import WebSocket
 import json
 from asgiref.sync import async_to_sync
 from os import system
+from subprocess import PIPE, run
 
 class WebSocketServer(WebSocket):
     def init(self, e):
@@ -56,6 +57,12 @@ class WebSocketServer(WebSocket):
     async def update(self):
         system('~/OS/update.sh | at now')
         return True
+
+    async def getAvailableModels(self):
+        result = run('ls /home/pi/keras/models', stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
+        res = str(result.stdout).split("\n")
+        modelList = [r for r in res if r.startswith('v')]
+        return modelList
 
     async def getVersion(self):
         return self.e.__version__
