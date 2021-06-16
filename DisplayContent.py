@@ -249,6 +249,7 @@ class DisplayContent:
 
     async def preheat(self, curStepIndex, steps):
         try:
+            ht = round(self.e.cook.topRod.heatingTime(steps[curStepIndex]['temp']))
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
                     break
@@ -258,16 +259,15 @@ class DisplayContent:
                 currTemp = self.e.cook.topRod.get()
                 percent = 0
 
-                ht = self.e.cook.topRod.heatingTime(steps[curStepIndex]['temp'])
                 if 'endTime' not in steps[curStepIndex]:
-                    steps[curStepIndex]['endTime'] = steps[curStepIndex]['startTime'] + (ht if ht > 0 else self.e.cook.topRod.coolingTime(steps[curStepIndex]['temp']))
+                    steps[curStepIndex]['endTime'] = steps[curStepIndex]['startTime'] + (ht if ht >= 0 else self.e.cook.topRod.coolingTime(steps[curStepIndex]['temp']))
 
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     try:
                         n = time()-steps[curStepIndex]['startTime']
                         d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
                         percent = round(n/d,2)
-                        if percent > 1:
+                        if percent >= 1:
                             break
                     except Exception:
                         break
