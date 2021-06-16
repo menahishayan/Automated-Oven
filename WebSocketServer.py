@@ -49,6 +49,10 @@ class WebSocketServer(WebSocket):
         system('sudo reboot')
         return True
 
+    async def poweroff(self):
+        system('sudo shutdown -h now')
+        return True
+
     async def update(self):
         system('~/OS/update.sh | at now')
         return True
