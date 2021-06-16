@@ -4,9 +4,9 @@
   const ws = new WebSocket('ws://oven.local:8069/');
   ws.addEventListener('open', () => {
     req = {
-      "module": 'cook',
+      "module": 'other',
       // "function": 'pause',
-      "function": 'stop',
+      "function": 'getLogs',
       // "params": [{item: 'Chicken', temp:204, time:12}]
     }
     // document.write('Connected\n')
