@@ -15,12 +15,15 @@ class History(DB):
             startTime = _steps[0]['startTime']
             steps = _steps.copy()
             for s in steps:
-                if 'startTime' in s:
-                    del s['startTime']
-                if 'endTime' in s:
-                    del s['endTime']
-                if 'pauseTime' in s:
-                    del s['pauseTime']
+                try:
+                    if 'startTime' in s:
+                        del s['startTime']
+                    if 'endTime' in s:
+                        del s['endTime']
+                    if 'pauseTime' in s:
+                        del s['pauseTime']
+                except:
+                    self.e.err("History: Cleaning Error")
 
             playbackHistory = {
                 'timestamp': round(startTime),
