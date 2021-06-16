@@ -53,7 +53,20 @@ class Cook:
     async def startFromDB(self, item):
         if not self.isCooking:
             self.item = item
-            self.steps = self.db._get(item).copy()['steps']
+            st = self.db._get(item).copy()['steps']
+            for s in st:
+                try:
+                    if 'startTime' in s:
+                        del s['startTime']
+                    if 'endTime' in s:
+                        del s['endTime']
+                    if 'pauseTime' in s:
+                        del s['pauseTime']
+                    if 'isDone' in s:
+                        del s['isDone']
+                except:
+                    self.e.err("Cook: Cleaning Error")
+            self.steps = st
             await sleep(1)
 
             return True
@@ -62,7 +75,20 @@ class Cook:
     async def startFromSteps(self, args):
         if not self.isCooking:
             self.item = args['item']
-            self.steps = args['steps']
+            st = args['steps'].copy()
+            for s in st:
+                try:
+                    if 'startTime' in s:
+                        del s['startTime']
+                    if 'endTime' in s:
+                        del s['endTime']
+                    if 'pauseTime' in s:
+                        del s['pauseTime']
+                    if 'isDone' in s:
+                        del s['isDone']
+                except:
+                    self.e.err("Cook: Cleaning Error")
+            self.steps = st
             await sleep(0.7)
 
             return True
@@ -117,8 +143,8 @@ class Cook:
 
         await self.e.dispatch([
             [self.topRod.sustainTemp, s['topTemp'], s['endTime']],
-            [getattr(self.e.display, s['type']), self.currentStep, self.steps]
-            # [self.e.history.add, self.item, self.steps, s['topTemp'] if s['topTemp'] > s['bottomTemp'] else s['bottomTemp'], s['duration']]
+            [getattr(self.e.display, s['type']), self.currentStep, self.steps],
+            [self.e.history.add, self.item, self.steps.copy(), s['topTemp'] if s['topTemp'] > s['bottomTemp'] else s['bottomTemp'], s['duration']]
         ])
 
         if time() > s['endTime']:

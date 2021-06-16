@@ -22,6 +22,8 @@ class History(DB):
                         del s['endTime']
                     if 'pauseTime' in s:
                         del s['pauseTime']
+                    if 'isDone' in s:
+                        del s['isDone']
                 except:
                     self.e.err("History: Cleaning Error")
 
