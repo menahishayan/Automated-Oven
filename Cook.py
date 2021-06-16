@@ -75,20 +75,12 @@ class Cook:
     async def startFromSteps(self, args):
         if not self.isCooking:
             self.item = args['item']
-            st = args['steps'].copy()
-            for s in st:
-                try:
-                    if 'startTime' in s:
-                        del s['startTime']
-                    if 'endTime' in s:
-                        del s['endTime']
-                    if 'pauseTime' in s:
-                        del s['pauseTime']
-                    if 'isDone' in s:
-                        del s['isDone']
-                except:
-                    self.e.err("Cook: Cleaning Error")
-            self.steps = st
+            filterKeys = {'startTime','endTime','pauseTime','isDone'}
+            steps = []
+            for s in args['steps']:
+                s.append({x: s[x] for x in s if x not in filterKeys})
+
+            self.steps = steps
             await sleep(0.7)
 
             return True
