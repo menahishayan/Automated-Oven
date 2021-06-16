@@ -6,7 +6,8 @@
     req = {
       "module": 'cook',
       // "function": 'pause',
-      "function": 'resume'
+      "function": 'stop',
+      // "params": [{item: 'Chicken', temp:204, time:12}]
     }
     // document.write('Connected\n')
     ws.send(JSON.stringify(req));

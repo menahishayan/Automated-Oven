@@ -21,7 +21,9 @@ class Audio:
     async def getAvailableTones(self):
         result = run('ls /home/pi/OS/audio/', stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
         res = str(result.stdout).split("\n")
-        return [r.split('.wav')[0] for r in res]
+        toneList = [r.split('.wav')[0] for r in res]
+        toneList.remove("")
+        return toneList
 
     async def getSelectedTone(self):
         return self.selectedTone
