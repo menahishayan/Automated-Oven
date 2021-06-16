@@ -17,6 +17,7 @@ class Detector:
         self.model_loaded = False
         self.e = e
         await self.initCamera()
+        self.modelVersion = await self.e.config.get('modelVersion')
         return self
 
     async def exit(self):
@@ -29,8 +30,9 @@ class Detector:
     async def get_status(self):
         return self.model_loaded
 
-    async def load_model(self, model_path='/home/pi/keras/models/v3.6/model-v3.6'):
+    async def load_model(self):
         try:
+            model_path = '/home/pi/keras/models/{}/model-{}'.format(self.modelVersion)
             json_file = open('{}.json'.format(model_path), 'r')
             loaded_model_json = json_file.read()
             json_file.close()
@@ -72,7 +74,12 @@ class Detector:
         return await self.detectionDispatcher(stream)
 
     def detectionWorker(self,image):
-        class_names = ['Bread','Burger','Cake', 'Chicken', 'Coffee', 'Cookie', 'Croissant', 'Fish', 'Fries', 'Omelette','Pasta', 'Pie', 'Pizza', 'Rice', 'Sandwiches', 'Toast']
+        class_names = []
+        if self.modelVersion == 'v3.6':
+            class_names =  ['Bread','Burger','Cake', 'Chicken', 'Coffee', 'Cookie', 'Croissant', 'Fish', 'Fries', 'Omelette','Pasta', 'Pie', 'Pizza', 'Rice', 'Sandwiches', 'Toast']
+        elif self.modelVersion == 'v4.0':
+            class_names =  ['Burger','Cake', 'Chicken', 'Coffee', 'Cookies', 'Croissant', 'Fish','Pasta', 'Pizza', 'Rice']
+
         tf_image = img_to_array(image)
         tf_image = expand_dims(tf_image, 0)
        
