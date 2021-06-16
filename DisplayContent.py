@@ -44,7 +44,7 @@ class DisplayContent:
 
         self.clear()
         if self.e.config.has('backlight'):
-            await self.setBacklight(self.e.config.get('backlight'))
+            await self.setBacklight(await self.e.config.get('backlight'))
         else:
             await self.setBacklight(50)
 
