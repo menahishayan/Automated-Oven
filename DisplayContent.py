@@ -312,6 +312,7 @@ class DisplayContent:
                             break
                         timeRemaining = int(steps[curStepIndex]['endTime'] - time())
                     except Exception:
+                        self.e.err("DisplayCook Exception")
                         break
 
                 image.paste(
