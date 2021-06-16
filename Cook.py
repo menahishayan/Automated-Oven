@@ -314,6 +314,7 @@ class Cook:
                 'currentTempTop': self.topRod.get(),
                 'isPaused': self.SIGPAUSE,
                 'isCooking': self.isCooking,
+                'isDone': self.isDone
             }
         except Exception as e:
             self.e.log(e)
