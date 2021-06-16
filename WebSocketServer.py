@@ -40,9 +40,9 @@ class WebSocketServer(WebSocket):
         return True
 
     async def getLogs(self):
-        logs = ""
+        logs = [""]
         with open('./logfile.log') as log:
-            logs += log
+            logs = log.readlines()
         self.e.log(len(logs))
         return logs
 
