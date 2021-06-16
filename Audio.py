@@ -42,7 +42,7 @@ class Audio:
         system('aplay audio/{}.wav'.format(self.selectedTone))
 
     def _play(self):
-        system('aplay audio/{}.wav'.format(self.selectedTone))
+        system('aplay -q audio/{}.wav'.format(self.selectedTone))
 
 # if __name__ == '__main__':
 #     a = Audio('Chime')
