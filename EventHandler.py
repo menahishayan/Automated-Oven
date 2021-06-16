@@ -23,7 +23,7 @@ from Automations import Automations
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.5.2'
+        self.__version__ = '2.5.3'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -82,7 +82,7 @@ class EventHandler:
         try:
             while not self._SIGKILL:
                 await self.temp.update()
-                if not self.cook.isCooking and self.config.get('autoDetect'):
+                if not self.cook.isCooking and await self.config.get('autoDetect'):
                     dist = await self.ultrasound.get()
                     # self.log(dist)
                     if dist < 200:
