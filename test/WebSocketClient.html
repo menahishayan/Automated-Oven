@@ -7,7 +7,7 @@
       "module": 'cook',
       // "function": 'pause',
       "function": 'startFromSteps',
-      "params": [{item: 'Reheat Chicken', steps: [{type:'preheat',temp:150}]}]
+      "params": [{"item": "Chicken", "steps": [{"isDone": true, "temp": 204, "type": "preheat"}, {"bottomTemp": 204, "duration": 12, "isDone": false, "topTemp": 204, "type": "cook"}]}]
     }
     // document.write('Connected\n')
     ws.send(JSON.stringify(req));

@@ -16,7 +16,7 @@ class History(DB):
             filterKeys = {'startTime','endTime','pauseTime','isDone'}
             steps = []
             for s in _steps:
-                s.append({x: s[x] for x in s if x not in filterKeys})
+                steps.append({x: s[x] for x in s if x not in filterKeys})
            
             playbackHistory = {
                 'timestamp': round(startTime),
