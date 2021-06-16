@@ -13,20 +13,9 @@ class History(DB):
                 name = '{} for {} min'.format(temp, duration)
 
             startTime = _steps[0]['startTime']
-            steps = _steps.copy()
-            for s in steps:
-                try:
-                    if 'startTime' in s:
-                        del s['startTime']
-                    if 'endTime' in s:
-                        del s['endTime']
-                    if 'pauseTime' in s:
-                        del s['pauseTime']
-                    if 'isDone' in s:
-                        del s['isDone']
-                except:
-                    self.e.err("History: Cleaning Error")
-
+            filterKeys = {'startTime','endTime','pauseTime','isDone'}
+            steps = {x: _steps[x] for x in _steps if x not in filterKeys}
+           
             playbackHistory = {
                 'timestamp': round(startTime),
                 'users': await self.e.users.get()
