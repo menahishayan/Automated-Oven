@@ -42,6 +42,9 @@ class Audio:
     async def play(self):
         system('aplay audio/{}.wav'.format(self.selectedTone))
 
+    async def easterEgg(self):
+        system('aplay audio/Easter Egg.wav')
+
     def _play(self):
         system('aplay -q audio/{}.wav'.format(self.selectedTone))
 
