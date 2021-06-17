@@ -109,7 +109,7 @@ class Detector:
                 res.update(f.result())
 
             maxRes = res[max(res)]
-            # self.e.log(res)
-            # self.e.log(maxRes)
+            self.e.log(res)
+            self.e.log(maxRes)
 
             return maxRes
