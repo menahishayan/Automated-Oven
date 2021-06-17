@@ -23,6 +23,7 @@ class Audio:
         res = str(result.stdout).split("\n")
         toneList = [r.split('.wav')[0] for r in res]
         toneList.remove("")
+        toneList.remove("Easter Egg")
         return toneList
 
     async def getSelectedTone(self):
