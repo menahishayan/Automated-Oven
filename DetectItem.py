@@ -32,6 +32,7 @@ class Detector:
 
     async def load_model(self):
         try:
+            self.modelVersion = await self.e.config.get('modelVersion')
             model_path = '/home/pi/keras/models/{}/model-{}'.format(self.modelVersion,self.modelVersion)
             json_file = open('{}.json'.format(model_path), 'r')
             loaded_model_json = json_file.read()
