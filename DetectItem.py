@@ -42,7 +42,8 @@ class Detector:
             self.model = loaded_model
             self.e.log("Boot: Model Loaded")
             self.model_loaded = True
-        except:
+        except Exception as e:
+            self.e.err(e)
             self.model_loaded = False
 
     async def initCamera(self):
