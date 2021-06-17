@@ -11,7 +11,6 @@ import numpy as np
 from picamera import PiCamera
 import concurrent.futures as cf
 from io import BytesIO
-import keras.backend
 
 class Detector:
     async def init(self, e):
@@ -38,10 +37,7 @@ class Detector:
             json_file = open('{}.json'.format(model_path), 'r')
             loaded_model_json = json_file.read()
             json_file.close()
-
-            K = keras.backend.backend()
-            if K=='tensorflow':
-                keras.backend.set_image_dim_ordering('tf')
+            
             loaded_model = model_from_json(loaded_model_json)
             loaded_model.load_weights("{}.h5".format(model_path))
 
