@@ -90,10 +90,10 @@ class Detector:
         detection_score = np.max(score)
         detection_label = class_names[np.argmax(score)]
         
-        if detection_label == 'fish' and int(detection_score*10000) < 1550:
-            return {
-                0: "None"
-            }
+        # if detection_label == 'fish' and int(detection_score*10000) < 1550:
+        #     return {
+        #         0: "None"
+        #     }
         return {
                 int(detection_score*10000): detection_label
             }
