@@ -285,7 +285,7 @@ class Cook:
         try:
             if self.isCooking:
                 self.SIGPAUSE = True
-                await sleep(0.7)
+                await sleep(0.3)
                 s = self.steps[index]
                 t = int(temp)
                 if s['type'] == 'preheat':
@@ -294,7 +294,7 @@ class Cook:
                     s['topTemp'] = t
                     s['bottomTemp'] = t
                 self.SIGPAUSE = False
-                # change in actual rod value
+                self.e.log("setTemp: {}".format(self.steps[index]))
                 return True
             return False
         except Exception as e:
@@ -306,7 +306,7 @@ class Cook:
             if self.isCooking:
                 s = self.steps[index]
                 self.SIGPAUSE = True
-                await sleep(0.7)
+                await sleep(0.3)
                 d = int(t) * (2 if self.e.config._get('demoMode') else 60)
                 if 'pauseTime' in s:
                     s['endTime'] = d - (s['pauseTime'] - s['startTime'])
@@ -321,6 +321,7 @@ class Cook:
                     elif s['type'] == 'checkpoint':
                         s['timeout'] = d
                     self.SIGPAUSE = False
+                self.e.log("setTime: {}".format(self.steps[index]))
                 return True
             return False
         except Exception as e:
