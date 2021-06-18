@@ -10,7 +10,6 @@ class Cook:
         self.e = e
         self.SIGPAUSE = False
         self.SIGTERM = False
-        self.SIGCHANGE = False
         self.isCooking = False
         self.isDone = False
         self.topRod = RodControl.RodControl(D12, e)
@@ -285,14 +284,18 @@ class Cook:
     async def setTemp(self, index, temp):
         try:
             if self.isCooking:
-                self.SIGCHANGE = True
+                # self.SIGPAUSE = True
+                # self.topRod.off()
                 s = self.steps[index]
+                # s['pauseTime'] = time()
+                # await sleep(0.1)
                 t = int(temp)
                 if s['type'] == 'preheat':
                     s['temp'] = t
                 elif s['type'] == 'cook':
                     s['topTemp'] = t
                     s['bottomTemp'] = t
+                # self.SIGPAUSE = False
                 self.e.log("setTemp: {}".format(self.steps[index]))
                 return True
             return False
@@ -304,14 +307,17 @@ class Cook:
         try:
             if self.isCooking:
                 s = self.steps[index]
-                self.SIGCHANGE = True
-                await sleep(0.1)
+                # self.SIGPAUSE = True
+                # self.topRod.off()
+                # s['pauseTime'] = time()
+                # await sleep(0.2)
                 d = int(t) * (2 if self.e.config._get('demoMode') else 60)
                 s['endTime'] = s['startTime'] + d - (time() - s['startTime'])
                 if s['type'] == 'cook' or s['type'] == 'cool':
                     s['duration'] = d
                 elif s['type'] == 'checkpoint':
                     s['timeout'] = d
+                # self.SIGPAUSE = False
                 self.e.log("setTime: {}".format(self.steps[index]))
                 return True
             return False

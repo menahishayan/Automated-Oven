@@ -264,9 +264,6 @@ class DisplayContent:
 
                 if 'endTime' not in steps[curStepIndex]:
                     steps[curStepIndex]['endTime'] = steps[curStepIndex]['startTime'] + (ht if ht >= 0 else self.e.cook.topRod.coolingTime(steps[curStepIndex]['temp']))
-                elif self.e.cook.SIGCHANGE:
-                    ht = round(self.e.cook.topRod.heatingTime(steps[curStepIndex]['temp']))
-                    steps[curStepIndex]['endTime'] = steps[curStepIndex]['startTime'] + (ht if ht >= 0 else self.e.cook.topRod.coolingTime(steps[curStepIndex]['temp']))
 
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     try:
@@ -311,8 +308,6 @@ class DisplayContent:
 
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     try:
-                        if self.e.cook.SIGCHANGE:
-                            steps[curStepIndex]['endTime'] = steps[curStepIndex]['startTime'] + steps[curStepIndex]['duration'] - (time() - steps[curStepIndex]['startTime'])
                         n = time()-steps[curStepIndex]['startTime']
                         d = steps[curStepIndex]['endTime']-steps[curStepIndex]['startTime']
                         percent = round(n/d,2)
