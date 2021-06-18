@@ -3,10 +3,11 @@ from asyncio import sleep
 from time import time
 from math import log, exp
 
+
 class RodControl:
     def __init__(self, pin, e):
         self.pin = DigitalInOut(pin)
-        self.pin.direction = Direction.OUTPUT 
+        self.pin.direction = Direction.OUTPUT
         self.pin.value = False
 
         self.e = e
@@ -25,25 +26,24 @@ class RodControl:
         self.SIGKILLADJUST = False
         self.SIGKILLSUSTAIN = False
 
+    def heatingTime(self, temp):
+        return (0.36*(temp-self.currentTemp)) - 0.626 + 1
 
-    def heatingTime(self,temp):
-        return (0.36*(temp-self.currentTemp)) - 0.626 +1
-
-    def heatingTemp(self,_time):
+    def heatingTemp(self, _time):
         return self.currentTemp + (_time * 2.778)
 
-    def coolingTime(self,temp):
-        if self.currentTemp <= self.surroundingTemp or temp <=self.surroundingTemp:
+    def coolingTime(self, temp):
+        if self.currentTemp <= self.surroundingTemp or temp <= self.surroundingTemp:
             return 0
         return log((self.currentTemp - self.surroundingTemp)/(temp - self.surroundingTemp))/0.008
 
-    def coolingTemp(self,_time):
+    def coolingTemp(self, _time):
         return self.surroundingTemp + (self.currentTemp - self.surroundingTemp)*exp(-0.008*_time)
 
-    async def sleep(self,_time,adjust, cool=False):
+    async def sleep(self, _time, adjust, cool=False):
         start = time()
         while time()-start <= _time:
-            if self.SIGKILLADJUST or self.SIGKILLSUSTAIN or self.e._SIGKILL:
+            if self.SIGKILLADJUST or self.SIGKILLSUSTAIN or self.e._SIGKILL or self.e.cook.SIGCHANGE:
                 break
 
             # if round(time()-start)%10 == 0:
@@ -55,22 +55,22 @@ class RodControl:
             else:
                 self.currentTemp = self.coolingTemp(0.3)
 
-    async def heat(self,temp,adjust=False):
+    async def heat(self, temp, adjust=False):
         self.pin.value = True
-        await self.sleep(self.heatingTime(temp),adjust=adjust)
+        await self.sleep(self.heatingTime(temp), adjust=adjust)
         self.lastHeatTime = time()
-        self.e.config.set('lastHeatTemp',self.currentTemp)
-        self.e.config.set('lastHeatTime',time())
+        self.e.config.set('lastHeatTemp', self.currentTemp)
+        self.e.config.set('lastHeatTime', time())
         self.pin.value = False
 
-    async def cool(self,temp,adjust=False):
+    async def cool(self, temp, adjust=False):
         self.pin.value = False
-        await self.sleep(self.coolingTime(temp),cool=True,adjust=adjust)
+        await self.sleep(self.coolingTime(temp), cool=True, adjust=adjust)
 
-    async def set(self,temp):
-        await self.e.dispatch([[self.reachTemp,temp]])
+    async def set(self, temp):
+        await self.e.dispatch([[self.reachTemp, temp]])
 
-    async def reachTemp(self,temp):
+    async def reachTemp(self, temp):
         if temp == 0:
             temp = self.surroundingTemp
 
@@ -90,14 +90,21 @@ class RodControl:
             self.currentTemp = self.coolingTemp(time() - self.lastHeatTime)
 
         if temp > round(self.currentTemp):
-            await self.heat(temp,adjust=True)
+            await self.heat(temp, adjust=True)
 
         elif temp < round(self.currentTemp):
-            await self.cool(temp,adjust=True)
+            await self.cool(temp, adjust=True)
 
         self.isAdjusting = False
 
-    async def sustainTemp(self,temp,end):
+        if self.e.cook.SIGCHANGE:
+            self.e.cook.SIGCHANGE = False
+            cookData = await self.e.cook.get()
+            s = cookData.steps[cookData.currentStep]
+            if s['type'] == 'preheat':
+                await self.reachTemp(s['temp'])
+
+    async def sustainTemp(self, temp, end):
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
             await sleep(0.3)
@@ -116,7 +123,7 @@ class RodControl:
         if self.lastHeatTime > 0:
             self.currentTemp = self.coolingTemp(time() - self.lastHeatTime)
 
-        while round(time()) < round(end) and not self.SIGKILLSUSTAIN and not self.e._SIGKILL:
+        while round(time()) < round(end) and not self.SIGKILLSUSTAIN and not self.e._SIGKILL and not self.e.cook.SIGCHANGE:
             if round(self.currentTemp) > temp:
                 if(self.coolingTime(temp-8) + time() > end):
                     compromiseTemp = self.coolingTemp(round(end-time()))
@@ -135,6 +142,13 @@ class RodControl:
         self.isSustaining = False
         self.SIGKILLSUSTAIN = False
 
+        if self.e.cook.SIGCHANGE:
+            self.e.cook.SIGCHANGE = False
+            cookData = await self.e.cook.get()
+            s = cookData.steps[cookData.currentStep]
+            if s['type'] == 'cook':
+                await self.sustainTemp(s['topTemp'], s['endTime'])
+
     def off(self):
         self.SIGKILLADJUST = True
         self.SIGKILLSUSTAIN = True
@@ -143,7 +157,7 @@ class RodControl:
         return self.pin.value
 
     def get(self):
-        return round(self.currentTemp,1)
+        return round(self.currentTemp, 1)
 
     def __str__(self):
         return str(self.get())
