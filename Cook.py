@@ -285,8 +285,10 @@ class Cook:
         try:
             if self.isCooking:
                 self.SIGPAUSE = True
-                await sleep(0.3)
+                self.topRod.off()
                 s = self.steps[index]
+                s['pauseTime'] = time()
+                await sleep(0.1)
                 t = int(temp)
                 if s['type'] == 'preheat':
                     s['temp'] = t
@@ -306,21 +308,16 @@ class Cook:
             if self.isCooking:
                 s = self.steps[index]
                 self.SIGPAUSE = True
-                await sleep(0.3)
+                self.topRod.off()
+                s['pauseTime'] = time()
+                await sleep(0.1)
                 d = int(t) * (2 if self.e.config._get('demoMode') else 60)
-                if 'pauseTime' in s:
-                    s['endTime'] = d - (s['pauseTime'] - s['startTime'])
-                    if s['type'] == 'cook' or s['type'] == 'cool':
-                        s['duration'] = d
-                    elif s['type'] == 'checkpoint':
-                        s['timeout'] = d
-                else:
-                    self.topRod.off()
-                    if s['type'] == 'cook' or s['type'] == 'cool':
-                        s['duration'] = d
-                    elif s['type'] == 'checkpoint':
-                        s['timeout'] = d
-                    self.SIGPAUSE = False
+                s['endTime'] = d - (s['pauseTime'] - s['startTime'])
+                if s['type'] == 'cook' or s['type'] == 'cool':
+                    s['duration'] = d
+                elif s['type'] == 'checkpoint':
+                    s['timeout'] = d
+                self.SIGPAUSE = False
                 self.e.log("setTime: {}".format(self.steps[index]))
                 return True
             return False
