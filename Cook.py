@@ -285,7 +285,7 @@ class Cook:
         try:
             if self.isCooking:
                 self.SIGPAUSE = True
-                sleep(0.7)
+                await sleep(0.7)
                 s = self.steps[index]
                 t = int(temp)
                 if s['type'] == 'preheat':
@@ -306,7 +306,7 @@ class Cook:
             if self.isCooking:
                 s = self.steps[index]
                 self.SIGPAUSE = True
-                sleep(0.7)
+                await sleep(0.7)
                 d = int(t) * (2 if self.e.config._get('demoMode') else 60)
                 if 'pauseTime' in s:
                     s['endTime'] = d - (s['pauseTime'] - s['startTime'])
