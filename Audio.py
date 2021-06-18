@@ -35,15 +35,16 @@ class Audio:
         self.e.config.set('selectedTone',name)
 
     async def setVolume(self,vol):
+        self.e.log("setVolume called")
         system("amixer -q -M sset Headphone {}%".format(vol))
         self.volume = vol
         await self.play()
 
     async def play(self):
-        system('aplay audio/{}.wav'.format(self.selectedTone))
+        system('aplay -q audio/{}.wav'.format(self.selectedTone))
 
     async def easterEgg(self):
-        system('aplay audio/Easter Egg.wav')
+        system('aplay -q audio/Easter Egg.wav')
 
     def _play(self):
         system('aplay -q audio/{}.wav'.format(self.selectedTone))
