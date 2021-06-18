@@ -281,11 +281,12 @@ class Cook:
             self.e.err(e)
             return False
 
-    async def setTemp(self, _type, temp):
+    async def setTemp(self, index, temp):
         try:
             if self.isCooking:
                 self.SIGPAUSE = True
-                s = self.steps[self.currentStep]
+                s = self.steps[index]
+                _type = s['type']
                 if _type == 'preheat':
                     if s['type'] == 'preheat':
                         s['temp'] = int(temp)
@@ -295,6 +296,7 @@ class Cook:
                 elif _type == 'bottom':
                     if s['type'] == 'cook':
                         s['bottomTemp'] = int(temp)
+                sleep(0.3)
                 self.SIGPAUSE = False
                 # change in actual rod value
                 return True
@@ -303,21 +305,28 @@ class Cook:
             self.e.err(e)
             return False
 
-    async def setTime(self, t):
+    async def setTime(self, index, t):
         try:
             if self.isCooking:
-                s = self.steps[self.currentStep]
-                if s['type'] == 'cook':
-                    d = int(t) * (2 if self.e.config._get('demoMode') else 60)
-                    if 'pauseTime' in s:
-                        s['endTime'] = d - (s['pauseTime'] - s['startTime'])
+                s = self.steps[index]
+                self.SIGPAUSE = True
+                
+                d = int(t) * (2 if self.e.config._get('demoMode') else 60)
+                if 'pauseTime' in s:
+                    s['endTime'] = d - (s['pauseTime'] - s['startTime'])
+                    if s['type'] == 'cook' or s['type'] == 'cool':
                         s['duration'] = d
-                    else:
-                        self.topRod.off()
-                        self.SIGPAUSE = True
+                    elif s['type'] == 'checkpoint':
+                        s['timeout'] = d
+                else:
+                    self.topRod.off()
+                    if s['type'] == 'cook' or s['type'] == 'cool':
                         s['duration'] = d
-                        self.SIGPAUSE = False
-                    return True
+                    elif s['type'] == 'checkpoint':
+                        s['timeout'] = d
+                    sleep(0.3)
+                    self.SIGPAUSE = False
+                return True
             return False
         except Exception as e:
             self.e.err(e)
