@@ -307,17 +307,17 @@ class Cook:
         try:
             if self.isCooking:
                 s = self.steps[index]
-                self.SIGPAUSE = True
-                self.topRod.off()
-                s['pauseTime'] = time()
+                # self.SIGPAUSE = True
+                # self.topRod.off()
+                # s['pauseTime'] = time()
                 await sleep(0.1)
                 d = int(t) * (2 if self.e.config._get('demoMode') else 60)
-                s['endTime'] = d - (s['pauseTime'] - s['startTime'])
+                s['endTime'] = s['startTime'] + d - (time() - s['startTime'])
                 if s['type'] == 'cook' or s['type'] == 'cool':
                     s['duration'] = d
                 elif s['type'] == 'checkpoint':
                     s['timeout'] = d
-                self.SIGPAUSE = False
+                # self.SIGPAUSE = False
                 self.e.log("setTime: {}".format(self.steps[index]))
                 return True
             return False
