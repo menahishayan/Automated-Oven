@@ -44,7 +44,7 @@ class WebSocketServer(WebSocket):
         logs = [""]
         with open('./logfile.log') as log:
             logs = log.readlines()
-        return logs[-25]
+        return logs[-25:]
 
     async def restart(self):
         system('sudo reboot')
