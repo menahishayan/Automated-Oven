@@ -285,18 +285,14 @@ class Cook:
         try:
             if self.isCooking:
                 self.SIGPAUSE = True
+                sleep(0.7)
                 s = self.steps[index]
-                _type = s['type']
-                if _type == 'preheat':
-                    if s['type'] == 'preheat':
-                        s['temp'] = int(temp)
-                elif _type == 'top':
-                    if s['type'] == 'cook':
-                        s['topTemp'] = int(temp)
-                elif _type == 'bottom':
-                    if s['type'] == 'cook':
-                        s['bottomTemp'] = int(temp)
-                sleep(0.3)
+                t = int(temp)
+                if s['type'] == 'preheat':
+                    s['temp'] = t
+                elif s['type'] == 'cook':
+                    s['topTemp'] = t
+                    s['bottomTemp'] = t
                 self.SIGPAUSE = False
                 # change in actual rod value
                 return True
@@ -310,7 +306,7 @@ class Cook:
             if self.isCooking:
                 s = self.steps[index]
                 self.SIGPAUSE = True
-                
+                sleep(0.7)
                 d = int(t) * (2 if self.e.config._get('demoMode') else 60)
                 if 'pauseTime' in s:
                     s['endTime'] = d - (s['pauseTime'] - s['startTime'])
@@ -324,7 +320,6 @@ class Cook:
                         s['duration'] = d
                     elif s['type'] == 'checkpoint':
                         s['timeout'] = d
-                    sleep(0.3)
                     self.SIGPAUSE = False
                 return True
             return False
