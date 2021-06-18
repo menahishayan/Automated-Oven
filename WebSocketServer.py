@@ -47,7 +47,7 @@ class WebSocketServer(WebSocket):
         return logs[-25]
 
     async def restart(self):
-        system('sudo reboot')
+        system('sudo systemctl restart oven.service')
         return True
 
     async def poweroff(self):
