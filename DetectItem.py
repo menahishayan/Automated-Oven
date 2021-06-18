@@ -81,7 +81,7 @@ class Detector:
         class_names = []
         if self.modelVersion == 'v3.6':
             class_names =  ['Bread','Burger','Cake', 'Chicken', 'Coffee', 'Cookie', 'Croissant', 'Fish', 'Fries', 'Omelette','Pasta', 'Pie', 'Pizza', 'Rice', 'Sandwiches', 'Toast']
-        elif self.modelVersion == 'v4.0':
+        else:
             class_names =  ['Burger','Cake', 'Chicken', 'Coffee', 'Cookies', 'Croissant', 'Fish','Pasta', 'Pizza', 'Rice']
 
         tf_image = img_to_array(image)
