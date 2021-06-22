@@ -24,7 +24,7 @@ from Automations import Automations
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.7.0'
+        self.__version__ = '2.7.1'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -78,7 +78,7 @@ class EventHandler:
         try:
             s = load(open('network_status.json'))
 
-            while s['status'] != 'connected':
+            while s['status'] != 'connected' and not self._SIGKILL:
                 if s['status'] == 'hostapd':
                     await self.display.network()
                 elif s['status'] == 'disconnected':
