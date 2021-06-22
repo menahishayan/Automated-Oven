@@ -94,7 +94,7 @@ def check_cred(ssid, password):
 
     # Sentences to check for
     fail = "pre-shared key may be incorrect"
-    success = "WPA: Key negotiation completed"
+    success = "CTRL-EVENT-CONNECTED"
 
     stop_ap(True)
 
