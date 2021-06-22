@@ -44,7 +44,14 @@ ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 """
 
-
+def stop_ap(stop):
+    if stop:
+        # Services need to be stopped to free up wlan0 interface
+        print(subprocess.check_output(['systemctl', "stop", "hostapd", "dnsmasq", "dhcpcd"]))
+    else:
+        print(subprocess.check_output(['systemctl', "restart", "dnsmasq", "dhcpcd"]))
+        time.sleep(15)
+        print(subprocess.check_output(['systemctl', "restart", "hostapd"]))
 
 @app.route('/')
 def main():
@@ -83,28 +90,13 @@ def check_cred(ssid, password):
     with open(testconf, 'w') as f:
         f.write(result.decode('utf-8'))
 
-    def stop_ap(stop):
-        if stop:
-            # Services need to be stopped to free up wlan0 interface
-            print(subprocess.check_output(['systemctl', "stop", "hostapd", "dnsmasq", "dhcpcd"]))
-        else:
-            print(subprocess.check_output(['systemctl', "restart", "dnsmasq", "dhcpcd"]))
-            time.sleep(15)
-            print(subprocess.check_output(['systemctl', "restart", "hostapd"]))
-
     # Sentences to check for
     fail = "pre-shared key may be incorrect"
     success = "CTRL-EVENT-CONNECTED"
 
     stop_ap(True)
 
-    result = subprocess.check_output(['wpa_supplicant',
-                                      "-Dnl80211",
-                                      "-iwlan0",
-                                      "-c/" + testconf,
-                                      "-f", wpalog,
-                                      "-B",
-                                      "-P", wpapid])
+    result = subprocess.check_output(['wpa_supplicant', "-Dnl80211", "-iwlan0", "-c/" + testconf, "-f", wpalog, "-B", "-P", wpapid])
 
     checkwpa = True
     while checkwpa:
@@ -133,13 +125,48 @@ def send_static(path):
     return send_from_directory('static', path)
 
 def wificonnected():
-    time.sleep(30)
     result = subprocess.check_output(['iwconfig', 'wlan0'])
     matches = re.findall(r'\"(.+?)\"', result.split(b'\n')[0].decode('utf-8'))
     if len(matches) > 0:
         print("got connected to " + matches[0])
         return True
     return False
+
+def wificonnected2():
+    wpadir = currentdir + '/wpa/'
+    testconf = wpadir + 'test.conf'
+    wpalog = wpadir + 'wpa.log'
+    wpapid = wpadir + 'wpa.pid'
+
+    # Sentences to check for
+    fail = "pre-shared key may be incorrect"
+    success = "CTRL-EVENT-CONNECTED"
+
+    stop_ap(True)
+
+    subprocess.check_output(['wpa_supplicant', "-Dnl80211", "-iwlan0", "-c/" + testconf, "-f", wpalog, "-B", "-P", wpapid])
+
+    checkwpa = True
+    while checkwpa:
+        with open(wpalog, 'r') as f:
+            content = f.read()
+            if success in content:
+                valid_psk = True
+                checkwpa = False
+            elif fail in content:
+                valid_psk = False
+                checkwpa = False
+            else:
+                continue
+
+    # Kill wpa_supplicant to stop it from setting up dhcp, dns
+    with open(wpapid, 'r') as p:
+        pid = p.read()
+        pid = int(pid.strip())
+        os.kill(pid, signal.SIGTERM)
+
+    stop_ap(False) # Restart services
+    return valid_psk
 
 @app.route('/join', methods=['POST'])
 def signin():
@@ -158,11 +185,10 @@ def signin():
     with open('wpa.conf', 'w') as f:
         f.write(wpa_conf % (ssid, pwd))
 
-    # time.sleep(60)
-    # res = 'connected' if wificonnected() else 'disconnected'
+    res = 'connected' if wificonnected2() else 'disconnected'
 
     with open('network_status.json', 'w') as f:
-        f.write(json.dumps({'status':'connected'}))
+        f.write(json.dumps({'status':res}))
 
     subprocess.Popen(["./disable_ap.sh"])
     return render_template('index.html', message="Connecting to network. This may take upto 2 minutes.")
@@ -178,9 +204,9 @@ if __name__ == "__main__":
         s = json.load(open('network_status.json'))
 
     # check connection
-    if wificonnected():
+    if wificonnected2():
         s['status'] = 'connected'
-    if not wificonnected():
+    if not wificonnected2():
         if s['status'] == 'connected': # Don't change if status in network_status.json is hostapd
             s['status'] = 'disconnected'
 
