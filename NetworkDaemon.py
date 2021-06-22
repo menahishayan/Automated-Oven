@@ -133,7 +133,7 @@ def send_static(path):
     return send_from_directory('static', path)
 
 def wificonnected():
-    time.sleep(70)
+    time.sleep(30)
     result = subprocess.check_output(['iwconfig', 'wlan0'])
     matches = re.findall(r'\"(.+?)\"', result.split(b'\n')[0].decode('utf-8'))
     if len(matches) > 0:
