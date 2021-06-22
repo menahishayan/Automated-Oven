@@ -5,6 +5,7 @@ import asyncio
 from sys import exc_info
 from os import system
 import signal
+from json import load
 
 from DetectItem import Detector
 from DisplayContent import DisplayContent
@@ -23,7 +24,7 @@ from Automations import Automations
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.6.2'
+        self.__version__ = '2.7.0'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -74,12 +75,21 @@ class EventHandler:
         return asyncio.run(fn(*args))
 
     async def startDetectionLoop(self):
-        await self.dispatch([
-            [self.display.text, "Place The Item"],
-            [self.cook.init]
-        ])
-
         try:
+            s = load(open('network_status.json'))
+
+            while s['status'] != 'connected':
+                if s['status'] == 'hostapd':
+                    await self.display.network()
+                elif s['status'] == 'disconnected':
+                    await self.display.network("Connecting")
+                s = load(open('network_status.json'))
+
+            await self.dispatch([
+                [self.display.text, "Place The Item"],
+                [self.cook.init]
+            ])
+
             while not self._SIGKILL:
                 await self.temp.update()
                 if not self.cook.isCooking and await self.config.get('autoDetect'):

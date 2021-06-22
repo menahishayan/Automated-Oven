@@ -436,6 +436,18 @@ class DisplayContent:
         )
         self.display(image)
 
+    def network(self,text="Automated Oven"):
+        image = Image.new("RGB", (self.width, self.height))
+        image.paste(
+            self.baseImageCenterIcon(
+                -1,
+                [],
+                "Wifi",
+                text
+            )
+        )
+        self.display(image)
+
     async def setBacklight(self, percent):
         self.backlight.duty_cycle = int(65535 * percent / 100)
         self.e.config.set('backlight',percent)
