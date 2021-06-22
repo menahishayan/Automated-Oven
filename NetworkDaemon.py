@@ -174,10 +174,9 @@ if __name__ == "__main__":
     # check connection
     if wificonnected():
         s['status'] = 'connected'
-    else:
-        if not wificonnected():
-            if s['status'] == 'connected': # Don't change if status in network_status.json is hostapd
-                s['status'] = 'disconnected'
+    if not wificonnected():
+        if s['status'] == 'connected': # Don't change if status in network_status.json is hostapd
+            s['status'] = 'disconnected'
 
     with open('network_status.json', 'w') as f:
         f.write(json.dumps(s))
