@@ -10,4 +10,4 @@ sudo cp config/dnsmasq.conf /etc/dnsmasq.conf
 # load wan configuration
 sudo cp wpa.conf /etc/wpa_supplicant/wpa_supplicant.conf
 
-sudo reboot now
+# sudo reboot now
