@@ -157,10 +157,11 @@ def signin():
     with open('wpa.conf', 'w') as f:
         f.write(wpa_conf % (ssid, pwd))
 
-    res = 'connected' if wificonnected() else 'disconnected'
+    # time.sleep(60)
+    # res = 'connected' if wificonnected() else 'disconnected'
 
     with open('network_status.json', 'w') as f:
-        f.write(json.dumps({'status':res}))
+        f.write(json.dumps({'status':'connected'}))
 
     subprocess.Popen(["./disable_ap.sh"])
     return render_template('index.html', message="Connecting to network. This may take upto 2 minutes.")
