@@ -132,6 +132,14 @@ def check_cred(ssid, password):
 def send_static(path):
     return send_from_directory('static', path)
 
+def wificonnected():
+    result = subprocess.check_output(['iwconfig', 'wlan0'])
+    matches = re.findall(r'\"(.+?)\"', result.split(b'\n')[0].decode('utf-8'))
+    if len(matches) > 0:
+        print("got connected to " + matches[0])
+        return True
+    return False
+
 @app.route('/join', methods=['POST'])
 def signin():
     ssid = request.form['ssid']
@@ -148,18 +156,14 @@ def signin():
 
     with open('wpa.conf', 'w') as f:
         f.write(wpa_conf % (ssid, pwd))
+
+    res = 'connected' if wificonnected() else 'disconnected'
+
     with open('network_status.json', 'w') as f:
-        f.write(json.dumps({'status':'disconnected'}))
+        f.write(json.dumps({'status':res}))
+
     subprocess.Popen(["./disable_ap.sh"])
     return render_template('index.html', message="Connecting to network. This may take upto 2 minutes.")
-
-def wificonnected():
-    result = subprocess.check_output(['iwconfig', 'wlan0'])
-    matches = re.findall(r'\"(.+?)\"', result.split(b'\n')[0].decode('utf-8'))
-    if len(matches) > 0:
-        print("got connected to " + matches[0])
-        return True
-    return False
 
 if __name__ == "__main__":
     # things to run the first time it boots
