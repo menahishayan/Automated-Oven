@@ -23,7 +23,7 @@ from Automations import Automations
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.8.0'
+        self.__version__ = '2.8.1'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -36,7 +36,7 @@ class EventHandler:
 
         self.display = DisplayContent()
         self.detector = Detector()
-        self.ultrasound = Ultrasound()
+        self.ultrasound = Ultrasound(self)
         self.temp = Temp()
         self.server = SimpleWebSocketServer('', 8069, WebSocketServer, self)
         self.cook = Cook(self)
