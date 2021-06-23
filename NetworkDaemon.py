@@ -139,7 +139,7 @@ if __name__ == "__main__":
     with open('network_status.json', 'w') as f:
         f.write(json.dumps(s))
 
-    if not s['status'] == 'connected':
+    if s['status'] == 'connected':
         with open('wpa.conf', 'w') as f:
             f.write(wpa_conf_default)
         subprocess.Popen("./enable_ap.sh")
