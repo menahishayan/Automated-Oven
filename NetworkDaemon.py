@@ -1,7 +1,9 @@
+import logging
 import subprocess
 import signal
 import json
 from time import time, sleep
+from re import findall
 import os
 
 from flask import Flask, request, send_from_directory, render_template, redirect
@@ -15,7 +17,6 @@ wpadir = currentdir + '/wpa/'
 testconf = wpadir + 'test.conf'
 wpalog = wpadir + 'wpa.log'
 wpapid = wpadir + 'wpa.pid'
-
 
 def getssid():
     global ssid_list
@@ -70,7 +71,7 @@ def generateCredentials(ssid, password):
         f.write(result.decode('utf-8'))
 
 
-def isConnected(retries=1):
+def isConnected():
     if not os.path.exists(testconf):
         return False
 
@@ -80,17 +81,21 @@ def isConnected(retries=1):
         if os.path.exists(_file):
             os.remove(_file)
 
-    for _ in range(retries):
-        subprocess.Popen(['wpa_supplicant', "-Dnl80211", "-iwlan0", "-c/" + testconf, "-f", wpalog, "-B", "-P", wpapid])
+    subprocess.Popen(['wpa_supplicant', "-Dnl80211", "-iwlan0", "-c/" + testconf, "-f", wpalog, "-B", "-P", wpapid])
 
-        start = time()
+    start = time()
 
-        while time() < start+10:
-            sleep(0.5)
-            with open(wpalog, 'r') as f:
-                content = f.read()
-                if "CTRL-EVENT-CONNECTED" in content:
-                    return True
+    while time() < start+10:
+        sleep(0.5)
+        with open(wpalog, 'r') as f:
+            content = f.read()
+            if "CTRL-EVENT-CONNECTED" in content or "Match already configured" in content:
+                return True
+
+    result = subprocess.check_output(['iwconfig', 'wlan0'])
+    matches = findall(r'\"(.+?)\"', result.split(b'\n')[0].decode('utf-8'))
+    if len(matches) > 0:
+        return True
 
     killPID(wpapid)
 
@@ -119,7 +124,8 @@ def signin():
     pwd = 'psk="' + password + '"' if not password == "" else "key_mgmt=NONE"
 
     generateCredentials(ssid, password)
-    if isConnected(retries=2):
+    if isConnected():
+        logging.info("signin - True")
         with open('network_status.json', 'w') as f:
             f.write(json.dumps({'status': 'connected'}))
         with open('wpa.conf', 'w') as f:
@@ -130,6 +136,7 @@ def signin():
         return render_template('index.html', message="Connecting to network. This may take upto 2 minutes.")
 
     else:
+        logging.info("signin - False")
         return render_template('index.html', message="The password was incorrect. Please try again.")
 
 
