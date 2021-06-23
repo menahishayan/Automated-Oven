@@ -20,7 +20,7 @@ from Audio import Audio
 from Users import Users
 from History import History
 from Automations import Automations
-from subprocess import Popen
+from subprocess import Popen, check_output
 
 class EventHandler:
     def __init__(self):
@@ -133,4 +133,5 @@ class EventHandler:
             [self.detector.init, self],
             [self.detector.load_model]
         ])
-        Popen("sudo python3 ./NetworkDaemon.py &")
+        result = check_output("sudo python3 ./NetworkDaemon.py &")
+        self.log(result.decode('utf-8'))

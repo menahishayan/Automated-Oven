@@ -50,11 +50,11 @@ wpa_conf = wpa_conf_default + """network={
 
 def stop_ap(stop):
     if stop:
-        subprocess.check_output(['systemctl', "stop", "hostapd", "dnsmasq", "dhcpcd"])
+        subprocess.Popen(['systemctl', "stop", "hostapd", "dnsmasq", "dhcpcd"])
     else:
-        subprocess.check_output(['systemctl', "restart", "dnsmasq", "dhcpcd"])
+        subprocess.Popen(['systemctl', "restart", "dnsmasq", "dhcpcd"])
         sleep(5)
-        subprocess.check_output(['systemctl', "restart", "hostapd"])
+        subprocess.Popen(['systemctl', "restart", "hostapd"])
 
 
 def killPID(pid):
