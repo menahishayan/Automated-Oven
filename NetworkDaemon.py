@@ -102,6 +102,12 @@ def isConnected():
     stop_ap(False)
     return False
 
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
 
 @app.route('/')
 @app.route('/generate_204')
@@ -125,7 +131,6 @@ def signin():
 
     generateCredentials(ssid, password)
     if isConnected():
-        logging.info("signin - True")
         with open('network_status.json', 'w') as f:
             f.write(json.dumps({'status': 'connected'}))
         with open('wpa.conf', 'w') as f:
@@ -133,10 +138,10 @@ def signin():
 
         subprocess.Popen(["./disable_ap.sh"])
 
-        return render_template('index.html', message="Connecting to network. This may take upto 2 minutes.")
+        shutdown_server()
+        return render_template('index.html', message="Connected.")
 
     else:
-        logging.info("signin - False")
         return render_template('index.html', message="The password was incorrect. Please try again.")
 
 
