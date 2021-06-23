@@ -77,12 +77,14 @@ class EventHandler:
         try:
             s = load(open('network_status.json'))
 
+            self.log("Network: Connecting...")
             while s['status'] != 'connected' and not self._SIGKILL:
                 if s['status'] == 'hostapd':
                     self.display.network()
                 elif s['status'] == 'disconnected':
                     self.display.network("Connecting")
                 s = load(open('network_status.json'))
+            self.log("Network: Connection Established")
 
             await self.dispatch([
                 [self.display.text, "Place The Item"],
