@@ -23,7 +23,7 @@ from Automations import Automations
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.7.5'
+        self.__version__ = '2.8.0'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -77,20 +77,20 @@ class EventHandler:
         try:
             s = load(open('network_status.json'))
 
-            self.log("Network: Connecting...")
+            self.log("Network: Connecting")
             while s['status'] != 'connected' and not self._SIGKILL:
                 if s['status'] == 'hostapd':
                     self.display.network()
                 elif s['status'] == 'disconnected':
                     self.display.network("Connecting")
                 s = load(open('network_status.json'))
-            self.log("Network: Connection Established")
+            self.log("Network: Connected")
 
             await self.dispatch([
                 [self.display.text, "Place The Item"],
                 [self.cook.init]
             ])
-
+        
             while not self._SIGKILL:
                 await self.temp.update()
                 if not self.cook.isCooking and await self.config.get('autoDetect'):

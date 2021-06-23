@@ -77,25 +77,24 @@ def isConnected():
 
     stop_ap(True)
 
+    sleep(1)
+    result = subprocess.check_output(['iwconfig', 'wlan0'])
+    matches = findall(r'\"(.+?)\"', result.split(b'\n')[0].decode('utf-8'))
+    if len(matches) > 0:
+        return True
+
     for _file in [wpalog, wpapid]:
         if os.path.exists(_file):
             os.remove(_file)
 
     subprocess.Popen(['wpa_supplicant', "-Dnl80211", "-iwlan0", "-c/" + testconf, "-f", wpalog, "-B", "-P", wpapid])
-
     start = time()
-
     while time() < start+10:
         sleep(0.5)
         with open(wpalog, 'r') as f:
             content = f.read()
             if "CTRL-EVENT-CONNECTED" in content or "Match already configured" in content:
                 return True
-
-    result = subprocess.check_output(['iwconfig', 'wlan0'])
-    matches = findall(r'\"(.+?)\"', result.split(b'\n')[0].decode('utf-8'))
-    if len(matches) > 0:
-        return True
 
     killPID(wpapid)
 

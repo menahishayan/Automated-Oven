@@ -1,27 +1,32 @@
 import RPi.GPIO as GPIO
-import time
+from time import time,sleep
 
 class Ultrasound:
-    def __init__(self):
+    def __init__(self,e):
         self.TRIG = 23
         self.ECHO = 15
+        self.e = e
 
         GPIO.setup(self.TRIG, GPIO.OUT)
         GPIO.setup(self.ECHO, GPIO.IN)
 
     async def get(self):
         GPIO.output(self.TRIG, True)
-        time.sleep(0.00001)
+        sleep(0.00001)
         GPIO.output(self.TRIG, False)
 
-        StartTime = time.time()
-        StopTime = time.time()
+        StartTime = time()
+        StopTime = time()
 
         while GPIO.input(self.ECHO) == 0:
-            StartTime = time.time()
+            if self.e._SIGKILL:
+                return -1
+            StartTime = time()
 
         while GPIO.input(self.ECHO) == 1:
-            StopTime = time.time()
+            if self.e._SIGKILL:
+                return -1
+            StopTime = time()
 
         TimeElapsed = StopTime - StartTime
 
