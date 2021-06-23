@@ -44,7 +44,7 @@ class Energy(DB):
             self.lastUpdatedValueNow = round(sum(aggregate)/interval)
 
             await self.add(self.lastUpdatedValueNow/(3600/interval))
-        self.log("logEnergy - Terminated")
+        self.e.log("logEnergy - Terminated")
         
 
     def detect(self):
