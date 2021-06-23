@@ -49,6 +49,7 @@ class Cook:
                     self.e.err(e)
             else:
                 await sleep(0.7)
+        self.log("cookingHandler - Terminated")
 
     async def startFromDB(self, item):
         if not self.isCooking:

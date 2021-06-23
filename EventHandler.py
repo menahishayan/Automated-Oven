@@ -20,7 +20,6 @@ from Audio import Audio
 from Users import Users
 from History import History
 from Automations import Automations
-from subprocess import Popen, check_output
 
 class EventHandler:
     def __init__(self):
@@ -110,6 +109,7 @@ class EventHandler:
                         await asyncio.sleep(0.3)
                 else:
                     await asyncio.sleep(1)
+            self.log("startDetectionLoop - Terminated")
         except Exception as e:
             self.err(e)
 
@@ -133,5 +133,3 @@ class EventHandler:
             [self.detector.init, self],
             [self.detector.load_model]
         ])
-        # result = check_output("/usr/bin/python3 /home/pi/OS/NetworkDaemon.py")
-        # self.log(result.decode('utf-8'))
