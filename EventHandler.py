@@ -133,5 +133,5 @@ class EventHandler:
             [self.detector.init, self],
             [self.detector.load_model]
         ])
-        result = check_output("sudo python3 ./NetworkDaemon.py &")
+        result = check_output("sudo python3 /home/pi/OS/NetworkDaemon.py &")
         self.log(result.decode('utf-8'))
