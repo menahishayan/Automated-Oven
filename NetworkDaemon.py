@@ -64,8 +64,20 @@ def killPID(pid):
         os.kill(pid, signal.SIGTERM)
 
 
+def generateCredentials(ssid, password):
+    subprocess.Popen("wpa_passphrase {} {} > {}".format(ssid, password, testconf))
+
+
 def isConnected():
+    if not os.path.exists(testconf):
+        return False
+
     stop_ap(True)
+
+    for _file in [wpalog, wpapid]:
+        if os.path.exists(_file):
+            os.remove(_file)
+
     subprocess.Popen(['wpa_supplicant', "-Dnl80211", "-iwlan0", "-c/" + testconf, "-f", wpalog, "-B", "-P", wpapid])
 
     start = time()
@@ -75,16 +87,12 @@ def isConnected():
         with open(wpalog, 'r') as f:
             content = f.read()
             if "CTRL-EVENT-CONNECTED" in content:
-                return False
+                return True
 
     killPID(wpapid)
 
     stop_ap(False)
-    return True
-
-
-def generateCredentials(ssid, password):
-    subprocess.Popen("wpa_passphrase {} {} > {}".format(ssid, password, testconf))
+    return False
 
 
 @app.route('/')
