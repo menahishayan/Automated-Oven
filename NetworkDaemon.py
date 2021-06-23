@@ -110,6 +110,7 @@ def send_static(path):
 
 @app.route('/join', methods=['POST'])
 def signin():
+    ssid = ""
     try:
         ssid = request.form['ssid']
     except:
