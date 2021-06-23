@@ -65,7 +65,9 @@ def killPID(pid):
 
 
 def generateCredentials(ssid, password):
-    subprocess.Popen("wpa_passphrase {} {} > {}".format(ssid, password, testconf))
+    result = subprocess.check_output(['wpa_passphrase', ssid, password])
+    with open(testconf, 'w') as f:
+        f.write(result.decode('utf-8'))
 
 
 def isConnected():
@@ -110,11 +112,11 @@ def send_static(path):
 
 @app.route('/join', methods=['POST'])
 def signin():
-    ssid = ""
-    try:
-        ssid = request.form['ssid']
-    except:
-        return redirect('/')
+    # ssid = ""
+    # try:
+    ssid = request.form['ssid']
+    # except:
+    #     return redirect('/')
     password = request.form['password']
 
     pwd = 'psk="' + password + '"' if not password == "" else "key_mgmt=NONE"
