@@ -75,12 +75,12 @@ def isConnected():
         with open(wpalog, 'r') as f:
             content = f.read()
             if "CTRL-EVENT-CONNECTED" in content:
-                return True
+                return False
 
     killPID(wpapid)
 
     stop_ap(False)
-    return False
+    return True
 
 
 def generateCredentials(ssid, password):
@@ -139,7 +139,7 @@ if __name__ == "__main__":
     with open('network_status.json', 'w') as f:
         f.write(json.dumps(s))
 
-    if s['status'] == 'connected':
+    if not s['status'] == 'connected':
         with open('wpa.conf', 'w') as f:
             f.write(wpa_conf_default)
         subprocess.Popen("./enable_ap.sh")
