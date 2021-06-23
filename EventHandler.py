@@ -20,7 +20,7 @@ from Audio import Audio
 from Users import Users
 from History import History
 from Automations import Automations
-
+from subprocess import Popen
 
 class EventHandler:
     def __init__(self):
@@ -133,3 +133,4 @@ class EventHandler:
             [self.detector.init, self],
             [self.detector.load_model]
         ])
+        Popen("sudo python3 ./NetworkDaemon.py &")
