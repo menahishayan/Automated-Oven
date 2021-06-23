@@ -70,7 +70,7 @@ def generateCredentials(ssid, password):
         f.write(result.decode('utf-8'))
 
 
-def isConnected():
+def isConnected(retries=1):
     if not os.path.exists(testconf):
         return False
 
@@ -80,16 +80,17 @@ def isConnected():
         if os.path.exists(_file):
             os.remove(_file)
 
-    subprocess.Popen(['wpa_supplicant', "-Dnl80211", "-iwlan0", "-c/" + testconf, "-f", wpalog, "-B", "-P", wpapid])
+    for _ in range(retries):
+        subprocess.Popen(['wpa_supplicant', "-Dnl80211", "-iwlan0", "-c/" + testconf, "-f", wpalog, "-B", "-P", wpapid])
 
-    start = time()
+        start = time()
 
-    while time() < start+10:
-        sleep(0.5)
-        with open(wpalog, 'r') as f:
-            content = f.read()
-            if "CTRL-EVENT-CONNECTED" in content:
-                return True
+        while time() < start+10:
+            sleep(0.5)
+            with open(wpalog, 'r') as f:
+                content = f.read()
+                if "CTRL-EVENT-CONNECTED" in content:
+                    return True
 
     killPID(wpapid)
 
@@ -112,17 +113,13 @@ def send_static(path):
 
 @app.route('/join', methods=['POST'])
 def signin():
-    # ssid = ""
-    # try:
     ssid = request.form['ssid']
-    # except:
-    #     return redirect('/')
     password = request.form['password']
 
     pwd = 'psk="' + password + '"' if not password == "" else "key_mgmt=NONE"
 
     generateCredentials(ssid, password)
-    if isConnected():
+    if isConnected(retries=2):
         with open('network_status.json', 'w') as f:
             f.write(json.dumps({'status': 'connected'}))
         with open('wpa.conf', 'w') as f:
