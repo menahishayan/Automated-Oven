@@ -58,9 +58,13 @@ class Network:
             f.write(result.decode('utf-8'))
 
     def connect(self):
-        for _file in [self.wpalog, self.wpapid]:
-            if os.path.exists(_file):
-                os.remove(_file)
+        try:
+            for _file in [self.wpalog, self.wpapid]:
+                if os.path.exists(_file):
+                    os.remove(_file)
+        except:
+            self.e.log("Network: Purging by force")
+            subprocess.Popen(["sudo","rm","-rf", "/home/pi/OS/wpa/wpa*"])
 
         subprocess.Popen(["./disable_ap.sh"])
 
