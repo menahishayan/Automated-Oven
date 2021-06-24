@@ -20,10 +20,11 @@ from Audio import Audio
 from Users import Users
 from History import History
 from Automations import Automations
+from Network import Network
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.8.1'
+        self.__version__ = '2.9.1'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -34,6 +35,7 @@ class EventHandler:
         self.logging = logging
         self.config = DB('./config.json')
 
+        self.network = Network(self)
         self.display = DisplayContent()
         self.detector = Detector()
         self.ultrasound = Ultrasound(self)
@@ -75,15 +77,15 @@ class EventHandler:
 
     async def startDetectionLoop(self):
         try:
-            s = load(open('network_status.json'))
-
-            self.log("Network: Connecting")
-            while s['status'] != 'connected' and not self._SIGKILL:
-                if s['status'] == 'hostapd':
+            networkStatus = await self.network.get()
+            while networkStatus != 'connected' and not self._SIGKILL:
+                if networkStatus == 'hostapd':
                     self.display.network()
-                elif s['status'] == 'disconnected':
+                elif networkStatus == 'disconnected':
                     self.display.network("Connecting")
-                s = load(open('network_status.json'))
+                await asyncio.sleep(0.5)
+                networkStatus = await self.network.get()
+
             self.log("Network: Connected")
 
             await self.dispatch([
