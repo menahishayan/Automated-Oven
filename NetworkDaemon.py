@@ -49,13 +49,13 @@ wpa_conf = wpa_conf_default + """network={
 }"""
 
 
-def stop_ap(stop):
-    if stop:
-        subprocess.Popen(['systemctl', "stop", "hostapd", "dnsmasq", "dhcpcd"])
-    else:
-        subprocess.Popen(['systemctl', "restart", "dnsmasq", "dhcpcd"])
-        sleep(5)
-        subprocess.Popen(['systemctl', "restart", "hostapd"])
+# def stop_ap(stop):
+#     if stop:
+#         subprocess.Popen(['systemctl', "stop", "hostapd", "dnsmasq", "dhcpcd"])
+#     else:
+#         subprocess.Popen(['systemctl', "restart", "dnsmasq", "dhcpcd"])
+#         sleep(15)
+#         subprocess.Popen(['systemctl', "restart", "hostapd"])
 
 
 def killPID(pid):
@@ -70,22 +70,12 @@ def generateCredentials(ssid, password):
     with open(testconf, 'w') as f:
         f.write(result.decode('utf-8'))
 
-
-def isConnected():
-    if not os.path.exists(testconf):
-        return False
-
-    stop_ap(True)
-
-    sleep(1)
-    result = subprocess.check_output(['iwconfig', 'wlan0'])
-    matches = findall(r'\"(.+?)\"', result.split(b'\n')[0].decode('utf-8'))
-    if len(matches) > 0:
-        return True
-
+def connect():
     for _file in [wpalog, wpapid]:
         if os.path.exists(_file):
             os.remove(_file)
+
+    subprocess.Popen(["./disable_ap.sh"])
 
     subprocess.Popen(['wpa_supplicant', "-Dnl80211", "-iwlan0", "-c/" + testconf, "-f", wpalog, "-B", "-P", wpapid])
     start = time()
@@ -98,7 +88,18 @@ def isConnected():
 
     killPID(wpapid)
 
-    stop_ap(False)
+    subprocess.Popen(["./enable_ap.sh"])
+
+def isConnected():
+    if not os.path.exists(testconf):
+        return False
+
+    sleep(2)
+    result = subprocess.check_output(['iwconfig', 'wlan0'])
+    matches = findall(r'\"(.+?)\"', result.split(b'\n')[0].decode('utf-8'))
+    if len(matches) > 0:
+        return True
+
     return False
 
 def shutdown_server():
@@ -129,13 +130,12 @@ def signin():
     pwd = 'psk="' + password + '"' if not password == "" else "key_mgmt=NONE"
 
     generateCredentials(ssid, password)
+    connect()
     if isConnected():
         with open('network_status.json', 'w') as f:
             f.write(json.dumps({'status': 'connected'}))
         with open('wpa.conf', 'w') as f:
             f.write(wpa_conf % (ssid, pwd))
-
-        subprocess.Popen(["./disable_ap.sh"])
 
         shutdown_server()
         return render_template('index.html', message="Connected.")
