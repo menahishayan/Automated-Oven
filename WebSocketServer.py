@@ -50,12 +50,16 @@ class WebSocketServer(WebSocket):
         system('sudo reboot')
         return True
 
+    async def softRestart(self):
+        system('sudo systemctl restart oven &')
+        return True
+
     async def poweroff(self):
         system('sudo shutdown -h now')
         return True
 
     async def update(self):
-        system('~/OS/update.sh | at now')
+        system('cd OS; git pull; sudo systemctl restart oven &')
         return True
 
     async def getAvailableModels(self):
