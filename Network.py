@@ -93,6 +93,7 @@ class Network:
 
     async def joinNetwork(self, ssid, password):
         try:
+            self.s['status'] = 'connecting'
             pwd = 'psk="' + password + '"' if not password == "" else "key_mgmt=NONE"
 
             self.generateCredentials(ssid, password)
@@ -108,6 +109,7 @@ class Network:
                 return True
 
             else:
+                self.s['status'] = 'hostapd'
                 return False
         except Exception as e:
             self.e.err(e)
@@ -115,18 +117,3 @@ class Network:
 
     async def get(self):
         return self.s['status']
-
-
-# if __name__ == "__main__":
-#     s = {'status': 'disconnected'}
-
-#     if os.path.isfile('network_status.json'):
-#         s = json.load(open('network_status.json'))
-
-
-#     if not s['status'] == 'connected':
-#         with open('wpa.conf', 'w') as f:
-#             f.write(wpa_conf_default)
-#         subprocess.Popen("./enable_ap.sh")
-#         if not os.path.exists(wpadir):
-#             os.mkdir(wpadir)
