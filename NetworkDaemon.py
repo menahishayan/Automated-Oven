@@ -18,6 +18,9 @@ testconf = wpadir + 'test.conf'
 wpalog = wpadir + 'wpa.log'
 wpapid = wpadir + 'wpa.pid'
 
+logger_format = '%(asctime)s %(message)s'
+logging.basicConfig(format=logger_format, level=logging.INFO, datefmt="%H:%M:%S", filename='./netdaemon.log', filemode='w')
+
 def getssid():
     global ssid_list
     if len(ssid_list) > 0:
@@ -49,15 +52,6 @@ wpa_conf = wpa_conf_default + """network={
 }"""
 
 
-# def stop_ap(stop):
-#     if stop:
-#         subprocess.Popen(['systemctl', "stop", "hostapd", "dnsmasq", "dhcpcd"])
-#     else:
-#         subprocess.Popen(['systemctl', "restart", "dnsmasq", "dhcpcd"])
-#         sleep(15)
-#         subprocess.Popen(['systemctl', "restart", "hostapd"])
-
-
 def killPID(pid):
     with open(pid, 'r') as p:
         pid = p.read()
@@ -84,22 +78,29 @@ def connect():
         with open(wpalog, 'r') as f:
             content = f.read()
             if "CTRL-EVENT-CONNECTED" in content or "Match already configured" in content:
+                logging.info("connect: True")
                 return True
 
     killPID(wpapid)
 
+    logging.info("connect: False")
+    logging.info("connect: Enable AP")
     subprocess.Popen(["./enable_ap.sh"])
+    return False
 
 def isConnected():
     if not os.path.exists(testconf):
+        logging.info("isConnected: Instant False")
         return False
 
-    sleep(2)
-    result = subprocess.check_output(['iwconfig', 'wlan0'])
-    matches = findall(r'\"(.+?)\"', result.split(b'\n')[0].decode('utf-8'))
-    if len(matches) > 0:
-        return True
+    for _ in range(2):
+        result = subprocess.check_output(['iwconfig', 'wlan0'])
+        if len(findall(r'\"(.+?)\"', result.split(b'\n')[0].decode('utf-8'))) > 0:
+            logging.info("isConnected: True")
+            return True
+        sleep(2)
 
+    logging.info("isConnected: Fall through False")
     return False
 
 def shutdown_server():
@@ -116,6 +117,9 @@ def shutdown_server():
 def main():
     return render_template('index.html', ssids=getssid(), message="Connect your oven to the network.")
 
+@app.route('/jsonReq')
+def jsonReq():
+    return json.dumps(getssid())
 
 @app.route('/static/<path:path>')
 def send_static(path):
@@ -130,17 +134,18 @@ def signin():
     pwd = 'psk="' + password + '"' if not password == "" else "key_mgmt=NONE"
 
     generateCredentials(ssid, password)
-    connect()
-    if isConnected():
+    if connect() or isConnected():
+        logging.info("signin: isConnected True")
         with open('network_status.json', 'w') as f:
             f.write(json.dumps({'status': 'connected'}))
         with open('wpa.conf', 'w') as f:
             f.write(wpa_conf % (ssid, pwd))
-
+        
         shutdown_server()
         return render_template('index.html', message="Connected.")
 
     else:
+        logging.info("signin: isConnected False")
         return render_template('index.html', message="The password was incorrect. Please try again.")
 
 
