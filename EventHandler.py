@@ -24,7 +24,7 @@ from Network import Network
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.9.2'
+        self.__version__ = '2.9.3'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -81,7 +81,7 @@ class EventHandler:
                 networkStatus = await self.network.get()
                 if networkStatus == 'connected':
                     break
-                self.display.network(None if networkStatus == 'hostapd' else "Connecting")
+                self.display.network("Automated Oven" if networkStatus == 'hostapd' else "Connecting")
                 await asyncio.sleep(0.5)
 
             self.log("Network: Connected")
