@@ -24,7 +24,7 @@ from Network import Network
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.9.4'
+        self.__version__ = '2.9.5'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -95,6 +95,7 @@ class EventHandler:
                 await self.temp.update()
                 if not self.cook.isCooking and await self.config.get('autoDetect'):
                     dist = await self.ultrasound.get()
+                    self.log("CurrentTemp: {}".format(self.cook.topRod.get()))
                     # self.log(dist)
                     if dist < 200:
                         tasks = await self.dispatch([
