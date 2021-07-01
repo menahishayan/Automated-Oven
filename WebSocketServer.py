@@ -74,7 +74,8 @@ class WebSocketServer(WebSocket):
             'rodStatus': self.e.cook.rod.isOn(),
             'dht11Temp': int(await self.e.temp),
             'ultrasoundReading': await self.e.ultrasound.get(),
-            'users': await self.e.users.get()
+            'users': await self.e.users.get(),
+            'lastHeatTime': self.e.cook.rod.getLastHeatTime()
         }
 
     async def getVersion(self):

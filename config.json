@@ -10,5 +10,7 @@
     "responsiveness":100,
     "energyInterval": 1,
     "rodSafetyLock": false,
+    "cookingVerboseLogs": false,
+    "thermalVerboseLogs": false,
     "modelVersion": "v3.6"
 }

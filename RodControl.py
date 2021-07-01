@@ -46,8 +46,9 @@ class RodControl:
             if self.SIGKILLADJUST or self.SIGKILLSUSTAIN or self.e._SIGKILL:
                 break
 
-            # if round(time()-start)%10 == 0:
-                # self.e.log("Thermals: {} @ {} ({},{})".format(round(self.currentTemp),round(time()-start),"Adjust" if adjust else "Sustain","Cool" if cool else "Heat"))
+            if round(time()-start)%10 == 0:
+                if self.e.config._get('thermalVerboseLogs'):
+                    self.e.log("Thermals: {} @ {} ({},{})".format(round(self.currentTemp),round(time()-start),"Adjust" if adjust else "Sustain","Cool" if cool else "Heat"))
 
             await sleep(0.3)
             if not cool:
@@ -61,7 +62,7 @@ class RodControl:
         await self.sleep(self.heatingTime(temp),adjust=adjust)
         self.lastHeatTime = time()
         self.e.config.set('lastHeatTemp',self.currentTemp)
-        self.e.config.set('lastHeatTime',time())
+        self.e.config.set('lastHeatTime',self.lastHeatTime)
         self.pin.value = False
 
     async def cool(self,temp,adjust=False):
@@ -145,6 +146,9 @@ class RodControl:
 
     def get(self):
         return round(self.currentTemp,1)
+
+    def getLastHeatTime(self):
+        return round(self.lastHeatTime)
 
     def __str__(self):
         return str(self.get())
