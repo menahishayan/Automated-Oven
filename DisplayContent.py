@@ -43,10 +43,7 @@ class DisplayContent:
         self.backlight = PWMOut(D22, frequency=2000, duty_cycle=0)
 
         self.clear()
-        if self.e.config.has('backlight'):
-            await self.setBacklight(await self.e.config.get('backlight'))
-        else:
-            await self.setBacklight(50)
+        await self.setBacklight(await self.e.config.get('backlight'))
 
         self.fonts = {
             'timer': ImageFont.truetype('./fonts/SF-Compact-Display-Medium.ttf', 36),
@@ -252,18 +249,20 @@ class DisplayContent:
 
     async def preheat(self, curStepIndex, steps):
         try:
-            ht = round(self.e.cook.topRod.heatingTime(steps[curStepIndex]['temp']))
+            self.clear()
+
+            ht = round(self.e.cook.rod.heatingTime(steps[curStepIndex]['temp']))
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
                     break
                 image = Image.new("RGB", (self.width, self.height))
                 imDraw = ImageDraw.Draw(image)
 
-                currTemp = self.e.cook.topRod.get()
+                currTemp = self.e.cook.rod.get()
                 percent = 0
 
                 if 'endTime' not in steps[curStepIndex]:
-                    steps[curStepIndex]['endTime'] = steps[curStepIndex]['startTime'] + (ht if ht >= 0 else self.e.cook.topRod.coolingTime(steps[curStepIndex]['temp']))
+                    steps[curStepIndex]['endTime'] = steps[curStepIndex]['startTime'] + (ht if ht >= 0 else self.e.cook.rod.coolingTime(steps[curStepIndex]['temp']))
 
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     try:
@@ -297,6 +296,7 @@ class DisplayContent:
 
     async def cook(self, curStepIndex, steps):
         try:
+            self.clear()
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
                     break
@@ -345,6 +345,7 @@ class DisplayContent:
 
     async def notify(self, curStepIndex, steps):
         try:
+            self.clear()
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['endTime'] <= time():
                     break
@@ -364,6 +365,7 @@ class DisplayContent:
 
     async def checkpoint(self, curStepIndex, steps):
         try:
+            self.clear()
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['endTime'] <= time():
                     break
@@ -383,6 +385,7 @@ class DisplayContent:
 
     async def cool(self, curStepIndex, steps):
         try:
+            self.clear()
             while not self.e._SIGKILL and not self.e.cook.SIGTERM:
                 if steps[curStepIndex]['endTime'] <= time():
                     break

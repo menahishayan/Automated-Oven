@@ -11,11 +11,13 @@ import numpy as np
 from picamera import PiCamera
 import concurrent.futures as cf
 from io import BytesIO
+from json import loads
 
 class Detector:
     async def init(self, e):
         self.model_loaded = False
         self.e = e
+        self.labels = []
         await self.initCamera()
         self.modelVersion = await self.e.config.get('modelVersion')
         return self
@@ -27,22 +29,31 @@ class Detector:
         except Exception as e:
             self.e.err(e)
 
-    async def get_status(self):
-        return self.model_loaded
-
     async def load_model(self):
         try:
-            # self.modelVersion = await self.e.config.get('modelVersion')
-            self.modelVersion = 'v3.6'
+            self.modelVersion = await self.e.config.get('modelVersion')
             model_path = '/home/pi/keras/models/{}/model-{}'.format(self.modelVersion,self.modelVersion)
-            json_file = open('{}.json'.format(model_path), 'r')
-            loaded_model_json = json_file.read()
-            json_file.close()
-            
-            loaded_model = model_from_json(loaded_model_json)
-            loaded_model.load_weights("{}.h5".format(model_path))
 
-            self.model = loaded_model
+            model_json = {}
+            with open('{}.json'.format(model_path)) as j:
+                model_json = j.read()
+
+            with open('{}.txt'.format(model_path)) as l:
+                self.labels = l.readlines()
+            
+            model = model_from_json(model_json)
+
+            model_json = loads(model_json)
+
+            batch_input_shape = model_json['config']['layers'][0]['config']['batch_input_shape']
+            self.input_shape = [batch_input_shape[1],batch_input_shape[2]]
+
+            if model_json['class_name'] == 'Sequential':
+                model(np.zeros((1,self.input_shape[0],self.input_shape[1],3)))
+
+            model.load_weights("{}.h5".format(model_path))
+
+            self.model = model
             self.e.log("Boot: Model Loaded")
             self.model_loaded = True
         except Exception as e:
@@ -71,31 +82,21 @@ class Detector:
         stream = [BytesIO() for i in range(maxFrames)]
 
         for i in range(maxFrames):
-            self.camera.capture(stream[i], format='jpeg', resize=(250,250))
+            self.camera.capture(stream[i], format='jpeg', resize=(self.input_shape[0],self.input_shape[1]))
             stream[i].seek(0)
             await asyncio.sleep(0.15)
             
         return await self.detectionDispatcher(stream)
 
     def detectionWorker(self,image):
-        class_names = []
-        if self.modelVersion == 'v3.6':
-            class_names =  ['Bread','Burger','Cake', 'Chicken', 'Coffee', 'Cookie', 'Croissant', 'Fish', 'Fries', 'Omelette','Pasta', 'Pie', 'Pizza', 'Rice', 'Sandwiches', 'Toast']
-        else:
-            class_names =  ['Burger','Cake', 'Chicken', 'Coffee', 'Cookies', 'Croissant', 'Fish','Pasta', 'Pizza', 'Rice']
-
         tf_image = img_to_array(image)
         tf_image = expand_dims(tf_image, 0)
        
         predictions = self.model.predict(tf_image)
         score = softmax(predictions[0])
         detection_score = np.max(score)
-        detection_label = class_names[np.argmax(score)]
+        detection_label = self.labels[np.argmax(score)]
         
-        # if detection_label == 'fish' and int(detection_score*10000) < 1550:
-        #     return {
-        #         0: "None"
-        #     }
         return {
                 int(detection_score*10000): detection_label
             }
@@ -113,7 +114,7 @@ class Detector:
                 res.update(f.result())
 
             maxRes = res[max(res)]
-            # self.e.log(res)
-            # self.e.log(maxRes)
+            self.e.log(res)
+            self.e.log(maxRes)
 
             return maxRes

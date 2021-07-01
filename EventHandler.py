@@ -24,7 +24,7 @@ from Network import Network
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '2.9.5'
+        self.__version__ = '3.0.0'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
@@ -95,9 +95,7 @@ class EventHandler:
                 await self.temp.update()
                 if not self.cook.isCooking and await self.config.get('autoDetect'):
                     dist = await self.ultrasound.get()
-                    self.log("CurrentTemp: {}".format(self.cook.topRod.get()))
-                    # self.log(dist)
-                    if dist < 200:
+                    if dist < await self.config.get('sensitivity')*0.17:
                         tasks = await self.dispatch([
                             [self.display.loading],
                             [self.detector.detect],
@@ -109,10 +107,9 @@ class EventHandler:
 
                         await self.cook.startFromDB(res)
                     else:
-                        await asyncio.sleep(0.3)
+                        await asyncio.sleep(await self.config.get('responsiveness')*0.003)
                 else:
-                    await asyncio.sleep(1)
-            self.log("startDetectionLoop - Terminated")
+                    await asyncio.sleep(await self.config.get('responsiveness')*0.01)
         except Exception as e:
             self.err(e)
 

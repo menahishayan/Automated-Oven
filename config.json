@@ -1,1 +1,14 @@
-{"name": "Mr. BakerMan", "lastHeatTemp": 190.95624966986887, "lastHeatTime": 1624344730.363395, "demoMode": true, "selectedTone": "Cantina Band", "backlight": 55, "autoDetect": true, "modelVersion": "v3.6"}
+{
+    "name": "Mr. BakerMan",
+    "lastHeatTemp": 190.95624966986887,
+    "lastHeatTime": 1624344730.363395,
+    "demoMode": true,
+    "selectedTone": "Cantina Band",
+    "backlight": 55,
+    "autoDetect": true,
+    "sensitivity": 100,
+    "responsiveness":100,
+    "energyInterval": 1,
+    "rodSafetyLock": false,
+    "modelVersion": "v3.6"
+}

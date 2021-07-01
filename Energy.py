@@ -34,8 +34,8 @@ class Energy(DB):
         return self.db
 
     async def logEnergy(self):
-        interval = 3
         while not self.e._SIGKILL:
+            interval = await self.config.get('energyInterval')
             aggregate = []
             for _ in range(interval):
                 aggregate.append(self.detect())
@@ -48,8 +48,8 @@ class Energy(DB):
 
     def detect(self):
         base = 15
-        if self.e.cook.topRod.isOn():
-            base += 325
+        if self.e.cook.rod.isOn():
+            base += 650
         return base
 
     async def getNow(self):

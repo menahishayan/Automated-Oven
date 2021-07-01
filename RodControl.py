@@ -56,7 +56,8 @@ class RodControl:
                 self.currentTemp = self.coolingTemp(0.3)
 
     async def heat(self,temp,adjust=False):
-        self.pin.value = True
+        if not await self.e.config.get('rodSafetyLock'):
+            self.pin.value = True
         await self.sleep(self.heatingTime(temp),adjust=adjust)
         self.lastHeatTime = time()
         self.e.config.set('lastHeatTemp',self.currentTemp)

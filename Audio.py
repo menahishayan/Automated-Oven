@@ -37,7 +37,7 @@ class Audio:
     async def setVolume(self,vol):
         system("amixer -q -M sset Headphone {}%".format(vol))
         self.volume = vol
-        await self.play()
+        # await self.play()
 
     async def play(self):
         system('aplay -q "audio/{}.wav"'.format(self.selectedTone))

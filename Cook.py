@@ -12,7 +12,7 @@ class Cook:
         self.SIGTERM = False
         self.isCooking = False
         self.isDone = False
-        self.topRod = RodControl.RodControl(D12, e)
+        self.rod = RodControl.RodControl(D12, e)
 
         self.steps = None
         self.currentStep = -1
@@ -112,10 +112,11 @@ class Cook:
 
     async def preheat(self, s):
         s['startTime'] = time()
-        self.e.log("Cooking: Preheating")
+        if await self.e.config.get('cookingVerboseLogs'):
+            self.e.log("Cooking: Preheating")
 
         await self.e.dispatch([
-            [self.topRod.reachTemp, s['temp']],
+            [self.rod.reachTemp, s['temp']],
             [getattr(self.e.display, s['type']), self.currentStep, self.steps]
         ])
 
@@ -125,7 +126,8 @@ class Cook:
 
     async def cook(self, s):
         duration = s['duration'] * (2 if self.e.config._get('demoMode') else 60)
-        self.e.log("Cooking: Cooking {}".format(duration))
+        if await self.e.config.get('cookingVerboseLogs'):
+            self.e.log("Cooking: Cooking {}".format(duration))
 
         if 'pauseTime' not in s:
             s['startTime'] = time()
@@ -134,7 +136,7 @@ class Cook:
             del s['pauseTime']
 
         await self.e.dispatch([
-            [self.topRod.sustainTemp, s['topTemp'], s['endTime']],
+            [self.rod.sustainTemp, s['topTemp'], s['endTime']],
             [getattr(self.e.display, s['type']), self.currentStep, self.steps],
             [self.e.history.add, self.item, self.steps.copy(), s['topTemp'] if s['topTemp'] > s['bottomTemp'] else s['bottomTemp'], s['duration']]
         ])
@@ -145,7 +147,8 @@ class Cook:
         return
 
     async def checkpoint(self, s):
-        self.e.log("Cooking: Checkpoint")
+        if await self.e.config.get('cookingVerboseLogs'):
+            self.e.log("Cooking: Checkpoint")
 
         s['startTime'] = time()
         s['endTime'] = s['startTime'] + s['timeout']
@@ -159,7 +162,8 @@ class Cook:
         return
 
     async def notify(self, s):
-        self.e.log("Cooking: Notify")
+        if await self.e.config.get('cookingVerboseLogs'):
+            self.e.log("Cooking: Notify")
         s['startTime'] = time()
         s['endTime'] = s['startTime'] + 3
         await self.e.dispatch([
@@ -171,10 +175,11 @@ class Cook:
         return
 
     async def cool(self, s):
-        self.e.log("Cooking: Cool")
+        if await self.e.config.get('cookingVerboseLogs'):
+            self.e.log("Cooking: Cool")
         s['startTime'] = time()
 
-        self.topRod.off()
+        self.rod.off()
         s['endTime'] = s['startTime'] + s['duration'] * (2 if self.e.config._get('demoMode') else 60)
 
         await self.e.dispatch([
@@ -192,7 +197,7 @@ class Cook:
             self.steps[self.currentStep]['pauseTime'] = time()
             self.SIGPAUSE = True
 
-            self.topRod.off()
+            self.rod.off()
 
             await self.e.display.pause(self.currentStep, [s['type'] for s in self.steps])
 
@@ -219,7 +224,7 @@ class Cook:
     def done(self):
         if self.isCooking:
             self.SIGTERM = True
-            self.topRod.off()
+            self.rod.off()
             self.isCooking = False
             self.isDone = True
             self.SIGPAUSE = False
@@ -249,7 +254,7 @@ class Cook:
             return False
         try:
             self.SIGPAUSE = True
-            self.topRod.off()
+            self.rod.off()
             self.steps[self.currentStep]['isDone'] = True
             self.SIGPAUSE = False
 
@@ -263,7 +268,7 @@ class Cook:
             return False
         try:
             self.SIGPAUSE = True
-            self.topRod.off()
+            self.rod.off()
             s = self.steps[self.currentStep]
             s['isDone'] = False
             del s['startTime']
@@ -285,7 +290,7 @@ class Cook:
         try:
             if self.isCooking:
                 self.SIGPAUSE = True
-                self.topRod.off()
+                self.rod.off()
                 s = self.steps[index]
                 s['pauseTime'] = time()
                 await sleep(0.2)
@@ -308,7 +313,7 @@ class Cook:
             if self.isCooking:
                 s = self.steps[index]
                 self.SIGPAUSE = True
-                self.topRod.off()
+                self.rod.off()
                 s['pauseTime'] = time()
                 await sleep(0.2)
                 d = int(t) * (2 if self.e.config._get('demoMode') else 60)
@@ -331,7 +336,8 @@ class Cook:
                 'item': self.item,
                 'steps': self.steps,
                 'currentStep': self.currentStep,
-                'currentTempTop': self.topRod.get(),
+                'currentTempTop': self.rod.get(),
+                'currentTempBottom': self.rod.get(),
                 'isPaused': self.SIGPAUSE,
                 'isCooking': self.isCooking,
                 'isDone': self.isDone

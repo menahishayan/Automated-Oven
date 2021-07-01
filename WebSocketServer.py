@@ -68,5 +68,14 @@ class WebSocketServer(WebSocket):
         modelList = [r for r in res if r.startswith('v')]
         return modelList
 
+    async def getMetrics(self):
+        return {
+            'rodTemp': self.e.cook.rod.get(),
+            'rodStatus': self.e.cook.rod.isOn(),
+            'dht11Temp': int(await self.e.temp),
+            'ultrasoundReading': await self.e.ultrasound.get(),
+            'users': await self.e.users.get()
+        }
+
     async def getVersion(self):
         return self.e.__version__
