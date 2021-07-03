@@ -39,7 +39,7 @@ class Detector:
                 model_json = j.read()
 
             with open('{}.txt'.format(model_path)) as l:
-                self.labels = l.readlines()
+                self.labels = l.read().splitlines() 
             
             model = model_from_json(model_json)
 

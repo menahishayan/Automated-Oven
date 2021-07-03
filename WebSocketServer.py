@@ -85,7 +85,7 @@ class WebSocketServer(WebSocket):
                 'rodStatus': 0,
                 'dht11Temp': 0,
                 'ultrasoundReading': 0,
-                'users': 0,
+                'users': [],
                 'lastHeatTime': 0
             }
 

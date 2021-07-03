@@ -24,7 +24,7 @@ from Network import Network
 
 class EventHandler:
     def __init__(self):
-        self.__version__ = '3.1.2'
+        self.__version__ = '3.1.3'
 
         logger_format = '%(asctime)s %(message)s'
         logging.basicConfig(format=logger_format, level=logging.INFO,
