@@ -73,7 +73,7 @@ class WebSocketServer(WebSocket):
             return {
                 'rodTemp': self.e.cook.rod.get(),
                 'rodStatus': self.e.cook.rod.isOn(),
-                'dht11Temp': int(await self.e.temp),
+                'dht11Temp': int(self.e.temp),
                 'ultrasoundReading': await self.e.ultrasound.get(),
                 'users': await self.e.users.get(),
                 'lastHeatTime': self.e.cook.rod.getLastHeatTime()
