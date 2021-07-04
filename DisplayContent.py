@@ -251,7 +251,7 @@ class DisplayContent:
         try:
             # self.clear()
 
-            ht = round(self.e.cook.rod.heatingTime(steps[curStepIndex]['temp']))
+            ht = round(self.e.cook.rod.heatingTime(steps[curStepIndex]['temp']/2))
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
                     break
@@ -262,7 +262,7 @@ class DisplayContent:
                 percent = 0
 
                 if 'endTime' not in steps[curStepIndex]:
-                    steps[curStepIndex]['endTime'] = steps[curStepIndex]['startTime'] + (ht if ht >= 0 else self.e.cook.rod.coolingTime(steps[curStepIndex]['temp']))
+                    steps[curStepIndex]['endTime'] = steps[curStepIndex]['startTime'] + (ht if ht >= 0 else self.e.cook.rod.coolingTime(steps[curStepIndex]['temp']/2))
 
                 if 'startTime' in steps[curStepIndex] and 'endTime' in steps[curStepIndex]:
                     try:

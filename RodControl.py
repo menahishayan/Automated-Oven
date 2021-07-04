@@ -75,7 +75,8 @@ class RodControl:
     async def reachTemp(self,temp):
         if temp == 0:
             temp = self.surroundingTemp
-
+        else:
+            temp = temp/2
         if self.isSustaining:
             self.SIGKILLSUSTAIN = True
             await sleep(0.3)
@@ -114,6 +115,8 @@ class RodControl:
 
         if temp == 0:
             temp = self.surroundingTemp
+        else:
+            temp = temp/2
 
         if self.lastHeatTime > 0:
             self.currentTemp = self.coolingTemp(time() - self.lastHeatTime)
