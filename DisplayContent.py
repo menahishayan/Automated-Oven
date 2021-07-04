@@ -285,7 +285,7 @@ class DisplayContent:
 
                 imDraw.line((144-(currTemp*60/250), 44, 144, 44), fill="#fff", width=3)
 
-                finalTemp = int(steps[curStepIndex]['temp'])
+                finalTemp = int(steps[curStepIndex]['temp']/2)
                 w_s, _ = imDraw.textsize(str(finalTemp), font=self.fonts['mini'])
                 imDraw.text((self.width-w_s-16, 27), str(finalTemp), font=self.fonts['mini'], align="right", fill="#fff")
 
