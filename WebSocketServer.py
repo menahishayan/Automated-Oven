@@ -69,25 +69,25 @@ class WebSocketServer(WebSocket):
         return modelList
 
     async def getMetrics(self):
-        try:
-            return {
-                'rodTemp': self.e.cook.rod.get(),
-                'rodStatus': self.e.cook.rod.isOn(),
-                'dht11Temp': int(self.e.temp),
-                'ultrasoundReading': await self.e.ultrasound.get(),
-                'users': await self.e.users.get(),
-                'lastHeatTime': self.e.cook.rod.getLastHeatTime()
-            }
-        except Exception as e:
-            self.e.err(e)
-            return {
-                'rodTemp': 0,
-                'rodStatus': 0,
-                'dht11Temp': 0,
-                'ultrasoundReading': 0,
-                'users': [],
-                'lastHeatTime': 0
-            }
+        # try:
+        #     return {
+        #         'rodTemp': self.e.cook.rod.get(),
+        #         'rodStatus': self.e.cook.rod.isOn(),
+        #         'dht11Temp': int(self.e.temp),
+        #         'ultrasoundReading': await self.e.ultrasound.get(),
+        #         'users': await self.e.users.get(),
+        #         'lastHeatTime': self.e.cook.rod.getLastHeatTime()
+        #     }
+        # except Exception as e:
+        #     self.e.err(e)
+        return {
+            'rodTemp': 0,
+            'rodStatus': 0,
+            'dht11Temp': 0,
+            'ultrasoundReading': 0,
+            'users': [],
+            'lastHeatTime': 0
+        }
 
     async def getVersion(self):
         return self.e.__version__
