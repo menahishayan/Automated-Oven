@@ -10,6 +10,8 @@ class Ultrasound:
         GPIO.setup(self.TRIG, GPIO.OUT)
         GPIO.setup(self.ECHO, GPIO.IN)
 
+        self.lastUpdatedDistance = 0
+
     async def get(self):
         GPIO.output(self.TRIG, True)
         sleep(0.00001)
@@ -32,7 +34,12 @@ class Ultrasound:
 
         distance = (TimeElapsed * 34300) / 2
 
-        return int(distance)
+        self.lastUpdatedDistance = round(distance)
+
+        return round(distance)
+
+    def getLastUpdated(self):
+        return self.lastUpdatedDistance
 
     def __str__(self):
         return self.get()
