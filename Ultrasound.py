@@ -20,19 +20,24 @@ class Ultrasound:
         StartTime = time()
         StopTime = time()
 
-        while GPIO.input(self.ECHO) == 0:
+        loopStartTime = time()
+        while GPIO.input(self.ECHO) == 0 or time() > loopStartTime+1.5:
             if self.e._SIGKILL:
                 return -1
             StartTime = time()
 
-        while GPIO.input(self.ECHO) == 1:
+        loopStartTime = time()
+        while GPIO.input(self.ECHO) == 1 or time() > loopStartTime+1.5:
             if self.e._SIGKILL:
                 return -1
             StopTime = time()
 
+
         TimeElapsed = StopTime - StartTime
 
         distance = (TimeElapsed * 34300) / 2
+        if time() > loopStartTime+1.5:
+            distance = 9999
 
         self.lastUpdatedDistance = round(distance)
 
