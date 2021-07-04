@@ -296,7 +296,7 @@ class DisplayContent:
 
     async def cook(self, curStepIndex, steps):
         try:
-            # self.clear()
+            self.clear()
             while not self.e._SIGKILL and not self.e.cook.SIGTERM and not self.e.cook.SIGPAUSE:
                 if steps[curStepIndex]['isDone']:
                     break
@@ -404,6 +404,7 @@ class DisplayContent:
             self.e.err(e)
 
     async def pause(self,curStepIndex,stepTypes):
+        self.clear()
         image = Image.new("RGB", (self.width, self.height))
         image.paste(
             self.baseImageCenterIcon(
